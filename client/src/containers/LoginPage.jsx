@@ -65,7 +65,7 @@ class LoginPage extends React.Component {
         Auth.authenticateUser(xhr.response.token);
         Auth.setUserName(xhr.response.user.name);
 
-        console.log("processForm LoginPage Type of User : ", xhr.response);
+        //console.log("processForm LoginPage Type of User : ", xhr.response);
 
         if(xhr.response.user.usertype === "admin"){
           Auth.authenticateAdminUser("admin");

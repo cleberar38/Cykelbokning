@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const PeriodSchema = new mongoose.Schema({
   periodid: {type: String, unique: true},
   periodname: String,
-  datefrom: Date,
-  dateto: Date
+  datefrom: String,
+  dateto: String
 });
 
 PeriodSchema.pre('save', function saveHook(next) {

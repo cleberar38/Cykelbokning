@@ -67,7 +67,13 @@ const routes = {
 
     {
       path: '/createperiod',
-      component: PeriodPage
+      getComponent: (location, callback) => {
+        if (Auth.isAdminUserAuthenticated()) {
+          callback(null, PeriodPage);
+        } else {
+          callback(null, PeriodPage);
+        }
+      }
     }
 
   ]

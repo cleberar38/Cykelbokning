@@ -29,7 +29,6 @@ const periodData = [
   { "id": "4", "content": "#4 - Period: 23/nov - 11/dec" }
 ];
 
-
 strings.setLanguage(default_lang.lang);
 
 const tilesData = [
@@ -69,20 +68,12 @@ const BookingFormAll = ({
   optionSelected,
 	handleSetPeriod,
   isBikeAvailable,
-  periodsAvailable
+  periodsAvailable,
+  periodData
 }) => (
  <div>
-
-
-
-
-  <ListExampleMessages />
-
-
-
-
     {messageChanged ? (
-    <MessagesToUserPage handleBackToBooking={ handleBackToBooking } messageChanged={ messageChanged } messages={ messages } />
+    <MessagesToUserPage messageChanged={ messageChanged } messages={ messages } />
     ) : (
     <form action="/" onSubmit={onSubmit}>
 
@@ -130,7 +121,6 @@ BookingFormAll.propTypes = {
   bikeActive: PropTypes.bool.isRequired,
   messageChanged: PropTypes.bool.isRequired,
   messages: PropTypes.string.isRequired,
-  handleBackToBooking: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   booking: PropTypes.object.isRequired,
   value: PropTypes.number.isRequired,

@@ -140,7 +140,7 @@ function removeBooking(bookingID) {
  *
  */
 function createNewPeriod(req) {
-
+  db.bios.find()
   const periodData = {
     periodid: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), //{type: String, unique: true},
     periodname: req.periodname, //String,
@@ -159,6 +159,8 @@ function createNewPeriod(req) {
     return done;
   });
 };
+
+
 
 /**
  * removePeriod
@@ -440,6 +442,25 @@ router.post('/addperiod', (req, res, next) => {
   });
 
 
+});
+
+router.post('/checkperiod', (req, res, next) => {
+
+  var checkPeriod = null;
+
+  Period.find((err, done) => {
+    if(err){
+      console.log("ERROR did not find period: ", err);
+      return err;
+    }
+    console.log("All period founded!", done);
+    checkPeriod = done;
+    return res.status(200).json({
+      success: true,
+      message: 'You retrive all periods.',
+      done: done
+    });
+  });
 });
 
 router.post('/period', (req, res, next) => {

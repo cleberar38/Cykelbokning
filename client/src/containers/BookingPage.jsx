@@ -5,6 +5,7 @@ import PopUpConfirmation from 'react-popconfirm';
 
 // Set initial state
 let state = {
+  periodData: [],
   bikeActive: false,
   isBikeAvailable: false,
   periodsAvailable: [],
@@ -46,18 +47,18 @@ class BookingPage extends React.Component {
     this.handleUserConfirmation = this.handleUserConfirmation.bind(this);
     this.handleSetPeriod = this.handleSetPeriod.bind(this);
     this.handleSelectedOption = this.handleSelectedOption.bind(this);
-    this.handleBackToBooking = this.handleBackToBooking.bind(this);
     this.checkPeriodsAvailable = this.checkPeriodsAvailable.bind(this);
+
   }
 
   componentWillUnmount() {
       // Remember state for the next mount
       state = this.state;
-      console.log("STATE from <componentWillUnmount :",  state);
+      //console.log("STATE from <componentWillUnmount :",  state);
   }
 
   handleUserConfirmation(){
-    console.log('Auth.isUserAuthenticated', Auth.isUserAuthenticated());
+    //console.log('Auth.isUserAuthenticated', Auth.isUserAuthenticated());
   }
 
   handleChange(event, index, value) {
@@ -81,7 +82,7 @@ class BookingPage extends React.Component {
 
     const formData = `userid=${userid}&periodid=${periodid}&bikeid=${bikeid}`;
 
-    console.log(formData);
+    //console.log(formData);
     const self = this;
 
     // create an AJAX request
@@ -104,8 +105,8 @@ class BookingPage extends React.Component {
           errors: {}
         });
 
-        console.log("This State Message : ", this.state);
-        console.log("This XHR Response Message : ", xhr.response);
+        //console.log("This State Message : ", this.state);
+        //console.log("This XHR Response Message : ", xhr.response);
 
         // change the current URL to /message
         //this.props.router.replace('/booking');
@@ -141,23 +142,17 @@ class BookingPage extends React.Component {
       }).then(
       (result) => {
         // `proceed` callback
-        console.log('proceed called');
+        //console.log('proceed called');
         xhr.send(formData); // Send data to DB
         handleBackToBooking(true);
       },
       (result) => {
         // `cancel` callback
-        console.log('cancel called');
+        //console.log('cancel called');
       }
     );
 
     //xhr.send(formData);
-  }
-
-  handleBackToBooking(arg){
-    this.setState({
-      messageChanged: arg
-    });
   }
 
   handleBikeSelection(evt) {
@@ -180,8 +175,9 @@ class BookingPage extends React.Component {
       bikeSelected.style.opacity = 0.2;
 
       //TODO: Check if periods are available for this selected bike
-      var periodsAvailable = this.checkPeriodsAvailable(bikename);
-      console.log("periodsAvailable : ", periodsAvailable);
+      var periodsAvailable = this.checkPeriodsAvailable();
+      //console.log("periodsAvailable : ", periodsAvailable);
+      console.log("handleBikeSelection periodsAvailable:", periodsAvailable);
 
       this.setState({
         isBikeAvailable: true
@@ -211,7 +207,49 @@ class BookingPage extends React.Component {
     /*###*/
   }
 
-  checkPeriodsAvailable(bike) {
+  checkPeriodsAvailable() {
+    console.log("CHEKING WHICH PERIODS ARE AVAILABLE...!!!");
+
+    var periodData = []; //Which has to have all the Periods Objects {}
+
+    // prevent default action. in this case, action is the form submission event
+
+    const self = this;
+
+    // create an AJAX request
+    const xhr = new XMLHttpRequest();
+    xhr.open('post', '/auth/checkperiod');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.responseType = 'json';
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+        // success
+        console.log("checkPeriodsAvailable xhr.response", xhr.response);
+        //TODO: Set the state of the periods available
+        self.setState({
+          periodData: null,
+        });
+
+        // change the component-container state
+        // this.setState({
+        //   errors: {},
+        // });
+        //this.props.router.replace('/');
+      } else {
+        // failure
+
+        console.log("ERROR", xhr.response);
+
+        // change the component state
+        // const errors = xhr.response.errors ? xhr.response.errors : {};
+        // errors.summary = xhr.response.message;
+        //
+        // this.setState({
+        //   errors
+        // });
+      }
+    });
+    xhr.send();
 
   }
 
@@ -276,7 +314,7 @@ class BookingPage extends React.Component {
     var messageChanged = false;
     var periodsAvailable = [];
 
-    console.log("Auth.isUserAuthenticated()", Auth.isUserAuthenticated());
+    //console.log("Auth.isUserAuthenticated()", Auth.isUserAuthenticated());
 
     if(Auth.isUserAuthenticated()){
       userEmail = Auth.getUserEmail();
@@ -308,6 +346,7 @@ class BookingPage extends React.Component {
   render() {
     return (
       <BookingFormAll
+        periodData={this.state.periodData}
         handleBikeSelection={this.handleBikeSelection}
         bikeActive={this.state.bikeActive}
         isBikeAvailable={this.state.isBikeAvailable}

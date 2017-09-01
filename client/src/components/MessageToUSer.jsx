@@ -21,7 +21,7 @@ const MessageToUSer = ({
           <h1 className="display-2">{ strings.thankMsg }</h1>
           <h4 className="display-2">{ messages }</h4>
         </CardTitle>
-        <IndexLink style={{color: 'black'}}><RaisedButton  onClick={ () => handleBackToBooking(false) } label="Tillbaka till bokning" primary /></IndexLink>
+        <IndexLink  to="/" style={{color: 'black'}}><RaisedButton  label="Tillbaka till bokning" primary /></IndexLink>
       </Card>
     </div>
   </div>

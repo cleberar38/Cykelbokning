@@ -14,7 +14,8 @@ let state = {
   message: '',
   messages: '',
   errors: {},
-  messageChanged: false
+  messageChanged: false,
+  isAdminUserAuthenticated: false
 };
 
 class PeriodPage extends React.Component {
@@ -46,7 +47,6 @@ class PeriodPage extends React.Component {
 
     const formData = `periodid=${periodid}&periodname=${periodname}&datefrom=${datefrom}&dateto=${dateto}`;
 
-    console.log(formData);
     const self = this;
 
     // create an AJAX request
@@ -57,7 +57,7 @@ class PeriodPage extends React.Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         // success
-        console.log("this.state.period", this.state.period);
+        //console.log("this.state.period", this.state.period);
         //TODO: Set the state of the periods available
         self.setState({
           period: self.state.period,
@@ -65,7 +65,7 @@ class PeriodPage extends React.Component {
           messages: xhr.response.message
         });
 
-        console.log("addPeriod xhr.response: ", xhr.response);
+        //console.log("addPeriod xhr.response: ", xhr.response);
 
         // change the component-container state
         this.setState({
@@ -107,6 +107,37 @@ class PeriodPage extends React.Component {
 
   }
 
+  componentWillMount() {
+
+    //console.log("componentWillMount()");
+
+    this.setState({
+      period: {
+        periodname: this.state.period.periodname, //String,
+        datefrom: this.state.period.datefrom, //Date,
+        dateto: this.state.period.dateto //Date
+      },
+    });
+  }
+
+  /**
+   * This method will be executed after initial rendering.
+   */
+  componentDidMount() {
+
+    //console.log("Auth.isAdminUserAuthenticated()", Auth.isAdminUserAuthenticated());
+
+    if(Auth.isAdminUserAuthenticated()){
+      this.setState({
+        period: {
+          periodname: this.state.period.periodname, //String,
+          datefrom: this.state.period.datefrom, //Date,
+          dateto: this.state.period.dateto //Date
+        },
+      });
+    }
+  }
+
 
   /**
    * Render the component.
@@ -114,7 +145,6 @@ class PeriodPage extends React.Component {
   render() {
     return (
       <PeriodForm
-        handleBackToBooking={this.props.handleBackToBooking}
         messageChanged={this.state.messageChanged}
         period={this.state.period}
         message={this.state.message}
@@ -123,6 +153,7 @@ class PeriodPage extends React.Component {
         onSubmit={this.addPeriod}
         errors={this.state.errors}
         onChange={this.onChange}
+        isAdminUserAuthenticated={this.state.isAdminUserAuthenticated}
        />
 
     );

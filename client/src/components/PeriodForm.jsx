@@ -31,67 +31,70 @@ const PeriodForm = ({
   errors,
   onChange,
   messageChanged,
-  handleBackToBooking
+  isAdminUserAuthenticated
 }) => (
   <div>
     {messageChanged ? (
-    <MessagesToUserPage handleBackToBooking={ handleBackToBooking } messageChanged={ messageChanged } messages={ messages } />
+    <MessagesToUserPage messageChanged={ messageChanged } messages={ messages } />
     ) : (
-    <Card zDepth={5} className="container cardbottomReg">
-      <form action="/" onSubmit={onSubmit}>
-        <h2 className="card-heading">{strings.addperiod}</h2>
+    <div>
+      {Auth.isAdminUserAuthenticated() ? (
+      <Card zDepth={5} className="container cardbottomReg">
+        <form action="/" onSubmit={onSubmit}>
+          <h2 className="card-heading">{strings.addperiod}</h2>
 
-        {errors.summary && <p className="error-message">{errors.summary}</p>}
+          {errors.summary && <p className="error-message">{errors.summary}</p>}
 
-        <div className="field-line">
-          <TextField
-            floatingLabelText={strings.periodname}
-            name="periodname"
-            errorText={errors.periodname}
-            onChange={onChange}
-            value={period.periodname}
-          />
-        </div>
-
-        <div className="field-line">
-          <TextField
-            floatingLabelText={strings.datefrom}
-            name="datefrom"
-            errorText={errors.datefrom}
-            onChange={onChange}
-            value={period.datefrom}
-          />
-        </div>
-
-        <div className="field-line">
-          <TextField
-            floatingLabelText={strings.dateto}
-            name="dateto"
-            errorText={errors.dateto}
-            onChange={onChange}
-            value={period.dateto}
-          />
-        </div>
-
-
-        {Auth.isAdminUserAuthenticated() ? (
-        <div className="button-line center-container cardbottomFot">
-          <Button type="submit" bsStyle="success" className="top-btn" onClick={onSubmit}>{strings.sendBtn}</Button>
-        </div>
-        ) : (
-          <div className="center-container">
-            <Link to="/login" style={{color: 'white'}}><FlatButton style={{color: 'white', backgroundColor: 'rgba(0, 150, 213, 0.7)'}} label={strings.login} /></Link>
+          <div className="field-line">
+            <TextField
+              floatingLabelText={strings.periodname}
+              name="periodname"
+              errorText={errors.periodname}
+              onChange={onChange}
+              value={period.periodname}
+            />
           </div>
-        )}
 
+          <div className="field-line">
+            <TextField
+              floatingLabelText={strings.datefrom}
+              name="datefrom"
+              errorText={errors.datefrom}
+              onChange={onChange}
+              value={period.datefrom}
+            />
+          </div>
 
-        <div className="button-line">
-          <RaisedButton type="submit" label={strings.sendBtn} primary={false} backgroundColor="#0096D5" />
-        </div>
+          <div className="field-line">
+            <TextField
+              floatingLabelText={strings.dateto}
+              name="dateto"
+              errorText={errors.dateto}
+              onChange={onChange}
+              value={period.dateto}
+            />
+          </div>
+ 
+          {Auth.isAdminUserAuthenticated() ? (
+          <div className="button-line center-container cardbottomFot">
 
-        <CardText>{strings.removeperiod} <Link to={'/removeperiod'}>{strings.removeperiod}</Link></CardText>
-      </form>
-    </Card>
+              <RaisedButton onClick={onSubmit} type="submit" label={strings.sendBtn} primary={false} backgroundColor="#0096D5" />
+
+          </div>
+          ) : (
+            <div className="center-container">
+              <Link to="/login" style={{color: 'white'}}><FlatButton style={{color: 'white', backgroundColor: 'rgba(0, 150, 213, 0.7)'}} label={strings.login} /></Link>
+            </div>
+          )}
+
+          <CardText>{strings.removeperiod} <Link to={'/removeperiod'}>{strings.removeperiod}</Link></CardText>
+        </form>
+      </Card>
+      ) : (
+        <MessagesToUserPage messageChanged={ messageChanged } messages="Kontakta Admin" />
+      )}
+    </div>
+
     )}
   </div>
 );

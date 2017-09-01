@@ -18,11 +18,6 @@ class MessageToUSerPage extends React.Component {
 
     // Retrieve the last state
     this.state = state;
-    this.handleBackToBooking.bind(this);
-  }
-
-  handleBackToBooking() {
-    console.log("I AM INSIDE THE handleBackToBooking");
   }
 
   /**
@@ -33,7 +28,6 @@ class MessageToUSerPage extends React.Component {
       <MessageToUSer
         messageChanged={ this.props.messageChanged }
         messages={ this.props.messages}
-        handleBackToBooking={ this.props.handleBackToBooking }
       />
     );
   }
