@@ -52,14 +52,13 @@ class BookingPage extends React.Component {
     this.processForm = this.processForm.bind(this);
     this.handleSetPeriod = this.handleSetPeriod.bind(this);
     this.checkPeriodsAvailable = this.checkPeriodsAvailable.bind(this);
-    this.handlePeriodBtnState = this.handlePeriodBtnState.bind(this);
     this.checkPeriodsInBooking = this.checkPeriodsInBooking.bind(this);
-
+    this.handleBackBtn = this.handleBackBtn.bind(this);
   }
 
   componentWillUnmount() {
     /*
-      Check if the component is mounted 
+      Check if the component is mounted
       before set states
     */
     if(!this._mounted){
@@ -70,11 +69,13 @@ class BookingPage extends React.Component {
       this.checkPeriodsAvailable();
     }
 
+    let self = this;
+
     this._mounted = false;
 
-  }
-
-  handlePeriodBtnState(evt) {
+    this.setState({
+      lastPeriodClicked: self.state.lastPeriodClicked
+    });
 
   }
 
@@ -149,13 +150,45 @@ class BookingPage extends React.Component {
         // `proceed` callback
         //console.log('proceed called');
         xhr.send(formData); // Send data to DB
-        handleBackToBooking(true);
+
+        
+
+
+
       },
       (result) => {
         // `cancel` callback
-        //console.log('cancel called');
+        console.log('cancel called');
       }
     );
+  }
+
+  handleBackBtn() {
+    this.setState({
+      messages: '',
+      messageChanged: false
+    });
+  }
+
+  handleSetPeriod(evt, value){
+
+    //let periodSelected = evt !== undefined && evt !== null ? document.elementTarget = evt.target : null;
+
+    //const periodName = periodSelected !== null && periodSelected !== undefined ? periodSelected.name : evt;
+
+    console.log("periodSelected evt : ", evt);
+    console.log("handleSetPeriod value : ", value);
+
+    var bg = document.getElementsByClassName("periodBtn");
+
+    for(var i=0,leni=bg.length; i<leni; i++){
+      bg[i].style.backgroundColor = '';
+    }
+
+    if(evt !== undefined && evt !== "null" && evt !== null){
+      evt.target.style.backgroundColor = "rgba(20,25,22,0.35)";
+    }
+    Auth.setPeriod(value);
   }
 
   handleBikeSelection(evt) {
@@ -184,7 +217,7 @@ class BookingPage extends React.Component {
       //Check if periods are available for this selected bike
       //inside the Period table
       this.checkPeriodsAvailable();
-    
+
       this.setState({
         isBikeAvailable: true
       })
@@ -243,7 +276,7 @@ class BookingPage extends React.Component {
   checkPeriodsAvailable() {
 
     if(!this.state.isPeriodChecked){
-      
+
       console.log("CHEKING WHICH PERIODS ARE AVAILABLE...!!!");
 
       const self = this;
@@ -324,38 +357,10 @@ class BookingPage extends React.Component {
     }
   }
 
-  handleSetPeriod(evt, value){
-
-
-
-    var bg = document.getElementsByClassName("periodBtn");
-    
-    for(var i=0,leni=bg.length; i<leni; i++){
-      bg[i].style.backgroundColor = '';
-    }
-
-    if(this.state.lastPeriodClicked !== null){
-      this.state.lastPeriodClicked.target.style.backgroundColor = "rgba(20,25,22,0.35)";
-    }
-
-    if(evt !== undefined && evt !== null){
-      evt.target.style.backgroundColor = "rgba(20,25,22,0.35)"; 
-    }
-
-    Auth.setPeriod(value);
-
-    this.setState({
-      lastPeriodClicked: evt !== undefined && evt !== null ? evt : this.state.lastPeriodClicked
-    });
-
-  }
-
   /**
    * This method will be executed after initial rendering.
    */
   componentDidMount() {
-
-    console.log("THIS", this);
 
     this._mounted = true;
 
@@ -367,21 +372,17 @@ class BookingPage extends React.Component {
     var periodsAvailable = [];
     var selectedPeriod = '';
 
-    //console.log("Auth.isUserAuthenticated()", Auth.isUserAuthenticated());
-
     if(Auth.isUserAuthenticated()){
       userEmail = Auth.getUserEmail();
       bikeName = Auth.getBikeName();
     }
 
     bikePeriod = Auth.getPeriod();
-    
+
     console.log("bikePeriod: ", bikePeriod);
-    console.log("this.state.handleSetPeriod: ", this.state.lastPeriodClicked);  
+    console.log("this.state.handleSetPeriod: ", this.state.lastPeriodClicked);
 
     this.handleBikeSelection(bikeName);
-
-    this.handleSetPeriod(this.state.lastPeriodClicked, bikePeriod);
 
     //TODO: Get all the periods available
 
@@ -403,6 +404,7 @@ class BookingPage extends React.Component {
   render() {
     return (
       <BookingFormAll
+        handleBackBtn={this.handleBackBtn}
         lastPeriodClicked={this.state.lastPeriodClicked}
         btnPeriodClicked={this.state.btnPeriodClicked}
         periodBtnState={this.state.periodBtnState}
@@ -414,7 +416,6 @@ class BookingPage extends React.Component {
         isBikeAvailable={this.state.isBikeAvailable}
         messageChanged={this.state.messageChanged }
         messages={this.state.messages}
-        handleBackToBooking={this.handleBackToBooking}
         value={this.state.value}
         onSubmit={this.processForm}
         handleTimeChange={this.handleTimeChange}
@@ -432,5 +433,5 @@ class BookingPage extends React.Component {
     );
   }
 }
- 
+
 export default BookingPage;

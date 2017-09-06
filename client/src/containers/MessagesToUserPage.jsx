@@ -20,6 +20,8 @@ class MessageToUSerPage extends React.Component {
     this.state = state;
   }
 
+
+
   /**
    * Render the component.
    */
@@ -28,6 +30,7 @@ class MessageToUSerPage extends React.Component {
       <MessageToUSer
         messageChanged={ this.props.messageChanged }
         messages={ this.props.messages}
+        handleBackBtn={ this.props.handleBackBtn }
       />
     );
   }

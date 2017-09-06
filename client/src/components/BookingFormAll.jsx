@@ -53,7 +53,6 @@ const BookingFormAll = ({
   handleBikeSelection,
   periodBtnState,
   bikeActive,
-  handleBackToBooking,
   messageChanged,
   messages,
 	onSubmit,
@@ -66,11 +65,12 @@ const BookingFormAll = ({
   periodsAvailable,
   periodData,
   bookingPeriodData,
-  btnPeriodClicked
+  btnPeriodClicked,
+  handleBackBtn
 }) => (
  <div>
     {messageChanged ? (
-    <MessagesToUserPage messageChanged={ messageChanged } messages={ messages } />
+    <MessagesToUserPage handleBackBtn={ handleBackBtn } messageChanged={ messageChanged } messages={ messages } />
     ) : (
     <form action="/" onSubmit={onSubmit}>
 
@@ -90,9 +90,9 @@ const BookingFormAll = ({
             <ul>
               { periodData !== null ? periodData.done.map((post) => (
                 <li key={post._id} style={{padding: 5}}>
-                  <Button key={ post._id } bsStyle={ periodBtnState } className={ "periodBtn " }  onClick={ (evt) => handleSetPeriod(evt, post.periodname) }>
+                  <Button key={ post._id } bsStyle={ periodBtnState } className={ "periodBtn " } name={post.periodname} onClick={ (evt) => handleSetPeriod(evt, post.periodname) }>
                     {post.periodname}
-                  </Button>  
+                  </Button>
                 </li>
               )) : null}
             </ul>
@@ -124,7 +124,7 @@ BookingFormAll.propTypes = {
   booking: PropTypes.object.isRequired,
   value: PropTypes.number.isRequired,
   handleSetPeriod: PropTypes.func.isRequired,
-  optionSelected: PropTypes.string.isRequired,
+  optionSelected: PropTypes.string.isRequired
 };
 
 export default BookingFormAll;

@@ -8,13 +8,14 @@ import AppBar from 'material-ui/AppBar';
 import strings  from './lang_config.jsx';
 import default_lang from './default_lang.jsx';
 import RaisedButton from 'material-ui/RaisedButton';
+import {Button} from 'react-bootstrap';
 
 strings.setLanguage(default_lang.lang);
 
 const MessageToUSer = ({
   messages,
   messageChanged,
-  handleBackToBooking
+  handleBackBtn
 }) => (
   <div  style={{height: '100%'}}>
     <div>
@@ -23,7 +24,7 @@ const MessageToUSer = ({
           <h1 className="display-2">{ strings.thankMsg }</h1>
           <h4 className="display-2">{ messages }</h4>
         </CardTitle>
-        <IndexLink  to="/" style={{color: 'black'}}><RaisedButton  label="Tillbaka till bokning" primary /></IndexLink>
+        <Link to="/" onClick={ handleBackBtn } style={{color: "white"}}><Button  bsStyle="primary" className={ "msgbtn " }>Tillbaka till bokning</Button></Link>
       </Card>
     </div>
   </div>

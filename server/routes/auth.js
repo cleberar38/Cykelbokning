@@ -25,7 +25,7 @@ function checkIfPeriodIsAvailable() {
  * @returns {object} -
  *
  */
-function checkIfUserHasBookedSpecificBike(req, res, bookingBikeData) {
+function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData) {
   BikeBooking.find({
     bikeid: bookingBikeData.bikeid,
     userid: req.body.userid
@@ -36,12 +36,64 @@ function checkIfUserHasBookedSpecificBike(req, res, bookingBikeData) {
     }
     if(resUserRebook.length !== 0){
       console.log("Sorry you cannot book this model twice!");
+
       return res.status(200).json({
         success: true,
         message: 'Sorry you cannot book this model twice!'
       });
+    }else {
+      Bike.find({
+        periodid: bookingBikeData.periodid,
+        bikeid: bookingBikeData.bikeid,
+      }, (err, resBikeBooking) => {
+        if(err){
+          console.log("ERROR : ", err);
+            return err;
+        }
+        if(resBikeBooking.length !== 0){
+          /*###*/
+          /*console.log("Sorry this period & cykel is already booked");*/
+          /*###*/
+          Bike.find({
+            bikeid: resBikeBooking.bikeid,
+          },(err, resBike) => {
+            if(err){
+              console.log("ERROR : ", err);
+                return err;
+            }
+            //Check if still have bike available in BIKE DB
+            if(resBike.amountavailable < 1){
+              const msg = 'Sorry this Bike are not Available';
+              showMessages200(res, msg);
+            }else{
+              createNewBooking(newBooking);
+              const msg = 'You have successfully add your booking.';
+              showMessages200(res, msg);
+            }
+          });
+          const msg = 'Sorry this period & cykel is already booked';
+          //showMessages200(res, msg);
+        }else{
+          createNewBooking(newBooking);
+          const msg = 'You have successfully add your booking.';
+          showMessages200(res, msg);
+        }
+      });
     }
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
 };
 
 /**
@@ -94,7 +146,7 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
         }
       });
       const msg = 'Sorry this period & cykel is already booked';
-      showMessages200(res, msg);
+      //showMessages200(res, msg);
     }else{
       createNewBooking(newBooking);
       const msg = 'You have successfully add your booking.';
@@ -111,7 +163,7 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
  *
  */
 function createNewBooking(newBooking) {
-  
+
   //This save the new bikebooking to the DB
   newBooking.save((err, done) => {
     if(err){
@@ -370,17 +422,17 @@ function getAllPlats(payload) {
   const errors = {};
   let isFormValid = true;
   let message = '';
-  if (!payload || typeof payload.user !== 'string' || payload.user.trim().length === 0) {
+  if (!payload || typeof payload.userid !== 'string' || payload.userid.trim().length === 0) {
     isFormValid = false;
-    errors.user = 'User is not Authenticated!';
+    errors.userid = 'User is not Authenticated!';
   }
-  if (!payload || typeof payload.period !== 'string' || payload.period.trim().length === 0) {
+  if (!payload || typeof payload.periodid !== 'string' || payload.periodid.trim().length === 0) {
     isFormValid = false;
-    errors.period = 'Välja Period';
+    errors.periodid = 'Välja Period';
   }
-  if (!payload || typeof payload.name !== 'string' || payload.name.trim().length === 0) {
+  if (!payload || typeof payload.bikeid !== 'string' || payload.bikeid.trim().length === 0) {
     isFormValid = false;
-    errors.name = 'Välja Cykel';
+    errors.bikeid = 'Välja Cykel';
   }
   if (!isFormValid) {
     message = 'Form har errors.';
@@ -603,6 +655,7 @@ router.post('/period', (req, res, next) => {
 });
 
 router.post('/bikebooking', (req, res, next) => {
+  
   const getPlatsResults = getAllPlats(req.body);
   if (!getPlatsResults.success) {
     return res.status(400).json({
@@ -612,15 +665,20 @@ router.post('/bikebooking', (req, res, next) => {
     });
   }
   const bookingBikeData = {
+    bikebookingid: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), //{type: String, unique: true},,
     bikeid: req.body.bikeid,
     userid: req.body.userid,
-    periodid: req.body.periodid
+    periodid: req.body.periodid,
+    bookeddate: new Date(),
+    nextbookingdate: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
   };
 
   const newBooking = new BikeBooking(bookingBikeData);
 
-  checkIfUserHasBookedSpecificBike(req, res, bookingBikeData);
-  checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData);
+
+
+  checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData);
+  //checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData);
 
 });
 
