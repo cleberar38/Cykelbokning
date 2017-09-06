@@ -1,4 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import * as Colors from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -21,13 +23,6 @@ import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
 import ListExampleMessages from './Profile.jsx'
 
 import {Button} from 'react-bootstrap';
-
-const periodData = [
-  { "id": "1", "content": "#1 - Period: 21/sep - 09/okt" },
-  { "id": "2", "content": "#2 - Period: 12/okt - 30/okt" },
-  { "id": "3", "content": "#3 - Period: 02/nov - 20/nov" },
-  { "id": "4", "content": "#4 - Period: 23/nov - 11/dec" }
-];
 
 strings.setLanguage(default_lang.lang);
 
@@ -56,6 +51,7 @@ const tilesData = [
 
 const BookingFormAll = ({
   handleBikeSelection,
+  periodBtnState,
   bikeActive,
   handleBackToBooking,
   messageChanged,
@@ -64,12 +60,13 @@ const BookingFormAll = ({
 	booking,
   value,
   getFormContent,
-  handleSelectedOption,
   optionSelected,
 	handleSetPeriod,
   isBikeAvailable,
   periodsAvailable,
-  periodData
+  periodData,
+  bookingPeriodData,
+  btnPeriodClicked
 }) => (
  <div>
     {messageChanged ? (
@@ -89,15 +86,17 @@ const BookingFormAll = ({
             </CardTitle>
           </Card>
           ) : (
-          <ul>
-            {periodData.map((post) => (
-              <li key={post.id} style={{padding: 5}}>
-                <RaisedButton className={ "option" + post.id } primary={ true } onClick={ handleSetPeriod } label={post.content} >
-                  <input id={ "option" + post.id } type="radio" value={ "option" + post.id } checked={ optionSelected === "option" + post.id } onChange={ (evt) => handleSelectedOption(periodData, evt) } />
-                </RaisedButton>
-              </li>
-            ))}
-          </ul>
+          <div>
+            <ul>
+              { periodData !== null ? periodData.done.map((post) => (
+                <li key={post._id} style={{padding: 5}}>
+                  <Button key={ post._id } bsStyle={ periodBtnState } className={ "periodBtn " }  onClick={ (evt) => handleSetPeriod(evt, post.periodname) }>
+                    {post.periodname}
+                  </Button>  
+                </li>
+              )) : null}
+            </ul>
+          </div>
           )}
         </div>
       </div>
@@ -125,8 +124,7 @@ BookingFormAll.propTypes = {
   booking: PropTypes.object.isRequired,
   value: PropTypes.number.isRequired,
   handleSetPeriod: PropTypes.func.isRequired,
-  handleSelectedOption: PropTypes.func.isRequired,
-  optionSelected: PropTypes.string.isRequired
+  optionSelected: PropTypes.string.isRequired,
 };
 
 export default BookingFormAll;

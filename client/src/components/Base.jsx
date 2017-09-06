@@ -1,4 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Link, IndexLink } from 'react-router';
 import AppBar from 'material-ui/AppBar';
 import Auth from '../modules/Auth';
@@ -26,7 +28,7 @@ const styles = {
   title: {
     cursor: 'pointer',
   },
-};
+}; 
 
 function handleResetForm(){
 
@@ -107,7 +109,7 @@ const Base = ({
 );
 
 Base.propTypes = {
-  children: PropTypes.object.isRequired
+  children: PropTypes.object
 };
 
 export default Base;

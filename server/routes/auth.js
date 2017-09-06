@@ -111,6 +111,8 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
  *
  */
 function createNewBooking(newBooking) {
+  
+  //This save the new bikebooking to the DB
   newBooking.save((err, done) => {
     if(err){
       console.log("ERROR from New Booking: ", err);
@@ -140,7 +142,7 @@ function removeBooking(bookingID) {
  *
  */
 function createNewPeriod(req) {
-  db.bios.find()
+
   const periodData = {
     periodid: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), //{type: String, unique: true},
     periodname: req.periodname, //String,
@@ -390,6 +392,58 @@ function getAllPlats(payload) {
   };
 };
 
+function validateBikeForm(payload){
+  const errors = {};
+  let isFormValid = true;
+  let message = '';
+  if (!payload || typeof payload.name !== 'string' || payload.name.trim().length === 0) {
+    isFormValid = false;
+    errors.name = 'Please bike name';
+  }
+  if (!payload || typeof payload.biketype !== 'string' || payload.biketype.trim().length === 0) {
+    isFormValid = false;
+    errors.biketype = 'Please enter bike type';
+  }
+  if (!payload || typeof payload.imgurl !== 'string' || payload.imgurl.trim().length === 0) {
+    isFormValid = false;
+    errors.imgurl = 'Image URL start with http:// or https://';
+  }
+  if (!payload || typeof payload.amountavailable !== 'number' || payload.amountavailable <= 0 || payload.amountavailable > 20) {
+    isFormValid = false;
+    errors.amountavailable = 'Enter the amount of bike';
+  }
+  if (!isFormValid) {
+    message = 'Check the form for errors.';
+  }
+  return {
+    success: isFormValid,
+    message,
+    errors
+  };
+};
+
+function addNewBike(req) {
+  const bikeData = {
+    bikeid: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), //{type: String, unique: true},,
+    biketype: req.biketype,
+    name: req.name,
+    imgurl: req.imgurl,
+    amountavailable: req.amountavailable
+  };
+
+  const newBike = new Bike(bikeData);
+
+  newBike.save((err, done) => {
+    if(err){
+      console.log("ERROR from Add new Bike: ", err);
+      return err;
+    }
+    console.log("NY BIKE ÄR KLART!", done);
+    return done;
+  });
+
+};
+
 router.post('/signup', (req, res, next) => {
   const validationResult = validateSignupForm(req.body);
   if (!validationResult.success) {
@@ -440,8 +494,43 @@ router.post('/addperiod', (req, res, next) => {
     message: 'You have successfully added new period.',
     done: done
   });
+});
 
+router.post('/addbike', (req, res, next) => {
+  const validationResult = validateBikeForm(req.body);
+  if (!validationResult.success) {
+    return res.status(400).json({
+      success: false,
+      message: validationResult.message,
+      errors: validationResult.errors
+    });
+  }
+  const done = addNewBike(req.body);
+  console.log("DONE :" , done );
+  return res.status(200).json({
+    success: true,
+    message: 'You have successfully added new bike.',
+    done: done
+  });
+});
 
+router.post('/checkbookedperiod', (req, res, next) => {
+
+  var checkPeriod = null;
+
+  BikeBooking.find((err, done) => {
+    if(err){
+      console.log("ERROR did not find period: ", err);
+      return err;
+    }
+    console.log("All period founded!", done);
+    checkPeriod = done;
+    return res.status(200).json({
+      success: true,
+      message: 'All periods from Booking.',
+      done: done
+    });
+  });
 });
 
 router.post('/checkperiod', (req, res, next) => {
@@ -462,6 +551,26 @@ router.post('/checkperiod', (req, res, next) => {
     });
   });
 });
+
+router.post('/checkbike', (req, res, next) => {
+
+  var checkBike = null;
+
+  BikeBooking.find((err, done) => {
+    if(err){
+      console.log("ERROR did not find bikes: ", err);
+      return err;
+    }
+    console.log("All bikes founded!", done);
+    checkBike = done;
+    return res.status(200).json({
+      success: true,
+      message: 'You retrive all bikes.',
+      done: done
+    });
+  });
+});
+
 
 router.post('/period', (req, res, next) => {
   const bookingBikeData = {

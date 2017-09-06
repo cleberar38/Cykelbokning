@@ -5,7 +5,9 @@ import PopUpConfirmation from 'react-popconfirm';
 
 // Set initial state
 let state = {
-  periodData: [],
+  periodData: null,
+  bookingPeriodData: null,
+  periodBtnState: "primary",
   bikeActive: false,
   isBikeAvailable: false,
   periodsAvailable: [],
@@ -20,7 +22,11 @@ let state = {
     bikeperiod: '',
     user: ''
   },
-  optionSelected: ''
+  optionSelected: '',
+  isPeriodChecked: false,
+  isBookingPeriodChecked: false,
+  btnPeriodClicked: false,
+  lastPeriodClicked: null
 };
 
 class BookingPage extends React.Component {
@@ -44,21 +50,32 @@ class BookingPage extends React.Component {
     this.handleBikeSelection = this.handleBikeSelection.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.processForm = this.processForm.bind(this);
-    this.handleUserConfirmation = this.handleUserConfirmation.bind(this);
     this.handleSetPeriod = this.handleSetPeriod.bind(this);
-    this.handleSelectedOption = this.handleSelectedOption.bind(this);
     this.checkPeriodsAvailable = this.checkPeriodsAvailable.bind(this);
+    this.handlePeriodBtnState = this.handlePeriodBtnState.bind(this);
+    this.checkPeriodsInBooking = this.checkPeriodsInBooking.bind(this);
 
   }
 
   componentWillUnmount() {
-      // Remember state for the next mount
-      state = this.state;
-      //console.log("STATE from <componentWillUnmount :",  state);
+    /*
+      Check if the component is mounted 
+      before set states
+    */
+    if(!this._mounted){
+      this.setState({
+        isPeriodChecked: false,
+      });
+
+      this.checkPeriodsAvailable();
+    }
+
+    this._mounted = false;
+
   }
 
-  handleUserConfirmation(){
-    //console.log('Auth.isUserAuthenticated', Auth.isUserAuthenticated());
+  handlePeriodBtnState(evt) {
+
   }
 
   handleChange(event, index, value) {
@@ -105,18 +122,6 @@ class BookingPage extends React.Component {
           errors: {}
         });
 
-        //console.log("This State Message : ", this.state);
-        //console.log("This XHR Response Message : ", xhr.response);
-
-        // change the current URL to /message
-        //this.props.router.replace('/booking');
-
-        // change the current URL to /message
-        //this.props.router.replace('/message');
-
-        // change the current URL to /
-        //this.context.router.replace('/');
-
         // save the token
         Auth.authenticateUser(xhr.response.token);
 
@@ -151,8 +156,6 @@ class BookingPage extends React.Component {
         //console.log('cancel called');
       }
     );
-
-    //xhr.send(formData);
   }
 
   handleBikeSelection(evt) {
@@ -174,11 +177,14 @@ class BookingPage extends React.Component {
     if(bikeSelected !== null){
       bikeSelected.style.opacity = 0.2;
 
-      //TODO: Check if periods are available for this selected bike
-      var periodsAvailable = this.checkPeriodsAvailable();
-      //console.log("periodsAvailable : ", periodsAvailable);
-      console.log("handleBikeSelection periodsAvailable:", periodsAvailable);
+      //Check if periods are available inside
+      //the bikebooking table
+      this.checkPeriodsInBooking();
 
+      //Check if periods are available for this selected bike
+      //inside the Period table
+      this.checkPeriodsAvailable();
+    
       this.setState({
         isBikeAvailable: true
       })
@@ -186,71 +192,97 @@ class BookingPage extends React.Component {
 
     Auth.setBikeName(bikename);
 
-    /*###*/
-    /*this.setState({
-      bikeActive: this.state.bikeActive !== true ? true : false
-    });
+  }
 
-    const bikename = event.target !== null ? event.target.name : event;
-    const bikeClass = event.target !== undefined ? event.target.className : 'bikeImg';
-    const allBikes = document.getElementsByClassName(bikeClass);
+  checkPeriodsInBooking() {
 
-    Auth.setBikeName(bikename);
+    if(!this.state.isBookingPeriodChecked){
 
-    for(var i=0,leni=allBikes.length; i<leni; i++){
-      var tempBike = allBikes[i];
-      tempBike.style.opacity = 1;
-      if(tempBike.name === bikename){
-        tempBike.style.opacity = 0.2;
+      console.log("WHICH PERIODS ARE AVAILABLE INSIDE BOOKING...???");
+
+      const self = this;
+
+      // create an AJAX request
+      const xhr = new XMLHttpRequest();
+      xhr.open('post', '/auth/checkbookedperiod');
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          // success
+
+          console.log("PeriodsAvailable in Booking xhr.response", xhr.response);
+
+          //TODO: Set the state of the periods available
+
+          self.setState({
+            bookingPeriodData: xhr.response
+          });
+
+        } else {
+          // failure
+
+          console.log("ERROR", xhr.response);
+
+        }
+      });
+
+      xhr.send();
+
+      if(!this._mounted){
+        this.setState({
+          isPeriodChecked: true,
+          bookingPeriodData: xhr.response
+        });
       }
-    }*/
-    /*###*/
+    }else{
+      console.log("BOOKING ALREADY CHECKED...!!!");
+    }
   }
 
   checkPeriodsAvailable() {
-    console.log("CHEKING WHICH PERIODS ARE AVAILABLE...!!!");
 
-    var periodData = []; //Which has to have all the Periods Objects {}
+    if(!this.state.isPeriodChecked){
+      
+      console.log("CHEKING WHICH PERIODS ARE AVAILABLE...!!!");
 
-    // prevent default action. in this case, action is the form submission event
+      const self = this;
 
-    const self = this;
+      // create an AJAX request
+      const xhr = new XMLHttpRequest();
+      xhr.open('post', '/auth/checkperiod');
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          // success
 
-    // create an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('post', '/auth/checkperiod');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        // success
-        console.log("checkPeriodsAvailable xhr.response", xhr.response);
-        //TODO: Set the state of the periods available
-        self.setState({
-          periodData: null,
+          console.log("checkPeriodsAvailable xhr.response", xhr.response);
+
+          //TODO: Set the state of the periods available
+
+          self.setState({
+            periodData: xhr.response
+          });
+
+        } else {
+          // failure
+
+          console.log("ERROR", xhr.response);
+
+        }
+      });
+
+      xhr.send();
+      if(!this._mounted){
+        this.setState({
+          isPeriodChecked: true,
+          periodData: xhr.response
         });
-
-        // change the component-container state
-        // this.setState({
-        //   errors: {},
-        // });
-        //this.props.router.replace('/');
-      } else {
-        // failure
-
-        console.log("ERROR", xhr.response);
-
-        // change the component state
-        // const errors = xhr.response.errors ? xhr.response.errors : {};
-        // errors.summary = xhr.response.message;
-        //
-        // this.setState({
-        //   errors
-        // });
       }
-    });
-    xhr.send();
-
+    }else{
+      console.log("ALREADY CHECKED...!!!");
+    }
   }
 
   handleSelectedOption(period, evt){
@@ -292,27 +324,48 @@ class BookingPage extends React.Component {
     }
   }
 
-  handleSetPeriod(evt){
-    if (evt.target.nodeName === "SPAN"){
-      var inputRadioBtn = evt.target.parentNode.children[0].value;
-      var spanValue = evt.target.value;
+  handleSetPeriod(evt, value){
 
-      Auth.setPeriod(spanValue);
 
-      this.handleSelectedOption(inputRadioBtn, spanValue);
+
+    var bg = document.getElementsByClassName("periodBtn");
+    
+    for(var i=0,leni=bg.length; i<leni; i++){
+      bg[i].style.backgroundColor = '';
     }
+
+    if(this.state.lastPeriodClicked !== null){
+      this.state.lastPeriodClicked.target.style.backgroundColor = "rgba(20,25,22,0.35)";
+    }
+
+    if(evt !== undefined && evt !== null){
+      evt.target.style.backgroundColor = "rgba(20,25,22,0.35)"; 
+    }
+
+    Auth.setPeriod(value);
+
+    this.setState({
+      lastPeriodClicked: evt !== undefined && evt !== null ? evt : this.state.lastPeriodClicked
+    });
+
   }
 
   /**
    * This method will be executed after initial rendering.
    */
   componentDidMount() {
+
+    console.log("THIS", this);
+
+    this._mounted = true;
+
     var bikeName = '';
     var bikePeriod = '';
     var userEmail = '';
     var messages = '';
     var messageChanged = false;
     var periodsAvailable = [];
+    var selectedPeriod = '';
 
     //console.log("Auth.isUserAuthenticated()", Auth.isUserAuthenticated());
 
@@ -322,14 +375,18 @@ class BookingPage extends React.Component {
     }
 
     bikePeriod = Auth.getPeriod();
+    
+    console.log("bikePeriod: ", bikePeriod);
+    console.log("this.state.handleSetPeriod: ", this.state.lastPeriodClicked);  
 
     this.handleBikeSelection(bikeName);
 
+    this.handleSetPeriod(this.state.lastPeriodClicked, bikePeriod);
+
     //TODO: Get all the periods available
 
-
     this.setState({
-      periodsAvailable: [],
+      periodsAvailable: null,
       booking: {
         name: bikeName,
         bikeperiod: bikePeriod,
@@ -346,7 +403,12 @@ class BookingPage extends React.Component {
   render() {
     return (
       <BookingFormAll
+        lastPeriodClicked={this.state.lastPeriodClicked}
+        btnPeriodClicked={this.state.btnPeriodClicked}
+        periodBtnState={this.state.periodBtnState}
+        isPeriodChecked={this.state.isPeriodChecked}
         periodData={this.state.periodData}
+        bookingPeriodData={this.state.bookingPeriodData}
         handleBikeSelection={this.handleBikeSelection}
         bikeActive={this.state.bikeActive}
         isBikeAvailable={this.state.isBikeAvailable}
@@ -361,13 +423,14 @@ class BookingPage extends React.Component {
         successMessage={this.state.successMessage}
         booking={this.state.booking}
         handleUserConfirmation={this.handleUserConfirmation}
-        handleSelectedOption={this.handleSelectedOption}
         optionSelected={this.state.optionSelected}
         handleSetPeriod={this.handleSetPeriod}
         periodsAvailable={this.state.periodsAvailable}
+        checkPeriodsInBooking={this.checkPeriodsInBooking}
+        isBookingPeriodChecked={this.state.isBookingPeriodChecked}
        />
     );
   }
 }
-
+ 
 export default BookingPage;

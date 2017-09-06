@@ -1,4 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import * as Colors from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -42,8 +44,12 @@ const tilesData = [
 ];
 
 const Bike = ({
-  handleBikeSelection,
-  bikeActive
+  messageChanged,
+  isBikeChecked,
+  messages,
+  bike,
+  bikeActive,
+  handleBikeSelection
 }) => (
 
   <div className="root gridlist container">
@@ -59,9 +65,5 @@ const Bike = ({
   </div>
 
 );
-
-Bike.propsTypes = {
-  
-};
 
 export default Bike;
