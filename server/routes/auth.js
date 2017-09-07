@@ -6,6 +6,10 @@ const Bike = require('mongoose').model('Bike');
 const BikeBooking = require('mongoose').model('BikeBooking');
 const Period = require('mongoose').model('Period');
 const User = require('mongoose').model('User');
+const crypto = require('crypto');
+const Token = require('mongoose').model('Token');
+const config = require('../../config');
+
 
 /**
  * checkIfPeriodIsAvailable
@@ -81,19 +85,6 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
       });
     }
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
 };
 
 /**
@@ -213,8 +204,6 @@ function createNewPeriod(req) {
     return done;
   });
 };
-
-
 
 /**
  * removePeriod
@@ -341,10 +330,6 @@ function validateSignupForm(payload) {
   if (!payload || typeof payload.name !== 'string' || payload.name.trim().length === 0) {
     isFormValid = false;
     errors.name = 'Please provide your name.';
-  }
-  if (!payload || typeof payload.username !== 'string' || payload.username.trim().length === 0) {
-    isFormValid = false;
-    errors.username = 'Please provide your username.';
   }
   if (!isFormValid) {
     message = 'Check the form for errors.';
@@ -496,6 +481,14 @@ function addNewBike(req) {
 
 };
 
+router.post('/confirmation/:token/:userid', (req, res, next) => {
+  res.send('POST request to the homepage')
+});
+
+router.post('/resend/:token/:userid', (req, res, next) => {
+  res.send('POST request to the homepage')
+});
+
 router.post('/signup', (req, res, next) => {
   const validationResult = validateSignupForm(req.body);
   if (!validationResult.success) {
@@ -505,6 +498,7 @@ router.post('/signup', (req, res, next) => {
       errors: validationResult.errors
     });
   }
+
   return passport.authenticate('local-signup', (err) => {
     if (err) {
       if (err.name === 'MongoError' && err.code === 11000) {
@@ -523,11 +517,89 @@ router.post('/signup', (req, res, next) => {
         message: 'Could not process the form.'
       });
     }
+
+    let msg = {};
+
+    User.findOne({ 'email': ''+req.body.email+'' }, 'email userid', function (err, user) {
+      if (err) return err;
+
+      // Create a verification token for this user
+      let token = new Token({ _userId: user.userid, token: crypto.randomBytes(16).toString('hex') });
+
+      token.save(function (err) {
+        if (err) return err;
+        // saved!
+      })
+
+      const sgMail = require('@sendgrid/mail');
+
+      sgMail.setApiKey(config.SENDGRID_APIKEY);
+
+      msg.to = ''+req.body.email+'';
+      msg.from = 'none@reply.com';
+      msg.subject = 'Account verification - Confirm';
+      msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/token=' + token.token + '/userid=' + user.userid + '.\n';
+      msg.html = '<strong>Hello,<br /><br />Please verify your account by clicking the link: <br />http:\/\/' + req.headers.host + '\/confirmation\/token=' + token.token + '/userid=' + user.userid + '.<br /></strong>';
+
+      sgMail.send(msg);
+
+
+    })
+    
     return res.status(200).json({
       success: true,
-      message: 'You have successfully signed up! Now you should be able to log in.'
+      message: 'A verification has been sent to your email: '+req.body.email+'.'
     });
+
   })(req, res, next);
+
+});
+
+
+router.post('/resend', (req, res, next) => {
+  req.assert('email', 'Email is not valid').isEmail();
+  req.assert('email', 'Email cannot be blank').notEmpty();
+  req.sanitize('email').normalizeEmail({ remove_dots: false });
+
+  // Check for validation errors    
+  var errors = req.validationErrors();
+  if (errors) return res.status(400).send(errors);
+
+  User.findOne({ email: req.body.email }, function (err, user) {
+      if (!user) return res.status(400).send({ msg: 'We were unable to find a user with that email.' });
+      if (user.isVerified) return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
+
+      // Create a verification token, save it, and send email
+      var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+
+      // Save the token
+      token.save(function (err) {
+          if (err) { return res.status(500).send({ msg: err.message }); }
+
+          // Send the email
+          // using SendGrid's v3 Node.js Library
+        // https://github.com/sendgrid/sendgrid-nodejs
+        const sgMail = require('@sendgrid/mail');
+        sgMail.setApiKey(config.SENDGRID_APIKEY);
+        const msg = {
+          to: 'cleber.arruda@helsingborg.se',
+          from: 'c_leverdo@hotmail.com',
+          subject: 'Account verification and confirmation!',
+          text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n',
+          html: '<strong>Hello, <br /><br />Please verify your account by clicking the link:<br /> <a href="http://'+req.headers.host+'"/confirmation/'+token.token+'>Click here ro verify!</a></strong>',
+        };
+        //console.log("sgMail : ", sgMail);
+        console.log("MSG SENDGRID : ", msg);
+        sgMail.send(msg, (error, result) => {
+          console.log("sgMail callback error", error);
+          console.log("sgMail callback result", result);
+
+          if (error) { return res.status(500).send({ msg: error.message }); }
+          res.status(200).send('A verification email has been sent to ' + user.email + '.');
+        });
+      });
+
+  });
 });
 
 router.post('/addperiod', (req, res, next) => {

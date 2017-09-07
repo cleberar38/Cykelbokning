@@ -44,18 +44,7 @@ const SignUpForm = ({
           value={user.email}
         />
       </div>
-
-      <div className="field-line">
-        <TextField
-          floatingLabelText={strings.username}
-          type="username"
-          name="username"
-          errorText={errors.username}
-          onChange={onChange}
-          value={user.username}
-        />
-      </div>
-
+      
       <div className="field-line">
         <TextField
           floatingLabelText={strings.password}

@@ -20,6 +20,8 @@ module.exports = new PassportLocalStrategy({
 
   // find a user by email address
   return User.findOne({ email: userData.email }, (err, user) => {
+    if (!user) return res.status(401).send({ msg: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.'});
+
     if (err) { return done(err); }
 
     if (!user) {
@@ -40,6 +42,9 @@ module.exports = new PassportLocalStrategy({
         return done(error);
       }
 
+      // Make sure the user has been verified
+      //if (!user.isVerified) return res.status(401).send({ type: 'not-verified', msg: 'Your account has not been verified.' });
+
       const payload = {
         sub: user._id
       };
@@ -54,12 +59,8 @@ module.exports = new PassportLocalStrategy({
         tokenA: tokenA
       };
 
-
-
- 
-
-
-
+      // Login successful, write token, and send back user
+      //res.send({ token: generateToken(user), user: user.toJSON() });
 
       return done(null, token, data);
     });

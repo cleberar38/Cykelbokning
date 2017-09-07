@@ -17,4 +17,5 @@ module.exports.connect = (uri) => {
   require('./bike');
   require('./bikebooking');
   require('./period');
+  require('./token')
 };

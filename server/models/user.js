@@ -15,7 +15,10 @@ const UserSchema = new mongoose.Schema({
   city: String,
   phone: String,
   usertype: String,
-  removed: Boolean
+  removed: Boolean,
+  isVerified: { type: Boolean, default: false },
+  passwordResetToken: String,
+  passwordResetExpires: Date
 });
 
 

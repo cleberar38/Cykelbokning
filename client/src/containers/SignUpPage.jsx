@@ -17,7 +17,6 @@ class SignUpPage extends React.Component {
         email: '',
         name: '',
         password: '',
-        username: '',
         address: '',
         city:  '',
         phone:  '',
@@ -42,19 +41,19 @@ class SignUpPage extends React.Component {
     // create a string for an HTTP body message
     const name = encodeURIComponent(this.state.user.name);
     const email = encodeURIComponent(this.state.user.email);
-    const username = encodeURIComponent(this.state.user.username);
     const password = encodeURIComponent(this.state.user.password);
     const address = encodeURIComponent(this.state.user.address);
     const city = encodeURIComponent(this.state.user.city);
     const phone = encodeURIComponent(this.state.user.phone);
 
-    const formData = `name=${name}&email=${email}&password=${password}&username=${username}&address=${address}&city=${city}&phone=${phone}`;
+    const formData = `name=${name}&email=${email}&password=${password}&address=${address}&city=${city}&phone=${phone}`;
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
     xhr.open('post', '/auth/signup');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.responseType = 'json';
+
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         // success
@@ -69,6 +68,9 @@ class SignUpPage extends React.Component {
 
         // make a redirect
         this.context.router.replace('/login');
+
+        console.log("Response xhr : ", xhr.response);
+
       } else {
         // failure
 
@@ -80,6 +82,7 @@ class SignUpPage extends React.Component {
         });
       }
     });
+
     xhr.send(formData);
   }
 

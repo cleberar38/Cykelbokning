@@ -200,3 +200,7 @@ img {
   max-width: 520px;
   height: 445px;
 }
+
+.btnPeriodColor {
+  background-color: #d43b00 !important;
+}
