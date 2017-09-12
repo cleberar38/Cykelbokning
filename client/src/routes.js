@@ -8,6 +8,7 @@ import HomePage from './containers/HomePage.jsx';
 import MessagesToUserPage from './containers/MessagesToUserPage.jsx';
 import PeriodPage from './containers/PeriodPage.jsx';
 import ConfirmationPage from './containers/ConfirmationPage.jsx';
+import Profile from './components/Profile.jsx';
 
 const routes = {
   // Base component (wrapper for the whole application).
@@ -78,6 +79,17 @@ const routes = {
           callback(null, PeriodPage);
         } else {
           callback(null, PeriodPage);
+        }
+      }
+    },
+ 
+    {
+      path: '/profil',
+      getComponent: (location, callback) => {
+        if (Auth.isUserAuthenticated()) {
+          callback(null, Profile);
+        } else {
+          callback(null, LoginPage);
         }
       }
     }

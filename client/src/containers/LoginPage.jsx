@@ -61,28 +61,28 @@ class LoginPage extends React.Component {
       if (xhr.status === 200) {
         // success
 
-        
+
         // change the component-container state
         this.setState({
           errors: {},
-          isVerified: xhr.response.isVerified
+          //isVerified: xhr.response.isVerified
         });
 
         console.log("hr.response.isVerified : ", xhr.response.isVerified);
 
-        if(xhr.response.isVerified === false){
-          this.setState({
-            messageChanged: true,
-            messages: "YOU MUST VERIFY YOUR SUBSCRIPTION."
-          });
-        }
-        if(xhr.response.isVerified){
-          this.setState({
-            messageChanged: false,
-            messages: '',
-            isVerified: true
-          });
-        }
+        //if(xhr.response.isVerified === false){
+          //this.setState({
+            //messageChanged: true,
+            //messages: "YOU MUST VERIFY YOUR SUBSCRIPTION."
+          //});
+        //}
+        //if(xhr.response.isVerified){
+//          this.setState({
+            //messageChanged: false,
+            //messages: '',
+            //isVerified: true
+          //});
+        //}
 
         // save the token
         Auth.authenticateUser(xhr.response.token);
@@ -96,8 +96,8 @@ class LoginPage extends React.Component {
         }
 
           // change the current URL to /
-          //this.context.router.replace('/');
-        
+          this.context.router.replace('/');
+
 
 
       } else {
@@ -136,7 +136,7 @@ class LoginPage extends React.Component {
     Auth.setUserName(user.name);
 
   }
-  
+
   /**
    * Render the component.
    */

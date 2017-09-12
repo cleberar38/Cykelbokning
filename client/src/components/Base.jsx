@@ -28,7 +28,7 @@ const styles = {
   title: {
     cursor: 'pointer',
   },
-}; 
+};
 
 function handleResetForm(){
 
@@ -61,6 +61,7 @@ const Base = ({
         showMenuIconButton={false}
         title={
         <div className="top-bar-left">
+        <img style={{width: '50px', height: '58px', float: 'left'}} src='https://cykelbiblioteket.helsingborg.se/wp-content/themes/municipio/assets/dist/images/helsingborg.svg' />
         <IndexLink to="/" style={{color: 'white'}}>{ strings.maintitle }</IndexLink>
         </div>}>
 
@@ -84,6 +85,9 @@ const Base = ({
                 <MenuItem>
                   <FlatButton label="Redigera period" primary={true} />
                 </MenuItem>
+                <MenuItem>
+                  <Link to="/profil" style={{color: 'white'}}><FlatButton label="Profil" primary={true} /></Link>
+                </MenuItem>
               </IconMenu>
               <ToolbarSeparator />
           </ToolbarGroup>
@@ -105,6 +109,7 @@ const Base = ({
     </div>
     { /* child component will be rendered here */ }
     {children}
+    <img style={{width: '100px', height: '112px', float: 'right'}} src='https://cykelbiblioteket.helsingborg.se/wp-content/themes/municipio/assets/dist/images/helsingborg.svg' />
   </div>
 );
 

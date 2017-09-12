@@ -25,7 +25,7 @@ const MessageToUSer = ({
           <h1 className="display-2">{ strings.thankMsg }</h1>
           <h4 className="display-2">{ messages }</h4>
         </CardTitle>
-        <Link to={ isVerified ? "/" : "/message"} onClick={ handleBackBtn } style={{color: "white"}}><Button  bsStyle="primary" className={ "msgbtn " }>Tillbaka till bokning</Button></Link>
+        <Link to={ "/" } onClick={ handleBackBtn } style={{color: "white"}}><Button  bsStyle="primary" className={ "msgbtn " }>Tillbaka till bokning</Button></Link>
       </Card>
     </div>
   </div>

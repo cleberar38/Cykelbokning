@@ -23,27 +23,27 @@ strings.setLanguage(default_lang.lang);
 const tilesData = [
   {
     imgId: 'SD1',
-    img: '../../server/static/imgs/elcykel_1_webb.jpg',
+    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/elcykel_1_webb.jpg',
     title: 'Elcykel',
   },
   {
     imgId: 'SD2',
-    img: 'https://static.pexels.com/photos/326678/pexels-photo-326678.jpeg',
+    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/Vikcykel_webb.jpg',
     title: 'Vikcykel',
   },
   {
     imgId: 'SD3',
-    img: 'https://static.pexels.com/photos/255934/pexels-photo-255934.jpeg',
+    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/gronlastcykel_webb.jpg',
     title: 'Lastcykel',
   },
   {
     imgId: 'SD4',
-    img: 'https://static.pexels.com/photos/191042/pexels-photo-191042.jpeg',
+    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/svartlastcykel_webb.jpg',
     title: 'Lastcykel',
   },
   {
     imgId: 'SD5',
-    img: 'https://static.pexels.com/photos/191042/pexels-photo-191042.jpeg',
+    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/tvahjuliglastcykel_webb.jpg',
     title: 'Lastcykel',
   },
 ];

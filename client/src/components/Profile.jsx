@@ -18,7 +18,7 @@ strings.setLanguage(default_lang.lang);
 const iconButtonElement = (
   <IconButton
     touch={true}
-    tooltip="more"
+    tooltip="mer"
     tooltipPosition="bottom-left"
   >
     <MoreVertIcon color={grey400} />
@@ -27,9 +27,9 @@ const iconButtonElement = (
 
 const rightIconMenu = (
   <IconMenu iconButtonElement={iconButtonElement}>
-    <MenuItem>Reply</MenuItem>
-    <MenuItem>Forward</MenuItem>
-    <MenuItem>Delete</MenuItem>
+    <MenuItem>Updatera</MenuItem>
+    <MenuItem>Editera</MenuItem>
+    <MenuItem>Avboka</MenuItem>
   </IconMenu>
 );
 
@@ -37,11 +37,11 @@ const ListExampleMessages = () => (
   <div>
     <MobileTearSheet>
       <List>
-        <Subheader>Today</Subheader>
+        <Subheader>Cykelhanteringssida</Subheader>
         <ListItem
-          leftAvatar={<Avatar src="images/ok-128.jpg" />}
+          leftAvatar={<Avatar src="http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/cykelprofile.png" />}
           rightIconButton={rightIconMenu}
-          primaryText="Brendan Lim"
+          primaryText="Elcykel"
           secondaryText={
             <p>
               <span style={{color: darkBlack}}>Brunch this weekend?</span><br />
@@ -52,9 +52,9 @@ const ListExampleMessages = () => (
         />
         <Divider inset={true} />
         <ListItem
-          leftAvatar={<Avatar src="images/kolage-128.jpg" />}
+          leftAvatar={<Avatar src="http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/cykelprofile.png" />}
           rightIconButton={rightIconMenu}
-          primaryText="me, Scott, Jennifer"
+          primaryText="me, Vikcykelr"
           secondaryText={
             <p>
               <span style={{color: darkBlack}}>Summer BBQ</span><br />
@@ -65,9 +65,9 @@ const ListExampleMessages = () => (
         />
         <Divider inset={true} />
         <ListItem
-          leftAvatar={<Avatar src="images/uxceo-128.jpg" />}
+          leftAvatar={<Avatar src="http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/cykelprofile.png" />}
           rightIconButton={rightIconMenu}
-          primaryText="Grace Ng"
+          primaryText="Lastcykel"
           secondaryText={
             <p>
               <span style={{color: darkBlack}}>Oui oui</span><br />
@@ -78,9 +78,9 @@ const ListExampleMessages = () => (
         />
         <Divider inset={true} />
         <ListItem
-          leftAvatar={<Avatar src="images/kerem-128.jpg" />}
+          leftAvatar={<Avatar src="http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/cykelprofile.png" />}
           rightIconButton={rightIconMenu}
-          primaryText="Kerem Suer"
+          primaryText="Lastcykel"
           secondaryText={
             <p>
               <span style={{color: darkBlack}}>Birthday gift</span><br />
@@ -91,9 +91,9 @@ const ListExampleMessages = () => (
         />
         <Divider inset={true} />
         <ListItem
-          leftAvatar={<Avatar src="images/raquelromanp-128.jpg" />}
+          leftAvatar={<Avatar src="http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/cykelprofile.png" />}
           rightIconButton={rightIconMenu}
-          primaryText="Raquel Parrado"
+          primaryText="Lastcykel"
           secondaryText={
             <p>
               <span style={{color: darkBlack}}>Recipe to try</span><br />
