@@ -80,9 +80,9 @@ const BookingFormAll = ({
         <div className="center-container">
           {isBikeAvailable !== true ? (
           <Card className="period-container">
-            <CardTitle title="SBF-bokningsystem" subtitle={ strings.hbgstadTile }>
+            <CardTitle title={ strings.msgLoginReg } subtitle={ strings.hbgstadTile }>
               <h4 className="display-2">{ strings.chooseCykel }</h4>
-              <IndexLink style={{color: 'black'}}><RaisedButton  label="Mer info." primary /></IndexLink>
+              <IndexLink style={{color: 'black'}}><RaisedButton  className={ "merinfo" } label="Mer info." primary={false} backgroundColor="#ae0b05" className="merinfo" /></IndexLink>
             </CardTitle>
           </Card>
           ) : (
@@ -106,9 +106,9 @@ const BookingFormAll = ({
         <Button type="submit" bsStyle="success" className="top-btn" onClick={onSubmit}>{strings.sendBtn}</Button>
       </div>
       ) : (
-        <div className="center-container">
-          <Link to="/login" style={{color: 'white'}}><FlatButton style={{color: 'white', backgroundColor: 'rgba(0, 150, 213, 0.7)'}} label={strings.login} /></Link>
-        </div>
+      <div className="center-container">
+        <Link to="/login" style={{color: 'white'}}><FlatButton style={{color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)'}} label={strings.login} /></Link>
+      </div>
       )}
 	   </form>
      )}

@@ -23,23 +23,28 @@ strings.setLanguage(default_lang.lang);
 const tilesData = [
   {
     imgId: 'SD1',
-    img: 'https://static.pexels.com/photos/100582/pexels-photo-100582.jpeg',
-    title: 'ELLA, 3-VXL',
+    img: '../../server/static/imgs/elcykel_1_webb.jpg',
+    title: 'Elcykel',
   },
   {
     imgId: 'SD2',
     img: 'https://static.pexels.com/photos/326678/pexels-photo-326678.jpeg',
-    title: 'ELLY, 24-VXL',
+    title: 'Vikcykel',
   },
   {
     imgId: 'SD3',
     img: 'https://static.pexels.com/photos/255934/pexels-photo-255934.jpeg',
-    title: 'ELDER, 10-VXL',
+    title: 'Lastcykel',
   },
   {
     imgId: 'SD4',
     img: 'https://static.pexels.com/photos/191042/pexels-photo-191042.jpeg',
-    title: 'ELTA, ALFINE 11-VXL',
+    title: 'Lastcykel',
+  },
+  {
+    imgId: 'SD5',
+    img: 'https://static.pexels.com/photos/191042/pexels-photo-191042.jpeg',
+    title: 'Lastcykel',
   },
 ];
 
@@ -53,7 +58,7 @@ const Bike = ({
 }) => (
 
   <div className="root gridlist container">
-    <GridList className="height gridlist-content" cellHeight={180}z>
+    <GridList className="height gridlist-content" cellHeight={130}>
       {tilesData.map((tile) => (
         <GridTile key={tile.imgId} title={tile.title}
           actionIcon={<IconButton><StarBorder color="white" /></IconButton>}

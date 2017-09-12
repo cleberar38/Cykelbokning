@@ -57,15 +57,15 @@ const Base = ({
 }) => (
   <div  style={{height: mainDiv.innerHeight}}>
     <div>
-      <AppBar style={{backgroundColor: '#0096D5'}}
+      <AppBar style={{backgroundColor: '#ae0b05'}}
         showMenuIconButton={false}
         title={
         <div className="top-bar-left">
-        <IndexLink to="/" style={{color: 'white'}}>SBF-Cykelbokning</IndexLink>
+        <IndexLink to="/" style={{color: 'white'}}>{ strings.maintitle }</IndexLink>
         </div>}>
 
-        <Toolbar style={{backgroundColor: '#0096D5'}}>
-          <ToolbarGroup style={{backgroundColor: '#0096D5'}}>
+        <Toolbar style={{backgroundColor: '#ae0b05'}}>
+          <ToolbarGroup style={{backgroundColor: '#ae0b05'}}>
             <FontIcon className="muidocs-icon-custom-sort" />
             <ToolbarSeparator />
               <IconMenu style={{right: "10px"}}

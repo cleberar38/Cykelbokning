@@ -2,13 +2,14 @@ const express = require('express');
 const validator = require('validator');
 const passport = require('passport');
 const router = new express.Router();
+const crypto = require('crypto');
+const config = require('../../config');
+
 const Bike = require('mongoose').model('Bike');
 const BikeBooking = require('mongoose').model('BikeBooking');
 const Period = require('mongoose').model('Period');
 const User = require('mongoose').model('User');
-const crypto = require('crypto');
 const Token = require('mongoose').model('Token');
-const config = require('../../config');
 
 
 /**
@@ -481,13 +482,40 @@ function addNewBike(req) {
 
 };
 
-router.post('/confirmation/:token/:userid', (req, res, next) => {
-  res.send('POST request to the homepage')
+function verifyUserConfirmation(req, res, next) {
+
+  // Find a matching token
+  Token.findOne({ token: req.body.token }, function (err, token) {
+      if (!token) return res.status(400).json({ type: 'not-verified', message: 'We were unable to find a valid token. Your token my have expired.' });
+
+      // If we found a token, find a matching user
+      User.findOne({ _id: token._userId }, function (err, user) {
+          if (!user) return res.status(400).json({ message: 'We were unable to find a user for this token.' });
+          if (user.isVerified) return res.status(400).json({ type: 'already-verified', message: 'This user has already been verified.' });
+
+          // Verify and save the user
+          user.isVerified = true;
+          user.save(function (err) {
+              if (err) { return res.status(500).json({ message: err.message }); }
+              res.status(200).json({
+                success: true,
+                message: 'The account has been verified!',
+                token,
+                user: user
+                //". You have successfully logged in The account has been verified. Please log in."
+              });
+          });
+      });
+  });
+
+}
+
+router.post('/confirmation', (req, res, next) => {
+
+  verifyUserConfirmation(req, res, next);
+  
 });
 
-router.post('/resend/:token/:userid', (req, res, next) => {
-  res.send('POST request to the homepage')
-});
 
 router.post('/signup', (req, res, next) => {
   const validationResult = validateSignupForm(req.body);
@@ -519,42 +547,50 @@ router.post('/signup', (req, res, next) => {
     }
 
     let msg = {};
+    let tempToken = {};
 
-    User.findOne({ 'email': ''+req.body.email+'' }, 'email userid', function (err, user) {
+    User.findOne({ 'email': req.body.email }, 'email userid', function (err, user) {
       if (err) return err;
 
       // Create a verification token for this user
-      let token = new Token({ _userId: user.userid, token: crypto.randomBytes(16).toString('hex') });
+      let token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
 
-      token.save(function (err) {
-        if (err) return err;
-        // saved!
+      token.save( (err) => {
+        // if(err) throw new Error(err); //This line was used to just GET the right Error info! 
+        if(err) return new Error(err);  
       })
 
       const sgMail = require('@sendgrid/mail');
 
       sgMail.setApiKey(config.SENDGRID_APIKEY);
 
-      msg.to = ''+req.body.email+'';
+      msg.to = req.body.email;
       msg.from = 'none@reply.com';
       msg.subject = 'Account verification - Confirm';
-      msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/token=' + token.token + '/userid=' + user.userid + '.\n';
-      msg.html = '<strong>Hello,<br /><br />Please verify your account by clicking the link: <br />http:\/\/' + req.headers.host + '\/confirmation\/token=' + token.token + '/userid=' + user.userid + '.<br /></strong>';
+      //The line above was used just to demostrate that we can send the token and userId within the URL link
+      // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
+      msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token + '';
+      msg.html = '<strong>Hello,<br /><br />Please verify your account by clicking the link: <br /><a href:"http:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token +'">http:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token +'</a></strong>';
+
+      console.log("TOKEN : ", token);
+
+      tempToken = token;
 
       sgMail.send(msg);
 
+      return res.status(200).json({
+        success: true,
+        message: 'A verification has been sent to your email : ' +req.body.email+'',
+        email: req.body.email,
+        token: tempToken.token
+      });
+
 
     })
-    
-    return res.status(200).json({
-      success: true,
-      message: 'A verification has been sent to your email: '+req.body.email+'.'
-    });
 
   })(req, res, next);
 
 });
-
 
 router.post('/resend', (req, res, next) => {
   req.assert('email', 'Email is not valid').isEmail();
@@ -755,6 +791,10 @@ router.post('/bikebooking', (req, res, next) => {
 });
 
 router.post('/login', (req, res, next) => {
+
+  
+  var isUserVerified = false;
+
   const validationResult = validateLoginForm(req.body);
   if (!validationResult.success) {
     return res.status(400).json({
@@ -776,12 +816,49 @@ router.post('/login', (req, res, next) => {
         message: 'Could not process the form.'
       });
     }
-    return res.json({
-      success: true,
-      message: 'You have successfully logged in!',
-      token,
-      user: userData
+
+    function retrieveUser(uname, callback) {
+      // If we found a token, find a matching user
+      User.findOne({ email: uname }, function (err, user) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, user);
+        }
+                       
+      });
+
+    };
+
+    retrieveUser(req.body.email, function(err, user) {
+      if (err) {
+        console.log(err);
+      }
+
+      console.log("CALLBACK USER : ", user.isVerified);
+
+      return res.json({
+        success: true,
+        message: 'You have successfully logged in!',
+        token,
+        user: userData,
+        isVerified: user.isVerified
+      });
+      
     });
+    
+      
+    
+
+      
+      
+
+      
+
+
+    
+      
+
   })(req, res, next);
 });
 

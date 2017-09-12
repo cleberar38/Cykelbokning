@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import SignUpForm from '../components/SignUpForm.jsx';
 
-
 class SignUpPage extends React.Component {
 
   /**
@@ -12,6 +11,10 @@ class SignUpPage extends React.Component {
 
     // set the initial component state
     this.state = {
+      messageChanged: false,
+      response: null,
+      token: null,
+      messages: '',
       errors: {},
       user: {
         email: '',
@@ -48,6 +51,8 @@ class SignUpPage extends React.Component {
 
     const formData = `name=${name}&email=${email}&password=${password}&address=${address}&city=${city}&phone=${phone}`;
 
+    const self = this;
+
     // create an AJAX request
     const xhr = new XMLHttpRequest();
     xhr.open('post', '/auth/signup');
@@ -66,10 +71,18 @@ class SignUpPage extends React.Component {
         // set a message
         localStorage.setItem('successMessage', xhr.response.message);
 
-        // make a redirect
-        this.context.router.replace('/login');
+        self.setState({
+          messages: xhr.response.message,
+          messageChanged: xhr.response.success,
+          token: xhr.response.token,
+          user: {
+            email: xhr.response.email
+          }
 
-        console.log("Response xhr : ", xhr.response);
+        });
+
+        //TODO: Use this with a button to user to confirm his/her registartion  
+        //self.handleConfirmation(xhr.response.email, xhr.response.token);
 
       } else {
         // failure
@@ -84,7 +97,9 @@ class SignUpPage extends React.Component {
     });
 
     xhr.send(formData);
+
   }
+
 
   /**
    * Change the user object.
@@ -111,6 +126,9 @@ class SignUpPage extends React.Component {
         onChange={this.changeUser}
         errors={this.state.errors}
         user={this.state.user}
+        messageChanged={this.state.messageChanged}
+        messages={this.state.messages}
+
       />
     );
   }

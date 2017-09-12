@@ -10,6 +10,8 @@ import AppBar from 'material-ui/AppBar';
 import strings  from './lang_config.jsx';
 import default_lang from './default_lang.jsx';
 
+import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
+
 strings.setLanguage(default_lang.lang);
 
 const LoginForm = ({
@@ -17,9 +19,16 @@ const LoginForm = ({
   onChange,
   errors,
   successMessage,
-  user
+  user,
+  handleBackBtn,
+  messageChanged,
+  messages,
+  isVerified
 }) => (
  <div>
+  {messageChanged ? (
+    <MessagesToUserPage handleBackBtn={ handleBackBtn } messageChanged={ messageChanged } messages={ messages } isVerified={ isVerified } />
+  ) : (
   <Card zDepth={5} className="container cardbottom">
     <form action="/" onSubmit={ onSubmit }>
       <h2 className="card-heading">{strings.login}</h2>
@@ -49,12 +58,14 @@ const LoginForm = ({
       </div>
 
       <div className="button-line">
-        <RaisedButton type="submit" label={strings.login} primary={false} backgroundColor="#0096D5" />
+        <RaisedButton type="submit" label={strings.login} primary={false} backgroundColor="#ae0b05" className="loginBtn" />
       </div>
 
       <CardText>{strings.douhaveaccount} <Link to={'/signup'}>{strings.createaccount}</Link>.</CardText>
     </form>
   </Card>
+
+  )}
   
 </div>
 
@@ -65,7 +76,11 @@ LoginForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   successMessage: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  handleBackBtn: PropTypes.func.isRequired,
+  messageChanged: PropTypes.bool.isRequired,
+  messages: PropTypes.string.isRequired,
+  isVerified: PropTypes.bool.isRequired
 };
 
 export default LoginForm;

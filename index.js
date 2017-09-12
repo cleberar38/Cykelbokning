@@ -37,14 +37,19 @@ const apiRoutes = require('./server/routes/api');
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 
+
 app.set("port", process.env.PORT || DEFAULT_PORT);
 
 // Handles all routes so you do not get a not found error
 app.get('*', function (request, response){
-    response.sendFile(path.resolve(__dirname, './client/dist/', 'index.html'))
+    response.sendFile(path.resolve(__dirname, './server/static/', 'index.html'))
 });
+
+app.use(express.static(__dirname + './server/static/'));
 
 // start the server
 app.listen(DEFAULT_PORT, 'localhost', () => {
   console.log('Server is running on http://localhost:', DEFAULT_PORT);
 });
+
+

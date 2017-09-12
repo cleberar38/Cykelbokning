@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import React from 'react';
 import Auth from '../modules/Auth';
 import MessageToUSer from '../components/MessageToUSer.jsx';
@@ -18,9 +19,18 @@ class MessageToUSerPage extends React.Component {
 
     // Retrieve the last state
     this.state = state;
+
+    this.handleBackBtn = this.handleBackBtn.bind(this);
   }
 
+  handleBackBtn() {
 
+    console.log("handleBackBtn Message");    
+    this.setState({
+      messages: '',
+      messageChanged: false
+    });
+  }
 
   /**
    * Render the component.
@@ -30,7 +40,8 @@ class MessageToUSerPage extends React.Component {
       <MessageToUSer
         messageChanged={ this.props.messageChanged }
         messages={ this.props.messages}
-        handleBackBtn={ this.props.handleBackBtn }
+        handleBackBtn={ this.handleBackBtn }
+        isVerified= { this.props.isVerified }
       />
     );
   }

@@ -7,6 +7,7 @@ import Auth from './modules/Auth';
 import HomePage from './containers/HomePage.jsx';
 import MessagesToUserPage from './containers/MessagesToUserPage.jsx';
 import PeriodPage from './containers/PeriodPage.jsx';
+import ConfirmationPage from './containers/ConfirmationPage.jsx';
 
 const routes = {
   // Base component (wrapper for the whole application).
@@ -33,7 +34,7 @@ const routes = {
       getComponent: (location, callback) => {
         if (Auth.isUserAuthenticated()) {
           callback(null, BookingPage);
-        } else {
+        }else {
           callback(null, LoginPage);
         }
       }
@@ -63,6 +64,11 @@ const routes = {
     {
       path: '/message',
       component: MessagesToUserPage
+    },
+
+    {
+      path: '/confirmation',
+      component: ConfirmationPage
     },
 
     {

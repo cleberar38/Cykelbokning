@@ -20,7 +20,7 @@ module.exports = new PassportLocalStrategy({
 
   // find a user by email address
   return User.findOne({ email: userData.email }, (err, user) => {
-    if (!user) return res.status(401).send({ msg: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.'});
+    //if (!user) return res.status(401).send({ msg: 'The email address ' + req.body.email + ' is not associated with any account. Double-check your email address and try again.'});
 
     if (err) { return done(err); }
 

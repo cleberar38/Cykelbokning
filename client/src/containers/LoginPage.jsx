@@ -20,6 +20,9 @@ class LoginPage extends React.Component {
 
     // set the initial component state
     this.state = {
+      isVerified: false,
+      messageChanged: false,
+      messages: '',
       errors: {},
       successMessage,
       user: {
@@ -42,6 +45,8 @@ class LoginPage extends React.Component {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
 
+    let self = this;
+
     // create a string for an HTTP body message
     const email = encodeURIComponent(this.state.user.email);
     const password = encodeURIComponent(this.state.user.password);
@@ -56,14 +61,33 @@ class LoginPage extends React.Component {
       if (xhr.status === 200) {
         // success
 
+        
         // change the component-container state
         this.setState({
-          errors: {}
+          errors: {},
+          isVerified: xhr.response.isVerified
         });
+
+        console.log("hr.response.isVerified : ", xhr.response.isVerified);
+
+        if(xhr.response.isVerified === false){
+          this.setState({
+            messageChanged: true,
+            messages: "YOU MUST VERIFY YOUR SUBSCRIPTION."
+          });
+        }
+        if(xhr.response.isVerified){
+          this.setState({
+            messageChanged: false,
+            messages: '',
+            isVerified: true
+          });
+        }
 
         // save the token
         Auth.authenticateUser(xhr.response.token);
         Auth.setUserName(xhr.response.user.name);
+        Auth.setVerifyUser(xhr.response.isVerified);
 
         //console.log("processForm LoginPage Type of User : ", xhr.response);
 
@@ -71,8 +95,11 @@ class LoginPage extends React.Component {
           Auth.authenticateAdminUser("admin");
         }
 
-        // change the current URL to /
-        this.context.router.replace('/');
+          // change the current URL to /
+          //this.context.router.replace('/');
+        
+
+
       } else {
         // failure
 
@@ -83,7 +110,7 @@ class LoginPage extends React.Component {
         this.setState({
           errors,
           user:{
-            name: xhr.response.user.name
+            name: xhr.response.user !== undefined ? xhr.response.user.name : ''
           }
         });
       }
@@ -109,7 +136,7 @@ class LoginPage extends React.Component {
     Auth.setUserName(user.name);
 
   }
-
+  
   /**
    * Render the component.
    */
@@ -121,6 +148,9 @@ class LoginPage extends React.Component {
         errors={this.state.errors}
         successMessage={this.state.successMessage}
         user={this.state.user}
+        messageChanged={this.state.messageChanged}
+        messages={this.state.messages}
+        isVerified={this.state.isVerified}
       />
     );
   }

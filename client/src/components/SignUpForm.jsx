@@ -10,6 +10,9 @@ import AppBar from 'material-ui/AppBar';
 import strings  from './lang_config.jsx';
 import default_lang from './default_lang.jsx';
 
+import ConfirmationPage from '../containers/ConfirmationPage.jsx';
+import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
+
 strings.setLanguage(default_lang.lang);
 
 const SignUpForm = ({
@@ -17,8 +20,13 @@ const SignUpForm = ({
   onChange,
   errors,
   user,
+  messageChanged,
+  messages,
 }) => (
   <div>
+  {messageChanged ? (
+  <MessagesToUserPage  messageChanged={ messageChanged } messages={ messages } />
+  ) : (
   <Card zDepth={5} className="container cardbottomReg">
     <form action="/" onSubmit={onSubmit}>
       <h2 className="card-heading">{strings.signup}</h2>
@@ -87,13 +95,13 @@ const SignUpForm = ({
       </div>
 
       <div className="button-line">
-        <RaisedButton type="submit" label={strings.createaccount} primary={false} backgroundColor="#0096D5" />
+        <RaisedButton type="submit" label={strings.createaccount} primary={false} backgroundColor="#ae0b05" className="registerBtn" />
       </div>
 
       <CardText>{strings.douhaveaccount} <Link to={'/login'}>{strings.login}</Link></CardText>
     </form>
   </Card>
-
+  )}
 </div>
 );
 
@@ -102,6 +110,7 @@ SignUpForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
+  
 };
 
 export default SignUpForm;

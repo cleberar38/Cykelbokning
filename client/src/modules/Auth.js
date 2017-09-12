@@ -9,6 +9,20 @@ class Auth {
     localStorage.setItem('usertype', token);
   }
 
+  static isAdminUserAuthenticated() {
+    return localStorage.getItem('usertype') !== null;
+  }
+
+  /**
+   * Deauthenticate a AdminUser. Remove a token from Local Storage.
+   * Remove all from localStorage
+   *
+   */
+  static deauthenticateAdminUser() {
+    localStorage.removeItem('usertype');
+    localStorage.clear();
+  }
+
   static authenticateUser(token) {
     localStorage.setItem('token', token);
   }
@@ -22,11 +36,6 @@ class Auth {
     return localStorage.getItem('token') !== null;
   }
 
-  static isAdminUserAuthenticated() {
-    return localStorage.getItem('usertype') !== null;
-  }
-  
-
   /**
    * Deauthenticate a user. Remove a token from Local Storage.
    * Remove all from localStorage
@@ -34,6 +43,29 @@ class Auth {
    */
   static deauthenticateUser() {
     localStorage.removeItem('token');
+    localStorage.clear();
+  }
+  
+  static setVerifyUser(isverified) {
+    localStorage.setItem('isverified', isverified);
+  }
+
+  /**
+   * Check if a user is authenticated - check if a token is saved in Local Storage
+   *
+   * @returns {boolean}
+   */
+  static isUserVerified() {
+    return localStorage.getItem('isverified') !== null;
+  }
+
+  /**
+   * Deauthenticate a user. Remove a token from Local Storage.
+   * Remove all from localStorage
+   *
+   */
+  static deverifyUser() {
+    localStorage.removeItem('isverified');
     localStorage.clear();
   }
 

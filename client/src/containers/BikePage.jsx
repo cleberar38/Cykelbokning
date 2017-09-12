@@ -1,6 +1,7 @@
 import React from 'react';
 import Auth from '../modules/Auth';
 import Bike from '../components/Bike.jsx';
+import Image from '../components/Image.jsx';
 
 // Set initial state
 let state = {
@@ -16,6 +17,7 @@ let state = {
     amountavailable: 0 
   }
 };
+
 
 class BikePage extends React.Component {
 
@@ -133,6 +135,7 @@ class BikePage extends React.Component {
   render() {
     return (
       <Bike
+        createImages={this.createImages}
         messageChanged={ this.props.messageChanged }
         isBikeChecked={ this.props.messageChanged }
         messages={ this.props.messages }

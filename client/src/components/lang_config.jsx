@@ -31,7 +31,9 @@ let strings = new LocalizedStrings({
          removeperiod: "Remove period",
          address: "Address",
          city: "City",
-         phone: "Phone"
+         phone: "Phone",
+         maintitle: "Booking page bicycle library Helsingborg",
+         msgLoginReg: "Register or log in to book a bike"
 
 	},
 
@@ -44,7 +46,7 @@ let strings = new LocalizedStrings({
          title: "SBF-bokningssystem",
          login: "Logga in",
          logout: "Logga ut",
-         signup: "Registrera dig",
+         signup: "Registrera sig",
          createaccount: "Skapa ett konto",
          douhaveaccount: "Har du redan ett konto?",
          ihaveaccount: "Jag har redan konto",
@@ -64,7 +66,9 @@ let strings = new LocalizedStrings({
          removeperiod: "Ta bort period",
          address: "Adress",
          city: "Ort",
-         phone: "Telefon"
+         phone: "Telefon",
+         maintitle: "Bokningssida cykelbiblioteket Helsingborg",
+         msgLoginReg: "Registrera sig eller logga in för att boka cykel"
    }
 
 });

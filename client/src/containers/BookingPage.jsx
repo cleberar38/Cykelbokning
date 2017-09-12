@@ -39,13 +39,14 @@ class BookingPage extends React.Component {
 
     const storedMessage = localStorage.getItem('successMessage');
 
-    if (storedMessage) {
-      successMessage = storedMessage;
-      localStorage.removeItem('successMessage');
-    }
 
     // Retrieve the last state
     this.state = state;
+
+    if (storedMessage) {
+      this.state.successMessage = storedMessage;
+      localStorage.removeItem('successMessage');
+    }
 
     this.handleBikeSelection = this.handleBikeSelection.bind(this);
     this.handleChange = this.handleChange.bind(this);

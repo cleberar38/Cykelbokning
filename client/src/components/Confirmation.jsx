@@ -12,27 +12,26 @@ import {Button} from 'react-bootstrap';
 
 strings.setLanguage(default_lang.lang);
 
-const MessageToUSer = ({
+const Confirmation = ({
   messages,
   messageChanged,
-  handleBackBtn,
-  isVerified
+  handleConfirmation
 }) => (
   <div  style={{height: '100%'}}>
     <div>
       <Card className="container">
-        <CardTitle title="SBF-bokningsystem" subtitle={ strings.doneBooking }>
+        <CardTitle title="Bekräftelse sida." subtitle="Go to your email and click on the link sent to you.">
           <h1 className="display-2">{ strings.thankMsg }</h1>
           <h4 className="display-2">{ messages }</h4>
         </CardTitle>
-        <Link to={ isVerified ? "/" : "/message"} onClick={ handleBackBtn } style={{color: "white"}}><Button  bsStyle="primary" className={ "msgbtn " }>Tillbaka till bokning</Button></Link>
+        <Link to="/" onClick={ () => handleConfirmation() } style={{color: "white"}}><Button  bsStyle="primary" className={ "msgbtn " }>BEKRÄFTA OCH BOKA</Button></Link>
       </Card>
     </div>
   </div>
 );
 
-MessageToUSer.propTypes = {
+Confirmation.propTypes = {
 
 };
 
-export default MessageToUSer;
+export default Confirmation;
