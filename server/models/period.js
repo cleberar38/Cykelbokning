@@ -4,14 +4,17 @@ const mongoose = require('mongoose');
 const PeriodSchema = new mongoose.Schema({
   periodid: {type: String, unique: true},
   periodname: String,
-  datefrom: String,
-  dateto: String
+  datefrom: Date,
+  dateto: Date,
+  bikedescurl: String,
+  bikeimgurl: String,
+  bikename: String,
+  bikeid: String,
+  isbooked: { type: Boolean, default: false }
 });
 
 PeriodSchema.pre('save', function saveHook(next) {
   next();
 });
-
-//const conn = mongoose.createConnection(uri);
 
 module.exports = mongoose.model('Period', PeriodSchema);

@@ -18,7 +18,6 @@ let state = {
   }
 };
 
-
 class BikePage extends React.Component {
 
   /**
@@ -29,6 +28,7 @@ class BikePage extends React.Component {
 
     // Retrieve the last state
     this.state = state;
+    this.addBike = this.addBike.bind(this);
   }
 
   addBike(event){
@@ -39,9 +39,9 @@ class BikePage extends React.Component {
     const biketype = encodeURIComponent(this.state.bike.biketype); //req.biketype,
     const name = encodeURIComponent(this.state.bike.name); //req.name,
     const imgurl = encodeURIComponent(this.state.bike.imgurl); //req.imgurl,
-    const amountavailable = encodeURIComponent(this.state.bike.amountavailable); //req.amountavailable
+    
 
-    const formData = `biketype=${biketype}&name=${name}&imgurl=${imgurl}&amountavailable=${amountavailable}`;
+    const formData = `biketype=${biketype}&name=${name}&imgurl=${imgurl}`;
 
     const self = this;
 
@@ -135,13 +135,14 @@ class BikePage extends React.Component {
   render() {
     return (
       <Bike
+        addBike={this.props.addBike}
         createImages={this.createImages}
         messageChanged={ this.props.messageChanged }
         isBikeChecked={ this.props.messageChanged }
         messages={ this.props.messages }
         bike={ this.props.bike }
         bikeActive={ this.props.bikeActive }
-        handleBikeSelection={ this.props.handleBikeSelection }
+        handleBikeSelection={ this.props.handleBikeSelection }  
       />
     );
   }

@@ -12,8 +12,6 @@ let state = {
   isBikeAvailable: false,
   periodsAvailable: [],
   arrayBikes: {},
-  messageChanged: false,
-  messages: '',
   value: 2,
   errors: {},
   successMessage: '',
@@ -26,6 +24,8 @@ let state = {
   isPeriodChecked: false,
   isBookingPeriodChecked: false,
   btnPeriodClicked: false,
+  messageChanged: false,
+  messages: '',
   lastPeriodClicked: null
 };
 
@@ -38,7 +38,6 @@ class BookingPage extends React.Component {
     super(props);
 
     const storedMessage = localStorage.getItem('successMessage');
-
 
     // Retrieve the last state
     this.state = state;
@@ -54,8 +53,14 @@ class BookingPage extends React.Component {
     this.handleSetPeriod = this.handleSetPeriod.bind(this);
     this.checkPeriodsAvailable = this.checkPeriodsAvailable.bind(this);
     this.checkPeriodsInBooking = this.checkPeriodsInBooking.bind(this);
-    this.handleBackBtn = this.handleBackBtn.bind(this);
+    //this.handleBackBtn = this.handleBackBtn.bind(this);
   }
+
+  componentWillMount() {
+    Auth.setPeriod('');
+    Auth.setBikeName('');
+  }
+
 
   componentWillUnmount() {
     /*
@@ -88,16 +93,11 @@ class BookingPage extends React.Component {
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
 
-    /*
-    // create a string for an HTTP body message
-    const user = encodeURIComponent(this.state.booking.user);
-    const bikeperiod = encodeURIComponent(this.state.booking.bikeperiod);
-    const bikename = encodeURIComponent(this.state.booking.name);
-    */
-
     const userid = localStorage.getItem('useremail');
     const periodid = localStorage.getItem('bikeperiod');
     const bikeid = localStorage.getItem('bike');
+
+    console.log("bikeid : " , bikeid);
 
     const formData = `userid=${userid}&periodid=${periodid}&bikeid=${bikeid}`;
 
@@ -113,19 +113,20 @@ class BookingPage extends React.Component {
       if (xhr.status === 200) {
         // success
 
+        // change the component-container state
         self.setState({
           messages: xhr.response.message,
           messageChanged: xhr.response.success
-
-        });
-
-        // change the component-container state
-        this.setState({
-          errors: {}
         });
 
         // save the token
         Auth.authenticateUser(xhr.response.token);
+
+        Auth.setPeriod('');
+        Auth.setBikeName('');
+
+        //Does not work
+        //this.props.router.replace("/message");
 
       } else {
         // failure
@@ -133,6 +134,13 @@ class BookingPage extends React.Component {
         // change the component state
         const errors = xhr.response.errors ? xhr.response.errors : {};
         errors.summary = xhr.response.message;
+
+        console.log("ERROR : ", errors);
+
+        self.setState({
+            messages: errors.periodid,
+            messageChanged: true
+          });
 
         this.setState({
           errors
@@ -150,13 +158,13 @@ class BookingPage extends React.Component {
       (result) => {
         // `proceed` callback
         //console.log('proceed called');
-        xhr.send(formData); // Send data to DB
 
-        
+        //this.props.router.replace("/message");
 
-
+          xhr.send(formData); // Send data to DB
 
       },
+
       (result) => {
         // `cancel` callback
         console.log('cancel called');
@@ -164,21 +172,15 @@ class BookingPage extends React.Component {
     );
   }
 
-  handleBackBtn() {
-    this.setState({
-      messages: '',
-      messageChanged: false
-    });
-  }
+  //handleBackBtn() {
+    //this.setState({
+      //messages: '',
+    //  messageChanged: false,
+    //  errors: {}
+    //});
+//  }
 
   handleSetPeriod(evt, value){
-
-    //let periodSelected = evt !== undefined && evt !== null ? document.elementTarget = evt.target : null;
-
-    //const periodName = periodSelected !== null && periodSelected !== undefined ? periodSelected.name : evt;
-
-    console.log("periodSelected evt : ", evt);
-    console.log("handleSetPeriod value : ", value);
 
     var bg = document.getElementsByClassName("periodBtn");
 
@@ -194,18 +196,16 @@ class BookingPage extends React.Component {
 
   handleBikeSelection(evt) {
 
+
     let bikeSelected = evt.target !== undefined ? document.elementTarget = evt.target : null;
 
-    const bikename = bikeSelected !== null ? bikeSelected.name : evt;
+    const bikename = bikeSelected !== null ? bikeSelected.alt : evt;
     const bikeClass = bikeSelected !== null ? bikeSelected.className : 'bikeImg';
-    const allBikes = document.getElementsByClassName(bikeClass);
+    const allBikes = document.getElementsByClassName('bikeImg');
 
     for(var i=0,leni=allBikes.length; i<leni; i++){
       var tempBike = allBikes[i];
-      tempBike.style.opacity = 1;
-      if(tempBike.name === bikename){
-        bikeSelected = tempBike;
-      }
+      tempBike.children[0].style.opacity = 1;
     }
 
     if(bikeSelected !== null){
@@ -232,8 +232,6 @@ class BookingPage extends React.Component {
 
     if(!this.state.isBookingPeriodChecked){
 
-      console.log("WHICH PERIODS ARE AVAILABLE INSIDE BOOKING...???");
-
       const self = this;
 
       // create an AJAX request
@@ -244,8 +242,6 @@ class BookingPage extends React.Component {
       xhr.addEventListener('load', () => {
         if (xhr.status === 200) {
           // success
-
-          console.log("PeriodsAvailable in Booking xhr.response", xhr.response);
 
           //TODO: Set the state of the periods available
 
@@ -291,8 +287,6 @@ class BookingPage extends React.Component {
         if (xhr.status === 200) {
           // success
 
-          console.log("checkPeriodsAvailable xhr.response", xhr.response);
-
           //TODO: Set the state of the periods available
 
           self.setState({
@@ -308,6 +302,7 @@ class BookingPage extends React.Component {
       });
 
       xhr.send();
+
       if(!this._mounted){
         this.setState({
           isPeriodChecked: true,
@@ -380,9 +375,6 @@ class BookingPage extends React.Component {
 
     bikePeriod = Auth.getPeriod();
 
-    console.log("bikePeriod: ", bikePeriod);
-    console.log("this.state.handleSetPeriod: ", this.state.lastPeriodClicked);
-
     this.handleBikeSelection(bikeName);
 
     //TODO: Get all the periods available
@@ -401,11 +393,12 @@ class BookingPage extends React.Component {
 
   /**
    * Render the component.
+   * handleBackBtn={this.handleBackBtn}
    */
   render() {
     return (
       <BookingFormAll
-        handleBackBtn={this.handleBackBtn}
+
         lastPeriodClicked={this.state.lastPeriodClicked}
         btnPeriodClicked={this.state.btnPeriodClicked}
         periodBtnState={this.state.periodBtnState}
@@ -415,8 +408,6 @@ class BookingPage extends React.Component {
         handleBikeSelection={this.handleBikeSelection}
         bikeActive={this.state.bikeActive}
         isBikeAvailable={this.state.isBikeAvailable}
-        messageChanged={this.state.messageChanged }
-        messages={this.state.messages}
         value={this.state.value}
         onSubmit={this.processForm}
         handleTimeChange={this.handleTimeChange}
@@ -430,6 +421,8 @@ class BookingPage extends React.Component {
         periodsAvailable={this.state.periodsAvailable}
         checkPeriodsInBooking={this.checkPeriodsInBooking}
         isBookingPeriodChecked={this.state.isBookingPeriodChecked}
+        messageChanged={this.state.messageChanged }
+        messages={this.state.messages}
        />
     );
   }

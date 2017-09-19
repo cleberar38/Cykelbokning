@@ -1,4 +1,5 @@
 body {
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   font-size: 16px;
 }
@@ -82,7 +83,7 @@ a:hover {
 }
 
 .app-background {
-  background: linear-gradient(rgba(236,103,1,.7),rgba(255,	255,	255, .8)),url(http://www.crescent.se/wp-content/uploads/2015/06/150409_elcykel_crescent-5-1050x700.png) no-repeat center center fixed;
+  background: linear-gradient(rgba(244,244,244,1),rgba(244,	244,	244,1)); /*,url(http://www.crescent.se/wp-content/uploads/2015/06/150409_elcykel_crescent-5-1050x700.png) no-repeat center center fixed*/
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -193,8 +194,8 @@ img {
 
 .gridlist {
   padding: 20px;
-  max-width: 500px;
-  height: 440px;
+  max-width: 800px;
+  height: 540px;
 }
 
 .gridlist-content {
@@ -214,5 +215,9 @@ img {
 .loginBtn span, .registerBtn span, .merinfo span {
   color: #ffffff !important;
   background-color: 'rgba(174, 11, 5, 0.8)' !important;
+}
+
+.panel-default>.panel-heading {
+   "background-color": "rgb(174, 11, 5)" !important;
 }
 

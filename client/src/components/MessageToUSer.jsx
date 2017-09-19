@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { Link, IndexLink } from 'react-router';
 import Auth from '../modules/Auth';
@@ -15,17 +14,25 @@ strings.setLanguage(default_lang.lang);
 const MessageToUSer = ({
   messages,
   messageChanged,
-  handleBackBtn,
-  isVerified
+  errors,
+  handleBackBtn
 }) => (
   <div  style={{height: '100%'}}>
     <div>
       <Card className="container">
-        <CardTitle title="SBF-bokningsystem" subtitle={ strings.doneBooking }>
-          <h1 className="display-2">{ strings.thankMsg }</h1>
+        <CardTitle title="SBF-bokningsystem" subtitle={ messages }>
+
+          { errors !== undefined || errors !== null && Object !== null || Object !== undefined && Object.keys(errors).length === 0 && errors.constructor === Object ?
+
+           (<h1 className="display-2">{ strings.thankMsg }</h1>)
+           :
+           (<h1 className="display-2">{ errors.summary }</h1>)
+
+          }
+
           <h4 className="display-2">{ messages }</h4>
         </CardTitle>
-        <Link to={ "/" } onClick={ handleBackBtn } style={{color: "white"}}><Button  bsStyle="primary" className={ "msgbtn " }>Tillbaka till bokning</Button></Link>
+          <Button onClick={ handleBackBtn } bsStyle="primary" className={ "msgbtn " }>Tillbaka till bokning</Button>
       </Card>
     </div>
   </div>

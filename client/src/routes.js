@@ -8,7 +8,9 @@ import HomePage from './containers/HomePage.jsx';
 import MessagesToUserPage from './containers/MessagesToUserPage.jsx';
 import PeriodPage from './containers/PeriodPage.jsx';
 import ConfirmationPage from './containers/ConfirmationPage.jsx';
-import Profile from './components/Profile.jsx';
+import ProfilePage from './containers/ProfilePage.jsx';
+import AddBikePage from './containers/AddBikePage.jsx';
+
 
 const routes = {
   // Base component (wrapper for the whole application).
@@ -73,6 +75,17 @@ const routes = {
     },
 
     {
+      path: '/addbike',
+      getComponent: (location, callback) => {
+        if (Auth.isAdminUserAuthenticated()) {
+          callback(null, AddBikePage);
+        } else {
+          callback(null, AddBikePage);
+        }
+      }
+    },
+
+    {
       path: '/createperiod',
       getComponent: (location, callback) => {
         if (Auth.isAdminUserAuthenticated()) {
@@ -87,7 +100,7 @@ const routes = {
       path: '/profil',
       getComponent: (location, callback) => {
         if (Auth.isUserAuthenticated()) {
-          callback(null, Profile);
+          callback(null, ProfilePage);
         } else {
           callback(null, LoginPage);
         }

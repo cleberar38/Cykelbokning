@@ -5,8 +5,7 @@ import MessageToUSer from '../components/MessageToUSer.jsx';
 
 // Set initial state
 let state = {
-  messages: '',
-  messageChanged: false
+
 };
 
 class MessageToUSerPage extends React.Component {
@@ -20,16 +19,15 @@ class MessageToUSerPage extends React.Component {
     // Retrieve the last state
     this.state = state;
 
-    this.handleBackBtn = this.handleBackBtn.bind(this);
+    this.handleBackBtn.bind(this);
+
   }
 
   handleBackBtn() {
-
-    console.log("handleBackBtn Message");    
-    this.setState({
-      messages: '',
-      messageChanged: false
-    });
+      this.setState({
+        messageChanged: false,
+        messages: ''
+      });
   }
 
   /**
@@ -40,8 +38,8 @@ class MessageToUSerPage extends React.Component {
       <MessageToUSer
         messageChanged={ this.props.messageChanged }
         messages={ this.props.messages}
-        handleBackBtn={ this.handleBackBtn }
-        isVerified= { this.props.isVerified }
+        errors={ this.props.errors }
+        handleBackBtn={ this.props.handleBackBtn }
       />
     );
   }

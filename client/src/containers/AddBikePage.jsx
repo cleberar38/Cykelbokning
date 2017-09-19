@@ -1,20 +1,15 @@
 import React from 'react';
 import Auth from '../modules/Auth';
-import PeriodForm from '../components/PeriodForm.jsx';
+import AddBikeForm from '../components/AddBikeForm.jsx';
 import PopUpConfirmation from 'react-popconfirm';
 
 // Set initial state
 let state = {
-  period: {
-    periodid: '', //{type: String, unique: true},
-    periodname: '', //String,
-    datefrom: '', //Date,
-    dateto: '', //Date
-    bikedescurl: 'https://cykelbiblioteket.helsingborg.se/', // String,
-    bikeimgurl: '', //String,
+  bike: {
+    bikeid: '', //{type: String, unique: true},
+    biketype: '', //String,
     bikename: '', //String,
-    bikeid: '', //String,
-    isbooked: '', //{ type: Boolean, default: false }
+    imgurl: '', //String
   },
   message: '',
   messages: '',
@@ -23,7 +18,7 @@ let state = {
   isAdminUserAuthenticated: false
 };
 
-class PeriodPage extends React.Component {
+class AddBikePage extends React.Component {
 
   /**
    * Class constructor.
@@ -35,32 +30,27 @@ class PeriodPage extends React.Component {
     this.state = state;
 
     //Here you declare the functions and bind it to "this"
-    this.addPeriod = this.addPeriod.bind(this);
-    this.onChange = this.onChange.bind(this);
+    this.addNewBike = this.addNewBike.bind(this);
 
   }
 
-  addPeriod(event){
+  addNewBike(event){
     // prevent default action. in this case, action is the form submission event
     event.preventDefault();
 
     // create a string for an HTTP body message
-    const periodid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    const periodname = encodeURIComponent(this.state.period.periodname);
-    const datefrom = encodeURIComponent(this.state.period.datefrom);
-    const dateto = encodeURIComponent(this.state.period.dateto);
-    const bikedescurl = encodeURIComponent(this.state.period.bikedescurl);
-    const bikeimgurl = encodeURIComponent(this.state.period.bikeimgurl);
-    const bikename = encodeURIComponent(this.state.period.bikename);
+    const bikename = encodeURIComponent(this.state.bike.bikename);
     const bikeid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    
-    const formData = `periodid=${periodid}&periodname=${periodname}&datefrom=${datefrom}&dateto=${dateto}&bikedescurl=${bikedescurl}&bikeimgurl=${bikeimgurl}&bikename=${bikename}&bikeid=${bikeid}`;
+    const biketype = encodeURIComponent(this.state.bike.biketype);
+    const imgurl = encodeURIComponent(this.state.bike.imgurl);
+
+    const formData = `bikeid=${bikeid}&bikename=${bikename}&biketype=${biketype}&imgurl=${imgurl}`;
 
     const self = this;
 
     // create an AJAX request
     const xhr = new XMLHttpRequest();
-    xhr.open('post', '/auth/addperiod');
+    xhr.open('post', '/auth/addbike');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
@@ -68,19 +58,15 @@ class PeriodPage extends React.Component {
         // success
         //console.log("this.state.period", this.state.period);
         //TODO: Set the state of the periods available
-       
         self.setState({
-          //period: self.state.period,
+          bike: self.state.bike,
           messageChanged: true,
-          messages: xhr.response.message
+          messages: xhr.response.message,
+          errors: {},
         });
 
         //console.log("addPeriod xhr.response: ", xhr.response);
-
-        // change the component-container state
-        this.setState({
-          errors: {},
-        });
+       
         //this.props.router.replace('/');
 
       } else {
@@ -95,7 +81,9 @@ class PeriodPage extends React.Component {
         });
       }
     });
+
     xhr.send(formData);
+
   }
 
   /**
@@ -105,11 +93,11 @@ class PeriodPage extends React.Component {
    */
   onChange(event) {
     const field = event.target.name;
-    const period = this.state.period;
-    period[field] = event.target.value;
+    const bike = this.state.bike;
+    bike[field] = event.target.value;
 
     this.setState({
-      period
+      bike
     });
 
     //Auth.setUserEmail(user.email);
@@ -122,15 +110,11 @@ class PeriodPage extends React.Component {
     //console.log("componentWillMount()");
 
     this.setState({
-      period: {
-        periodname: this.state.period.periodname, //String,
-        datefrom: this.state.period.datefrom, //Date,
-        dateto: this.state.period.dateto, //Date
-        bikedescurl: this.state.period.bikedescurl,
-        bikeimgurl: this.state.period.bikeimgurl,
-        bikename: this.state.period.bikename,
-        isbooked: this.state.period.isbooked
-
+      bike: {
+        bikeid: this.state.bike.bikeid, 
+        biketype: this.state.bike.biketype,
+        bikename: this.state.bike.bikename,
+        imgurl: this.state.bike.imgurl
       },
     });
   }
@@ -144,35 +128,34 @@ class PeriodPage extends React.Component {
 
     if(Auth.isAdminUserAuthenticated()){
       this.setState({
-        period: {
-          periodname: this.state.period.periodname, //String,
-          datefrom: this.state.period.datefrom, //Date,
-          dateto: this.state.period.dateto //Date
+        bike: {
+          bikeid: this.state.bike.bikeid, 
+          biketype: this.state.bike.biketype,
+          bikename: this.state.bike.bikename,
+          imgurl: this.state.bike.imgurl
         },
       });
     }
   }
-
 
   /**
    * Render the component.
    */
   render() {
     return (
-      <PeriodForm
-        messageChanged={this.state.messageChanged}
-        period={this.state.period}
+      <AddBikeForm
+        bike={this.state.bike}
         message={this.state.message}
         messages={this.state.messages}
-        addPeriod={this.addPeriod}
-        onSubmit={this.addPeriod}
+        addNewBike={this.addNewBike}
+        onSubmit={this.addNewBike}
         errors={this.state.errors}
         onChange={this.onChange}
+        messageChanged={this.state.messageChanged}
         isAdminUserAuthenticated={this.state.isAdminUserAuthenticated}
        />
-
     );
   }
 };
 
-export default PeriodPage;
+export default AddBikePage;

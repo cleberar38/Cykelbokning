@@ -10,7 +10,8 @@ import routes from './routes.js';
 // remove tap delay, essential for MaterialUI to work properly fixed
 injectTapEventPlugin();
 
-ReactDom.render((
-  <MuiThemeProvider muiTheme={getMuiTheme()}>
-    <Router history={ hashHistory } routes={routes} />
-  </MuiThemeProvider>), document.getElementById('react-app'));
+ReactDom.render(
+	<MuiThemeProvider muiTheme={getMuiTheme()}>
+		<Router history={hashHistory} routes={routes} />
+	</MuiThemeProvider>, document.getElementById('react-app')
+);

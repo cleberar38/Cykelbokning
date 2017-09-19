@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import * as Colors from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -19,100 +18,82 @@ import default_lang from './default_lang.jsx';
 import Auth from '../modules/Auth';
 import BikePage from '../containers/BikePage.jsx';
 import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
-
 import ListExampleMessages from './Profile.jsx'
-
 import {Button} from 'react-bootstrap';
+import { Grid, Row, Col, Thumbnail, Panel, Jumbotron } from 'react-bootstrap';
 
 strings.setLanguage(default_lang.lang);
-
-const tilesData = [
-  {
-    imgId: 'SD1',
-    img: 'https://static.pexels.com/photos/100582/pexels-photo-100582.jpeg',
-    title: 'ELLA, 3-VXL',
-  },
-  {
-    imgId: 'SD2',
-    img: 'https://static.pexels.com/photos/326678/pexels-photo-326678.jpeg',
-    title: 'ELLY, 24-VXL',
-  },
-  {
-    imgId: 'SD3',
-    img: 'https://static.pexels.com/photos/255934/pexels-photo-255934.jpeg',
-    title: 'ELDER, 10-VXL',
-  },
-  {
-    imgId: 'SD4',
-    img: 'https://static.pexels.com/photos/191042/pexels-photo-191042.jpeg',
-    title: 'ELTA, ALFINE 11-VXL',
-  },
-];
 
 const BookingFormAll = ({
   handleBikeSelection,
   periodBtnState,
   bikeActive,
-  messageChanged,
-  messages,
-	onSubmit,
-	booking,
+  onSubmit,
+  booking,
   value,
   getFormContent,
   optionSelected,
-	handleSetPeriod,
+  handleSetPeriod,
   isBikeAvailable,
   periodsAvailable,
   periodData,
   bookingPeriodData,
   btnPeriodClicked,
-  handleBackBtn
+  messageChanged,
+  messages,
+  handleBackBtn,
+  errors
 }) => (
- <div>
-    {messageChanged ? (
-    <MessagesToUserPage handleBackBtn={ handleBackBtn } messageChanged={ messageChanged } messages={ messages } />
-    ) : (
-    <form action="/" onSubmit={onSubmit}>
-
-      <BikePage handleBikeSelection={ handleBikeSelection } bikeActive={ bikeActive } />
-
-      <div>
-        <div className="center-container">
-          {isBikeAvailable !== true ? (
-          <Card className="period-container">
-            <CardTitle title={ strings.msgLoginReg } subtitle={ strings.hbgstadTile }>
-              <h4 className="display-2">{ strings.chooseCykel }</h4>
-              <IndexLink style={{color: 'black'}}><RaisedButton  className={ "merinfo" } label="Mer info." primary={false} backgroundColor="#ae0b05" className="merinfo" /></IndexLink>
-            </CardTitle>
-          </Card>
-          ) : (
-          <div>
-            <ul>
-              { periodData !== null ? periodData.done.map((post) => (
-                <li key={post._id} style={{padding: 5}}>
-                  <Button key={ post._id } bsStyle={ periodBtnState } className={ "periodBtn " } name={post.periodname} onClick={ (evt) => handleSetPeriod(evt, post.periodname) }>
-                    {post.periodname}
-                  </Button>
-                </li>
-              )) : null}
-            </ul>
-          </div>
-          )}
-        </div>
-      </div>
-
-      {Auth.isUserAuthenticated() ? (
-      <div className="button-line center-container cardbottomFot">
-        <Button type="submit" bsStyle="success" className="top-btn" onClick={onSubmit}>{strings.sendBtn}</Button>
-      </div>
+  <div>
+    <Jumbotron>
+      {messageChanged ? (
+      <MessagesToUserPage messageChanged={ messageChanged } messages={ messages } handleBackBtn={ handleBackBtn } errors={ errors } />
       ) : (
-      <div className="center-container">
-        <Link to="/login" style={{color: 'white'}}><FlatButton style={{color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)'}} label={strings.login} /></Link>
-      </div>
-      )}
-	   </form>
-     )}
+      <form action="/" onSubmit={onSubmit}>
+
+        <BikePage handleBikeSelection={ handleBikeSelection } bikeActive={ bikeActive } />
+
+        <div>
+          <div className="center-container">
+            {isBikeAvailable !== true ? (
+            <Card className="period-container">
+              <CardTitle title={ strings.msgLoginReg } subtitle={ strings.hbgstadTile }>
+
+
+                <IndexLink to="/profil" style={{color: 'black'}}><RaisedButton  className={ "merinfo" } label={ strings.mybook } primary={false} backgroundColor="#ae0b05" className="merinfo" /></IndexLink>
+
+              </CardTitle>
+            </Card>
+            ) : (
+            <div style={{"margin":"auto", "maxWidth":"960px"}}>
+              <ul>
+                { periodData !== null ? periodData.done.map((post) => (
+                  <li key={post._id} style={{padding: 5}}>
+                    <Button key={ post._id } bsStyle={ periodBtnState } className={ "periodBtn " } name={post.periodname} onClick={ (evt) => handleSetPeriod(evt, post.periodname) }>
+                      {post.periodname}
+                    </Button>
+                  </li>
+                )) : null}
+              </ul>
+            </div>
+            )}
+          </div>
+        </div>
+
+        {Auth.isUserAuthenticated() ? (
+        <div className="button-line center-container cardbottomFot">
+          <Link to="/message" ><Button type="submit" bsStyle="success" style={{color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)'}} className="top-btn" onClick={onSubmit}>{strings.sendBtn}</Button></Link>
+        </div>
+        ) : (
+        <div className="center-container">
+          <Link to="/login" style={{color: 'white'}}><FlatButton style={{color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)'}} label={strings.book} /></Link>
+        </div>
+        )}
+  	   </form>
+       )}
+    </Jumbotron>
   </div>
+
 );
 
 BookingFormAll.propTypes = {
@@ -124,7 +105,8 @@ BookingFormAll.propTypes = {
   booking: PropTypes.object.isRequired,
   value: PropTypes.number.isRequired,
   handleSetPeriod: PropTypes.func.isRequired,
-  optionSelected: PropTypes.string.isRequired
+  optionSelected: PropTypes.string.isRequired,
+  errors: PropTypes.object.isRequired
 };
 
 export default BookingFormAll;

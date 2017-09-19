@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('mongoose').model('User');
 
-
 // define the User model schema
 const tokenSchema = new mongoose.Schema({
     _userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },

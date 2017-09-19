@@ -1,5 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
+var CleanWebpackPlugin = require('clean-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   // the entry file for the bundle
@@ -9,45 +11,39 @@ module.exports = {
   output: {
     path: path.join(__dirname, '/client/dist/js'),
     filename: 'app.js',
-    publicPath: './server/static/'
+    //publicPath: './server/static/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new CleanWebpackPlugin(['./client/dist']),
+    new HtmlWebpackPlugin({
+      title: 'Cykelbokning',
+      filename: 'index.html',
+      template: './index.template.ejs'
+    })
+    //new webpack.HotModuleReplacementPlugin()
   ],
   module: {
-    rules: [
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {}  
-          }
-        ]
-      }
-    ],
 
     // apply loaders to files that meet given conditions
     loaders: [
       {
         test: /\.jsx?$/,
         include: path.join(__dirname, '/client/src'),
-        loader: 'babel',
-        query: {
-          presets: ["react", "es2015"]
-        }
+        loader: 'babel-loader'
+
+      },
+      {
+          test: /\.(jpe?g|png|gif|svg)$/i,
+          loaders: [
+              'file-loader?name=images/[name].[ext]',
+              'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false',
+              'url-loader?limit=8192'
+          ],
+          include: path.join(__dirname, '/client/src')
       }
-      // ,
-      // {
-      //     test: /\.(jpe?g|png|gif|svg)$/i,
-      //     loaders: [
-      //         'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-      //         'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
-      //     ]
-      // }
     ],
-  },
+  }
 
   // start Webpack in a watch mode, so Webpack will rebuild the bundle on changes
-  watch: true
+
 };

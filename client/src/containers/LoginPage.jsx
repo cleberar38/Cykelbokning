@@ -2,6 +2,19 @@ import React, { PropTypes } from 'react';
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm.jsx';
 
+let state = {
+  isVerified: false,
+  messageChanged: false,
+  messages: '',
+  errors: {},
+  successMessage: '',
+  user: {
+    email: '',
+    password: '',
+    name: ''
+  }
+};
+
 class LoginPage extends React.Component {
 
   /**
@@ -11,29 +24,29 @@ class LoginPage extends React.Component {
     super(props, context);
 
     const storedMessage = localStorage.getItem('successMessage');
-    let successMessage = '';
+    //successMessage = '';
+
+    // set the initial component state
+    this.state = state;
 
     if (storedMessage) {
-      successMessage = storedMessage;
+      this.setState({
+        successMessage: storedMessage
+      });
+
       localStorage.removeItem('successMessage');
     }
 
-    // set the initial component state
-    this.state = {
-      isVerified: false,
-      messageChanged: false,
-      messages: '',
-      errors: {},
-      successMessage,
-      user: {
-        email: '',
-        password: '',
-        name: ''
-      }
-    };
-
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
+    
+
+  }
+
+  componentDidMount() {
+    console.log("LoginPage props : ", this.props);
+    console.log("LoginPage props : ", this.state);
+    
   }
 
   /**
@@ -88,6 +101,9 @@ class LoginPage extends React.Component {
         Auth.authenticateUser(xhr.response.token);
         Auth.setUserName(xhr.response.user.name);
         Auth.setVerifyUser(xhr.response.isVerified);
+
+        console.log("xhr.response.user", xhr.response.user);
+
 
         //console.log("processForm LoginPage Type of User : ", xhr.response);
 

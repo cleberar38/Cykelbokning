@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import * as Colors from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -17,18 +16,18 @@ import { Link, IndexLink } from 'react-router';
 import strings  from './lang_config.jsx';
 import default_lang from './default_lang.jsx';
 import Auth from '../modules/Auth';
-import BikePage from '../containers/BikePage.jsx';
+import AddBikePage from '../containers/AddBikePage.jsx';
 import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
 import TextField from 'material-ui/TextField';
 import {Button} from 'react-bootstrap';
 
 strings.setLanguage(default_lang.lang);
 
-const PeriodForm = ({
-  period,
+const AddBikeForm = ({
+  bike,
   message,
   messages,
-  addPeriod,
+  addNewBike,
   onSubmit,
   errors,
   onChange,
@@ -37,46 +36,15 @@ const PeriodForm = ({
 }) => (
   <div>
     {messageChanged ? (
-    <MessagesToUserPage messageChanged={ messageChanged } messages={ messages } errors={ errors } />
+    <MessagesToUserPage messageChanged={ messageChanged } messages={ messages } />
     ) : (
     <div>
       {Auth.isAdminUserAuthenticated() ? (
       <Card zDepth={5} className="container cardbottomReg">
         <form action="/" onSubmit={onSubmit}>
-          <h2 className="card-heading">{strings.addperiod}</h2>
+          <h2 className="card-heading">{strings.addbiketxt}</h2>
 
           {errors.summary && <p className="error-message">{errors.summary}</p>}
-
-          <div className="field-line">
-            <TextField
-              floatingLabelText={strings.periodname}
-              name="periodname"
-              errorText={errors.periodname}
-              onChange={onChange}
-              value={period.periodname}
-            />
-          </div>
-
-          <div className="field-line">
-            <TextField
-              floatingLabelText={strings.datefrom}
-              name="datefrom"
-              errorText={errors.datefrom}
-              onChange={onChange}
-              value={period.datefrom}
-            />
-          </div>
-
-          <div className="field-line">
-            <TextField
-              floatingLabelText={strings.dateto}
-              name="dateto"
-              errorText={errors.dateto}
-              onChange={onChange}
-              value={period.dateto}
-            />
-          </div>
-
 
           <div className="field-line">
             <TextField
@@ -84,21 +52,30 @@ const PeriodForm = ({
               name="bikename"
               errorText={errors.bikename}
               onChange={onChange}
-              value={period.bikename}
+              value={bike.bikename}
+            />
+          </div>
+
+          <div className="field-line">
+            <TextField
+              floatingLabelText={strings.biketype}
+              name="biketype"
+              errorText={errors.biketype}
+              onChange={onChange}
+              value={bike.biketype}
             />
           </div>
 
           <div className="field-line">
             <TextField
               floatingLabelText={strings.imgurl}
-              name="bikeimgurl"
-              errorText={errors.bikeimgurl}
+              name="imgurl"
+              errorText={errors.imgurl}
               onChange={onChange}
-              value={period.bikeimgurl}
+              value={bike.imgurl}
             />
           </div>
-
-
+ 
           {Auth.isAdminUserAuthenticated() ? (
           <div className="button-line center-container cardbottomFot">
 
@@ -111,7 +88,7 @@ const PeriodForm = ({
             </div>
           )}
 
-          <CardText>{strings.removeperiod} <Link to={'/removeperiod'}>{strings.removeperiod}</Link></CardText>
+          <CardText>{strings.removebike} <Link to={'/removebike'}>{strings.removebike}</Link></CardText>
         </form>
       </Card>
       ) : (
@@ -123,12 +100,12 @@ const PeriodForm = ({
   </div>
 );
 
-PeriodForm.propTypes = {
-  period: PropTypes.object.isRequired,
+AddBikeForm.propTypes = {
+  bike: PropTypes.object.isRequired,
   message: PropTypes.string.isRequired,
-  addPeriod: PropTypes.func.isRequired,
+  addNewBike: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
-export default PeriodForm;
+export default AddBikeForm;

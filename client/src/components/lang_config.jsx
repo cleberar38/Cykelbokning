@@ -33,7 +33,21 @@ let strings = new LocalizedStrings({
          city: "City",
          phone: "Phone",
          maintitle: "Booking page bicycle library Helsingborg",
-         msgLoginReg: "Register or log in to book a bike"
+         msgLoginReg: "Register or log in to book a bike",
+         addbiketxt: "Add new bike",
+         bikenametext: "Bike name",
+         biketype: "Bike type",
+         removebike: "Remove bike",
+         imgurl: "Add image URL",
+         book: "Book",
+         unbook: "Unbook",
+         unbooked: "Unbooked",
+         nextyearmsg: "You can book this bike again in the following date : ",
+         meromcykel: "More about the bikes",
+         tillbakahuvsida: "Go back to the main site",
+         bikedescurl: "https://cykelbiblioteket.helsingborg.se/",
+         mybook: 'My booking'
+
 
 	},
 
@@ -46,7 +60,7 @@ let strings = new LocalizedStrings({
          title: "SBF-bokningssystem",
          login: "Logga in",
          logout: "Logga ut",
-         signup: "Registrera sig",
+         signup: "Registrera dig",
          createaccount: "Skapa ett konto",
          douhaveaccount: "Har du redan ett konto?",
          ihaveaccount: "Jag har redan konto",
@@ -67,8 +81,21 @@ let strings = new LocalizedStrings({
          address: "Adress",
          city: "Ort",
          phone: "Telefon",
-         maintitle: "Bokningssida cykelbiblioteket Helsingborg",
-         msgLoginReg: "Registrera sig eller logga in för att boka cykel"
+         maintitle: "Cykelbokningssida",
+         msgLoginReg: "Registrera dig eller logga in för att boka cykel",
+         addbiketxt: "Lägg till ny cykel",
+         bikenametext: "Cykel name",
+         biketype: "Cykel typ",
+         removebike: "Ta bort cykel",
+         imgurl: "Lägga till bild URL",
+         book: "Boka",
+         unbook: "Avboka",
+         unbooked: "Avbokat",
+         nextyearmsg: "Du kan boka den här cykeln igen på följande datum : ",
+         meromcykel: "Mer om cyklarna",
+         tillbakahuvsida: "Tillbaka till huvudsidan",
+         bikedescurl: "https://cykelbiblioteket.helsingborg.se/",
+         mybook: 'Mina bokningar'
    }
 
 });

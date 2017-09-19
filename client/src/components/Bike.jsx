@@ -1,6 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
 import { Card, CardTitle, CardText } from 'material-ui/Card';
 import * as Colors from 'material-ui/styles/colors';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -17,36 +15,42 @@ import { Link, IndexLink } from 'react-router';
 import strings  from './lang_config.jsx';
 import default_lang from './default_lang.jsx';
 import Auth from '../modules/Auth';
+import { Grid, Row, Col, Thumbnail, Panel } from 'react-bootstrap';
+import Responsive from 'react-responsive';
 
 strings.setLanguage(default_lang.lang);
 
 const tilesData = [
   {
     imgId: 'SD1',
-    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/elcykel_1_webb.jpg',
+    img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_elcykel_1_1920x1080.jpg',
     title: 'Elcykel',
   },
   {
     imgId: 'SD2',
-    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/Vikcykel_webb.jpg',
+    img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_vikcykel_1920x1080.jpg',
     title: 'Vikcykel',
   },
   {
     imgId: 'SD3',
-    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/gronlastcykel_webb.jpg',
+    img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_gron_lastcykel_1920x1080.jpg',
     title: 'Lastcykel',
   },
   {
     imgId: 'SD4',
-    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/svartlastcykel_webb.jpg',
+    img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_svart_lastcykel_1920x1080.jpg',
     title: 'Lastcykel',
   },
   {
     imgId: 'SD5',
-    img: 'http://kartor.helsingborg.se/Cykelbokning/client/src/imgs/tvahjuliglastcykel_webb.jpg',
+    img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_svart_lastcykel_1920x1080.jpg',
     title: 'Lastcykel',
   },
 ];
+
+const paneltitle = (
+  <h3>{ strings.chooseCykel }</h3>
+);
 
 const Bike = ({
   messageChanged,
@@ -54,19 +58,25 @@ const Bike = ({
   messages,
   bike,
   bikeActive,
-  handleBikeSelection
+  handleBikeSelection,
+  addBike
 }) => (
 
-  <div className="root gridlist container">
-    <GridList className="height gridlist-content" cellHeight={130}>
-      {tilesData.map((tile) => (
-        <GridTile key={tile.imgId} title={tile.title}
-          actionIcon={<IconButton><StarBorder color="white" /></IconButton>}
-        >
-          <img key={tile.imgId} className={ "bikeImg" } onClick={ handleBikeSelection } name={tile.imgId} src={tile.img} />
-        </GridTile>
-      ))}
-    </GridList>
+  <div className="">
+    <Grid>
+      <Row style={{"margin":"auto", "maxWidth":"960px"}}>
+        <Panel header={ paneltitle } bsStyle="danger">
+          {tilesData.map((tile) => (
+          <Col key={tile.imgId} md={4} style={{ 'marginTop': '20px'}}>
+            <Thumbnail className={ "bikeImg" } href="#" alt={tile.imgId} src={tile.img} onClick={ handleBikeSelection } name={tile.imgId} />
+            <GridTile style={{ 'marginTop': '-20px'}} title={tile.title}>
+              <img style={{'width': '100%', 'height': '50px'}}  />
+            </GridTile>
+          </Col>
+          ))}
+        </Panel>
+      </Row>
+    </Grid>
   </div>
 
 );

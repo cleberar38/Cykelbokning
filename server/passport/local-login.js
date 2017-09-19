@@ -54,6 +54,7 @@ module.exports = new PassportLocalStrategy({
       const tokenA = jwt.sign(payload, config.tokenA);
       console.log("Config Access", config.access);
       const data = {
+        userid: user.email,
         name: user.name,
         usertype: user.usertype !== config.access ? "user" : "admin",
         tokenA: tokenA

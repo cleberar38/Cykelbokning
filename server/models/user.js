@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-//const config = require('../../config');
-
-//const uri = config.dbUri;
-
 // define the User model schema
 const UserSchema = new mongoose.Schema({
   userid: { type: String, unique: true },
@@ -21,7 +17,6 @@ const UserSchema = new mongoose.Schema({
   passwordResetExpires: Date
 });
 
-
 /**
  * Compare the passed password with the value in the database. A model method.
  *
@@ -32,7 +27,6 @@ UserSchema.methods.comparePassword = function comparePassword(password, callback
   bcrypt.compare(password, this.password, callback);
 };
 
-
 /**
  * The pre-save hook method.
  */
@@ -41,7 +35,6 @@ UserSchema.pre('save', function saveHook(next) {
 
   // proceed further only if the password is modified or the user is new
   if (!user.isModified('password')) return next();
-
 
   return bcrypt.genSalt((saltError, salt) => {
     if (saltError) { return next(saltError); }
@@ -56,7 +49,5 @@ UserSchema.pre('save', function saveHook(next) {
     });
   });
 });
-
-//const conn = mongoose.createConnection(uri);
 
 module.exports = mongoose.model('User', UserSchema);
