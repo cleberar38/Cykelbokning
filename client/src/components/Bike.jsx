@@ -34,17 +34,17 @@ const tilesData = [
   {
     imgId: 'SD3',
     img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_gron_lastcykel_1920x1080.jpg',
-    title: 'Lastcykel',
+    title: 'Lastcykel grön',
   },
   {
     imgId: 'SD4',
     img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_svart_lastcykel_1920x1080.jpg',
-    title: 'Lastcykel',
+    title: 'Lastcykel svart',
   },
   {
     imgId: 'SD5',
-    img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_svart_lastcykel_1920x1080.jpg',
-    title: 'Lastcykel',
+    img: 'https://cykelbiblioteket.helsingborg.se/wp-content/uploads/sites/95/2017/09/cykelbibl_tvahjuliglastcykel_1920x1080.jpg',
+    title: 'Tvåhjulig lastcykel',
   },
 ];
 

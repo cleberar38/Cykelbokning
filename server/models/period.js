@@ -6,11 +6,8 @@ const PeriodSchema = new mongoose.Schema({
   periodname: String,
   datefrom: Date,
   dateto: Date,
-  bikedescurl: String,
-  bikeimgurl: String,
-  bikename: String,
-  bikeid: String,
-  isbooked: { type: Boolean, default: false }
+  daysleft: { type: Number, default: 0 },
+  periodisdone: { type: Boolean, default: false }
 });
 
 PeriodSchema.pre('save', function saveHook(next) {

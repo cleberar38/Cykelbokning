@@ -17,4 +17,5 @@ module.exports.connect = (uri) => {
   require('./period');
   require('./user');
   require('./token');
+  require('./viewbikeperiod');
 };

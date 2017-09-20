@@ -75,7 +75,7 @@ const AddBikeForm = ({
               value={bike.imgurl}
             />
           </div>
- 
+
           {Auth.isAdminUserAuthenticated() ? (
           <div className="button-line center-container cardbottomFot">
 

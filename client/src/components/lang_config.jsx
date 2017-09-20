@@ -62,7 +62,7 @@ let strings = new LocalizedStrings({
          logout: "Logga ut",
          signup: "Registrera dig",
          createaccount: "Skapa ett konto",
-         douhaveaccount: "Har du redan ett konto?",
+         douhaveaccount: "Har du inget konto?",
          ihaveaccount: "Jag har redan konto",
          email: "E-post",
          password: "Lösenord",

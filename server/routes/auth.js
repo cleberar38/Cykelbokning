@@ -10,6 +10,7 @@ const BikeBooking = require('mongoose').model('BikeBooking');
 const Period = require('mongoose').model('Period');
 const User = require('mongoose').model('User');
 const Token = require('mongoose').model('Token');
+const BikePeriodView = require('mongoose').model('BikePeriodView');
 
 router.post('/profile', (req, res, next) => {
 
@@ -70,15 +71,15 @@ router.post('/signup', (req, res, next) => {
         // the 409 HTTP status code is for conflict error
         return res.status(409).json({
           success: false,
-          message: 'Check the form for errors.',
+          message: 'Kontrollera formuläret för fel.',
           errors: {
-            email: 'This email is already taken.'
+            email: 'Den här e-mailadressen är redan tagen.'
           }
         });
       }
       return res.status(400).json({
         success: false,
-        message: 'Could not process the form.'
+        message: 'Kunde inte bearbeta formuläret.'
       });
     }
 
@@ -102,11 +103,11 @@ router.post('/signup', (req, res, next) => {
 
       msg.to = req.body.email;
       msg.from = 'none@reply.com';
-      msg.subject = 'Account verification - Confirm';
+      msg.subject = 'Kontoverifiering - Bekräfta.';
       //The line above was used just to demostrate that we can send the token and userId within the URL link
       // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
-      msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token + '';
-      msg.html = '<strong>Hello,<br /><br />Please verify your account by clicking the link: <br /><a href:"http:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token +'">http:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token +'</a></strong>';
+      msg.text = 'Hello,\n\n' + 'Kontrollera ditt konto genom att klicka på länken eller kopiera och klistra in länken i webbläsaren: \nhttp:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token + '';
+      msg.html = '<strong>Hello,<br /><br />Kontrollera ditt konto genom att klicka på länken eller kopiera och klistra in länken i webbläsaren: <br /><a href:"http:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token +'">http:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token +'</a></strong>';
 
       console.log("TOKEN : ", token);
 
@@ -116,7 +117,7 @@ router.post('/signup', (req, res, next) => {
 
       return res.status(200).json({
         success: true,
-        message: 'A verification has been sent to your email : ' +req.body.email+'',
+        message: 'En bekräftelse som ska bekräftas har skickats till ditt mail : ' +req.body.email+'',
         email: req.body.email,
         token: tempToken.token
       });
@@ -129,8 +130,8 @@ router.post('/signup', (req, res, next) => {
 
 router.post('/resend', (req, res, next) => {
 
-  req.assert('email', 'Email is not valid').isEmail();
-  req.assert('email', 'Email cannot be blank').notEmpty();
+  req.assert('email', 'E-post är inte giltig').isEmail();
+  req.assert('email', 'E-post kan inte vara tomt').notEmpty();
   req.sanitize('email').normalizeEmail({ remove_dots: false });
 
   // Check for validation errors
@@ -138,8 +139,8 @@ router.post('/resend', (req, res, next) => {
   if (errors) return res.status(400).send(errors);
 
   User.findOne({ email: req.body.email }, function (err, user) {
-      if (!user) return res.status(400).send({ msg: 'We were unable to find a user with that email.' });
-      if (user.isVerified) return res.status(400).send({ msg: 'This account has already been verified. Please log in.' });
+      if (!user) return res.status(400).send({ msg: 'Vi kunde inte hitta en användare med det mailet.' });
+      if (user.isVerified) return res.status(400).send({ msg: 'Detta konto har redan verifierats. Vänligen logga in.' });
 
       // Create a verification token, save it, and send email
       var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
@@ -156,7 +157,7 @@ router.post('/resend', (req, res, next) => {
         const msg = {
           to: 'cleber.arruda@helsingborg.se',
           from: 'c_leverdo@hotmail.com',
-          subject: 'Account verification and confirmation!',
+          subject: 'Kontoverifiering och bekräftelse!',
           text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n',
           html: '<strong>Hello, <br /><br />Please verify your account by clicking the link:<br /> <a href="http://'+req.headers.host+'"/confirmation/'+token.token+'>Click here ro verify!</a></strong>',
         };
@@ -167,7 +168,7 @@ router.post('/resend', (req, res, next) => {
           console.log("sgMail callback result", result);
 
           if (error) { return res.status(500).send({ msg: error.message }); }
-          res.status(200).send('A verification email has been sent to ' + user.email + '.');
+          res.status(200).send('Ett bekräftelsemejl har skickats till ' + user.email + '.');
         });
       });
 
@@ -191,7 +192,7 @@ router.post('/addperiod', (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    message: 'You have successfully added new period.',
+    message: 'Du har lagt till en ny period.',
     done: done
   });
 
@@ -213,7 +214,7 @@ router.post('/addbike', (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    message: 'You have successfully added new bike.',
+    message: 'Du har lagt till en ny cykel.',
     done: done
   });
 
@@ -232,7 +233,7 @@ router.post('/checkbookedperiod', (req, res, next) => {
     checkPeriod = done;
     return res.status(200).json({
       success: true,
-      message: 'All periods from Booking.',
+      message: 'Alla period från bokning.',
       done: done
     });
   });
@@ -252,7 +253,7 @@ router.post('/checkperiod', (req, res, next) => {
     checkPeriod = done;
     return res.status(200).json({
       success: true,
-      message: 'You retrive all periods.',
+      message: 'Alla period.',
       done: done
     });
   });
@@ -268,12 +269,12 @@ router.post('/checkbike', (req, res, next) => {
       return err;
     }
 
-    console.log("All bikes founded!", done);
+    console.log("Alla cykel founded!", done);
 
 
     return res.status(200).json({
       success: true,
-      message: 'You retrive all bikes.',
+      message: 'Du hämtar alla cyklar.',
       done: done
     });
 
@@ -299,7 +300,7 @@ router.post('/period', (req, res, next) => {
       arrPeriods.push(resBookingPeriod);
       return res.status(200).json({
         success: true,
-        message: 'Sorry you cannot book this model twice!',
+        message: 'Tyvärr kan du inte boka den här modellen!',
         periods: arrPeriods
       });
     }
@@ -307,7 +308,7 @@ router.post('/period', (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    message: 'Sorry you cannot book this model twice!',
+    message: 'Tyvärr kan du inte boka den här modellen!',
     periods: arrPeriods
   });
 
@@ -376,7 +377,7 @@ router.post('/login', (req, res, next) => {
       }
       return res.status(400).json({
         success: false,
-        message: 'Could not process the form.'
+        message: 'Kunde inte bearbeta formuläret.'
       });
     }
 
@@ -406,7 +407,7 @@ router.post('/login', (req, res, next) => {
 
       return res.json({
         success: true,
-        message: 'You have successfully logged in!',
+        message: 'Du har loggat in!',
         token,
         user: userData,
         isVerified: user.isVerified
@@ -436,11 +437,11 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
         return err;
     }
     if(resUserRebook.length !== 0){
-      console.log("Sorry you cannot book this model twice!");
+      console.log("Tyvärr kan du inte boka den här modellen!");
 
       return res.status(200).json({
         success: true,
-        message: 'Sorry you cannot book this model twice!'
+        message: 'Tyvärr kan du inte boka den här modellen!'
       });
     }else {
       Bike.find({
@@ -462,19 +463,19 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
             }
             //Check if still have bike available in BIKE DB
             if(resBike.amountavailable < 1){
-              const msg = 'Sorry this Bike are not Available';
+              const msg = 'Tyvärr, denna cykel är inte tillgänglig';
               showMessages200(res, msg);
             }else{
               createNewBooking(newBooking);
-              const msg = 'You have successfully add your booking.';
+              const msg = 'Du har lagt till din bokning..';
               showMessages200(res, msg);
             }
           });
-          const msg = 'Sorry this period & cykel is already booked';
+          const msg = 'Denna period & cykel är redan bokad';
           //showMessages200(res, msg);
         }else{
           createNewBooking(newBooking);
-          const msg = 'You have successfully add your booking.';
+          const msg = 'Du har lagt till din bokning.';
           showMessages200(res, msg);
         }
       });
@@ -511,19 +512,19 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
         }
         //Check if still have bike available in BIKE DB
         if(resBike.amountavailable < 1){
-          const msg = 'Sorry this Bike are not Available';
+          const msg = 'Tyvärr, denna cykel är inte tillgänglig';
           showMessages200(res, msg);
         }else{
           createNewBooking(newBooking);
-          const msg = 'You have successfully add your booking.';
+          const msg = 'Du har lagt till din bokning.';
           showMessages200(res, msg);
         }
       });
-      const msg = 'Sorry this period & cykel is already booked';
+      const msg = 'Denna period & cykel är redan bokad.';
       //showMessages200(res, msg);
     }else{
       createNewBooking(newBooking);
-      const msg = 'You have successfully add your booking.';
+      const msg = 'Du har lagt till din bokning.';
       showMessages200(res, msg);
     }
   });
@@ -615,18 +616,18 @@ function validateSignupForm(payload) {
   let message = '';
   if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
     isFormValid = false;
-    errors.email = 'Please provide a correct email address.';
+    errors.email = 'Ange en korrekt e-postadress.';
   }
   if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
     isFormValid = false;
-    errors.password = 'Password must have at least 8 characters.';
+    errors.password = 'Lösenordet måste ha minst 8 tecken.';
   }
   if (!payload || typeof payload.name !== 'string' || payload.name.trim().length === 0) {
     isFormValid = false;
-    errors.name = 'Please provide your name.';
+    errors.name = 'Vänligen ange ditt namn.';
   }
   if (!isFormValid) {
-    message = 'Check the form for errors.';
+    message = 'Kontrollera formuläret för fel.';
   }
   return {
     success: isFormValid,
@@ -701,14 +702,14 @@ function validateLoginForm(payload) {
   let message = '';
   if (!payload || typeof payload.email !== 'string' || payload.email.trim().length === 0) {
     isFormValid = false;
-    errors.email = 'Please provide your email address.';
+    errors.email = 'Vänligen ange din e-postadress.';
   }
   if (!payload || typeof payload.password !== 'string' || payload.password.trim().length === 0) {
     isFormValid = false;
-    errors.password = 'Please provide your password.';
+    errors.password = 'Vänligen ange ditt lösenord.';
   }
   if (!isFormValid) {
-    message = 'Check the form for errors.';
+    message = 'Kontrollera formuläret för fel.';
   }
   return {
     success: isFormValid,
@@ -725,7 +726,7 @@ function getAllPlats(payload) {
   let message = '';
   if (!payload || typeof payload.userid !== 'string' || payload.userid.trim().length === 0) {
     isFormValid = false;
-    errors.userid = 'User is not Authenticated!';
+    errors.userid = 'Användaren är inte autentiserad!';
   }
   if (!payload || typeof payload.periodid !== 'string' || payload.periodid.trim().length === 0) {
     isFormValid = false;
@@ -736,7 +737,7 @@ function getAllPlats(payload) {
     errors.bikeid = 'Välja Cykel';
   }
   if (!isFormValid) {
-    message = 'Form har errors.';
+    message = 'Form har fel.';
   }
   return {
     success: isFormValid,
@@ -753,18 +754,18 @@ function validateAddBikeForm(payload){
   let message = '';
   if (!payload || typeof payload.bikename !== 'string' || payload.bikename.trim().length === 0) {
     isFormValid = false;
-    errors.bikename = 'Please bike name';
+    errors.bikename = 'Vänligen ange cykelnamn';
   }
   if (!payload || typeof payload.biketype !== 'string' || payload.biketype.trim().length === 0) {
     isFormValid = false;
-    errors.biketype = 'Please enter bike type';
+    errors.biketype = 'Vänligen ange cykeltyp';
   }
   if (!payload || typeof payload.imgurl !== 'string' || payload.imgurl.trim().length === 0) {
     isFormValid = false;
-    errors.imgurl = 'Image URL start with http:// or https://';
+    errors.imgurl = 'Bildadressen börjar med http:// or https://';
   }
   if (!isFormValid) {
-    message = 'Check the form for errors.';
+    message = 'Kontrollera formuläret för fel.';
   }
   return {
     success: isFormValid,
@@ -800,12 +801,12 @@ function verifyUserConfirmation(req, res, next) {
 
   // Find a matching token
   Token.findOne({ token: req.body.token }, function (err, token) {
-      if (!token) return res.status(400).json({ type: 'not-verified', message: 'We were unable to find a valid token. Your token my have expired.' });
+      if (!token) return res.status(400).json({ type: 'not-verified', message: 'Vi kunde inte hitta ett giltigt token. Din token min har gått ut.' });
 
       // If we found a token, find a matching user
       User.findOne({ _id: token._userId }, function (err, user) {
-          if (!user) return res.status(400).json({ message: 'We were unable to find a user for this token.' });
-          if (user.isVerified) return res.status(400).json({ type: 'already-verified', message: 'This user has already been verified.' });
+          if (!user) return res.status(400).json({ message: 'Vi kunde inte hitta en användare för denna token.' });
+          if (user.isVerified) return res.status(400).json({ type: 'already-verified', message: 'Den här användaren har redan verifierats.' });
 
           // Verify and save the user
           user.isVerified = true;
@@ -813,7 +814,7 @@ function verifyUserConfirmation(req, res, next) {
               if (err) { return res.status(500).json({ message: err.message }); }
               res.status(200).json({
                 success: true,
-                message: 'The account has been verified!',
+                message: 'Kontot har verifierats!',
                 token,
                 user: user
                 //". You have successfully logged in The account has been verified. Please log in."
@@ -823,8 +824,6 @@ function verifyUserConfirmation(req, res, next) {
   });
 
 };
-
-
 
 /**
  * calculateTotalAmountPeriodsAvailable

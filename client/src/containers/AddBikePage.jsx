@@ -39,8 +39,8 @@ class AddBikePage extends React.Component {
     event.preventDefault();
 
     // create a string for an HTTP body message
-    const bikename = encodeURIComponent(this.state.bike.bikename);
     const bikeid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const bikename = encodeURIComponent(this.state.bike.bikename);
     const biketype = encodeURIComponent(this.state.bike.biketype);
     const imgurl = encodeURIComponent(this.state.bike.imgurl);
 
@@ -59,14 +59,14 @@ class AddBikePage extends React.Component {
         //console.log("this.state.period", this.state.period);
         //TODO: Set the state of the periods available
         self.setState({
-          bike: self.state.bike,
+          //bike: self.state.bike,
           messageChanged: true,
           messages: xhr.response.message,
           errors: {},
         });
 
         //console.log("addPeriod xhr.response: ", xhr.response);
-       
+
         //this.props.router.replace('/');
 
       } else {
@@ -111,7 +111,7 @@ class AddBikePage extends React.Component {
 
     this.setState({
       bike: {
-        bikeid: this.state.bike.bikeid, 
+        bikeid: this.state.bike.bikeid,
         biketype: this.state.bike.biketype,
         bikename: this.state.bike.bikename,
         imgurl: this.state.bike.imgurl
@@ -129,7 +129,7 @@ class AddBikePage extends React.Component {
     if(Auth.isAdminUserAuthenticated()){
       this.setState({
         bike: {
-          bikeid: this.state.bike.bikeid, 
+          bikeid: this.state.bike.bikeid,
           biketype: this.state.bike.biketype,
           bikename: this.state.bike.bikename,
           imgurl: this.state.bike.imgurl
