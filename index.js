@@ -3,13 +3,15 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./config');
 const path = require('path');
+const http = require('http-server');
 
 const DEFAULT_PORT = 3001;
 
 // This connect to the database and load models
 require('./server/models').connect(config.dbUri);
 
-const app = express();
+const app = express();  //Commented to test the IIS NODE
+//const app = http.createServer(app);
 
 // tell the app to look for static files in these directories
 app.use(express.static('./server/static/'));
@@ -41,15 +43,19 @@ app.use('/api', apiRoutes);
 app.set("port", process.env.PORT || DEFAULT_PORT);
 
 // Handles all routes so you do not get a not found error
+//app.get('*', function (request, response){
+//    response.sendFile(path.resolve(__dirname, './server/static/', 'index.html'))
+//});
+
+// Handles all routes so you do not get a not found error
 app.get('*', function (request, response){
-    response.sendFile(path.resolve(__dirname, './server/static/', 'index.html'))
+    response.sendFile(path.resolve(__dirname, './', 'index.html'))
 });
 
 app.use(express.static(__dirname + './server/static/'));
 
+
 // start the server
-app.listen(DEFAULT_PORT, 'localhost', () => {
-  console.log('Server is running on http://localhost:', DEFAULT_PORT);
+app.listen(DEFAULT_PORT, 'kartor.helsingborg.se', () => {
+  console.log('Server is running on http://kartor.helsingborg.se:', DEFAULT_PORT);
 });
-
-
