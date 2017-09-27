@@ -56,12 +56,41 @@ class AddBikePage extends React.Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         // success
+
+          let response = null;
+
+          // Opera 8.0+
+          var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+          // Firefox 1.0+
+          var isFirefox = typeof InstallTrigger !== 'undefined';
+
+          // Safari 3.0+ "[object HTMLElementConstructor]" 
+          var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+          // Internet Explorer 6-11
+          var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+          // Edge 20+
+          var isEdge = !isIE && !!window.StyleMedia;
+
+          // Chrome 1+
+          var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+          // Blink engine detection
+          var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+          //IE problem! We have to parse the response since in IE everything became string!
+          if (isIE) { response = JSON.parse(xhr.response); } else {
+              response = xhr.response;
+          }
+
         //console.log("this.state.period", this.state.period);
         //TODO: Set the state of the periods available
         self.setState({
           //bike: self.state.bike,
           messageChanged: true,
-          messages: xhr.response.message,
+          messages: response.message,
           errors: {},
         });
 
@@ -72,9 +101,37 @@ class AddBikePage extends React.Component {
       } else {
         // failure
 
+          let response = null;
+
+          // Opera 8.0+
+          var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+          // Firefox 1.0+
+          var isFirefox = typeof InstallTrigger !== 'undefined';
+
+          // Safari 3.0+ "[object HTMLElementConstructor]" 
+          var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+          // Internet Explorer 6-11
+          var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+          // Edge 20+
+          var isEdge = !isIE && !!window.StyleMedia;
+
+          // Chrome 1+
+          var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+          // Blink engine detection
+          var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+          //IE problem! We have to parse the response since in IE everything became string!
+          if (isIE) { response = JSON.parse(xhr.response); } else {
+              response = xhr.response;
+          }
+
         // change the component state
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
+        const errors = response.errors ? response.errors : {};
+        errors.summary = response.message;
 
         this.setState({
           errors

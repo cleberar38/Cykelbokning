@@ -28,7 +28,8 @@ const LoginForm = ({
   period,
   profileresult,
   removeBooking,
-  name
+  name,
+  handleSubmit
 }) => (
   <div>
      {Auth.isUserAuthenticated ? (
@@ -65,7 +66,7 @@ const LoginForm = ({
           </div>
 
           <div className="button-line">
-            <RaisedButton type="submit" label={strings.login} primary={false} backgroundColor="#ae0b05" className="loginBtn" />
+            <RaisedButton type="submit" label={strings.login} primary={false} backgroundColor="#ae0b05" className="loginBtn" onSubmit={handleSubmit} />
           </div>
 
           <CardText>{strings.douhaveaccount}  <Link to="/signup" style={{color: 'white'}}><FlatButton style={{color: 'white'}} backgroundColor="#ae0b05" label={strings.signup} /></Link></CardText>
@@ -91,7 +92,8 @@ LoginForm.propTypes = {
   user: PropTypes.object.isRequired,
   messageChanged: PropTypes.bool.isRequired,
   messages: PropTypes.string.isRequired,
-  isVerified: PropTypes.bool.isRequired
+  isVerified: PropTypes.bool.isRequired,
+  handleSubmit: PropTypes.func.isRequired
 };
 
 export default LoginForm;

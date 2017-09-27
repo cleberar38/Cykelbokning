@@ -39,9 +39,15 @@ class LoginPage extends React.Component {
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     
+    }
 
+  handleSubmit(event) {
+      console.log('this.state.user A name was submitted: ' + this.state.user);
+      event.preventDefault();
   }
+
 
   componentDidMount() {
     console.log("LoginPage props : ", this.props);
@@ -74,6 +80,33 @@ class LoginPage extends React.Component {
       if (xhr.status === 200) {
         // success
 
+          let response = null;
+
+          // Opera 8.0+
+          var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+          // Firefox 1.0+
+          var isFirefox = typeof InstallTrigger !== 'undefined';
+
+          // Safari 3.0+ "[object HTMLElementConstructor]" 
+          var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+          // Internet Explorer 6-11
+          var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+          // Edge 20+
+          var isEdge = !isIE && !!window.StyleMedia;
+
+          // Chrome 1+
+          var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+          // Blink engine detection
+          var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+          //IE problem! We have to parse the response since in IE everything became string!
+          if (isIE) { response = JSON.parse(xhr.response); } else {
+              response = xhr.response;
+          }
 
         // change the component-container state
         this.setState({
@@ -81,52 +114,80 @@ class LoginPage extends React.Component {
           //isVerified: xhr.response.isVerified
         });
 
-        console.log("hr.response.isVerified : ", xhr.response.isVerified);
+        console.log("xhr.response.isVerified : ", response.isVerified);
 
-        //if(xhr.response.isVerified === false){
-          //this.setState({
-            //messageChanged: true,
-            //messages: "YOU MUST VERIFY YOUR SUBSCRIPTION."
-          //});
-        //}
-        //if(xhr.response.isVerified){
-//          this.setState({
-            //messageChanged: false,
-            //messages: '',
-            //isVerified: true
-          //});
-        //}
-
+        if(response.isVerified === false){
+          this.setState({
+            messageChanged: true,
+            messages: response.message
+          });
+        }
+        if(response.isVerified){
+          this.setState({
+            messageChanged: false,
+            messages: '',
+            isVerified: true
+          });
+        }
+         
         // save the token
-        Auth.authenticateUser(xhr.response.token);
-        Auth.setUserName(xhr.response.user.name);
-        Auth.setVerifyUser(xhr.response.isVerified);
+        Auth.authenticateUser(response.token);
+        if (response.userdata !== undefined || response.userdata != null || response.userdata !== '') {
+            if (response.userdata.name !== undefined || response.userdata.name != null || response.userdata.name !== '') {
+                Auth.setUserName(response.userdata.name);
+            }
+        }
+        
+        Auth.setVerifyUser(response.isVerified);
 
-        console.log("xhr.response.user", xhr.response.user);
+        
 
-
-        //console.log("processForm LoginPage Type of User : ", xhr.response);
-
-        if(xhr.response.user.usertype === "admin"){
+        if(response.userdata.usertype === "admin"){
           Auth.authenticateAdminUser("admin");
         }
 
           // change the current URL to /
           this.context.router.replace('/');
 
-
-
       } else {
         // failure
 
+          let response = null;
+
+          // Opera 8.0+
+          var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+          // Firefox 1.0+
+          var isFirefox = typeof InstallTrigger !== 'undefined';
+
+          // Safari 3.0+ "[object HTMLElementConstructor]" 
+          var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+          // Internet Explorer 6-11
+          var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+          // Edge 20+
+          var isEdge = !isIE && !!window.StyleMedia;
+
+          // Chrome 1+
+          var isChrome = !!window.chrome && !!window.chrome.webstore;
+         
+          // Blink engine detection
+          var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+          //IE problem! We have to parse the response since in IE everything became string!
+          if (isIE) { response = JSON.parse(xhr.response); } else {
+              response = xhr.response;
+          }
+
         // change the component state
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
+        const errors = response.errors ? response.errors : {};
+        errors.summary = response.message;
 
         this.setState({
           errors,
           user:{
-            name: xhr.response.user !== undefined ? xhr.response.user.name : ''
+            name: response.user !== undefined ? response.user.name : ''
           }
         });
       }
@@ -140,6 +201,7 @@ class LoginPage extends React.Component {
    * @param {object} event - the JavaScript event object
    */
   changeUser(event) {
+
     const field = event.target.name;
     const user = this.state.user;
     user[field] = event.target.value;
@@ -150,7 +212,7 @@ class LoginPage extends React.Component {
 
     Auth.setUserEmail(user.email);
     Auth.setUserName(user.name);
-
+    
   }
 
   /**
@@ -167,6 +229,7 @@ class LoginPage extends React.Component {
         messageChanged={this.state.messageChanged}
         messages={this.state.messages}
         isVerified={this.state.isVerified}
+        handleSubmit={this.handleSubmit}
       />
     );
   }

@@ -52,7 +52,7 @@ const Base = ({
         showMenuIconButton={false}
         title={
         <div className="top-bar-left">
-        <IndexLink to="/" style={{color: 'white'}}>{ strings.maintitle }</IndexLink>
+        <IndexLink to="/" style={{color: 'white'}} className="main-title">{ strings.maintitle }</IndexLink>
         </div>}>
 
         <Toolbar style={{backgroundColor: '#ae0b05'}}>

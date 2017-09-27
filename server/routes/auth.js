@@ -357,7 +357,7 @@ router.post('/unbookbike', (req, res, next) => {
 
 router.post('/login', (req, res, next) => {
 
-  var isUserVerified = false;
+  //var isUserVerified = false;
 
   const validationResult = validateLoginForm(req.body);
   if (!validationResult.success) {
@@ -403,15 +403,25 @@ router.post('/login', (req, res, next) => {
         console.log(err);
       }
 
-      console.log("CALLBACK USER : ", user.isVerified);
+      console.log("CALLBACK  user.isVerified : ", user.isVerified);
 
-      return res.json({
-        success: true,
-        message: 'Du har loggat in!',
-        token,
-        user: userData,
-        isVerified: user.isVerified
-      });
+      if (user.isVerified) {
+        return res.json({
+            success: true,
+            message: 'Du har loggat in!',
+            token,
+            userdata: userData,
+            isVerified: user.isVerified
+        });
+      } else {
+          return res.json({
+              success: true,
+              message: 'Verifiera ditt email och bekräfta registering',
+              token,
+              userdata: userData,
+              isVerified: user.isVerified
+          });
+      }
 
     });
 

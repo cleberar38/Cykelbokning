@@ -49,7 +49,7 @@ const tilesData = [
 ];
 
 const paneltitle = (
-  <h3>{ strings.chooseCykel }</h3>
+    <h3 style={{"color": "white", "textAlign": "left" }}>{strings.chooseCykel}</h3>
 );
 
 const Bike = ({
@@ -62,14 +62,14 @@ const Bike = ({
   addBike
 }) => (
 
-  <div className="">
-    <Grid>
-      <Row style={{"margin":"auto", "maxWidth":"960px"}}>
-        <Panel header={ paneltitle } bsStyle="danger">
+  <div>
+    <Grid className="container-grid">
+        <Row style={{ "margin": "auto", "maxWidth": "960px" }}>
+            <Panel header={paneltitle} bsStyle="danger">
           {tilesData.map((tile) => (
           <Col key={tile.imgId} md={4} style={{ 'marginTop': '20px'}}>
-            <Thumbnail className={ "bikeImg" } href="#" alt={tile.imgId} src={tile.img} onClick={ handleBikeSelection } name={tile.imgId} />
-            <GridTile style={{ 'marginTop': '-20px'}} title={tile.title}>
+            <Thumbnail className={"bikeImg"} href="#" alt={tile.imgId} src={tile.img} onClick={handleBikeSelection} name={tile.imgId} />
+            <GridTile style={{ "background": "none", "backgroundColor": "rgba(174, 11, 5, 1)", 'marginTop': '-20px'}} title={tile.title}>
               <img style={{'width': '100%', 'height': '50px'}}  />
             </GridTile>
           </Col>

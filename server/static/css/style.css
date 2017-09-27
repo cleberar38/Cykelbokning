@@ -45,9 +45,17 @@ a:hover {
 }
 
 .container {
-  margin: 0 auto;
-  text-align: center;
-  width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    width: 700px;
+    display: grid | inline-grid | subgrid !important;
+}
+
+.container-grid {
+    margin: 0 auto;
+    text-align: center;
+    width: 700px;
+    display: grid | inline-grid | subgrid !important;
 }
 
 .period-container {
@@ -221,3 +229,7 @@ img {
    "background-color": "rgb(174, 11, 5)" !important;
 }
 
+div.panel-danger > .panel-heading {
+    background-image: none !important;
+    background-color: rgba(174, 11, 5, 1) !important;
+}
