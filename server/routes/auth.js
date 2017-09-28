@@ -113,7 +113,8 @@ router.post('/signup', (req, res, next) => {
 
       tempToken = token;
 
-      sgMail.send(msg);
+      //Uncomment this line to send EMAIL to the user
+      //sgMail.send(msg);
 
       return res.status(200).json({
         success: true,

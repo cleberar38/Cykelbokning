@@ -55,16 +55,7 @@ const BookingFormAll = ({
 
         <div>
           <div className="center-container">
-            {isBikeAvailable !== true ? (
-            <Card className="period-container">
-              <CardTitle title={ strings.msgLoginReg } subtitle={ strings.hbgstadTile }>
-
-
-                <IndexLink to="/profil" style={{color: 'black'}}><RaisedButton  className={ "merinfo" } label={ strings.mybook } primary={false} backgroundColor="#ae0b05" className="merinfo" /></IndexLink>
-
-              </CardTitle>
-            </Card>
-            ) : (
+            {isBikeAvailable !== true ? null : (
             <div style={{"margin":"auto", "maxWidth":"960px"}}>
               <ul>
                 { periodData !== null ? periodData.done.map((post) => (

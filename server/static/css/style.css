@@ -233,3 +233,9 @@ div.panel-danger > .panel-heading {
     background-image: none !important;
     background-color: rgba(174, 11, 5, 1) !important;
 }
+
+.grid-title, .grid-title div {
+  background-color: rgba(174, 11, 5, 1) !important;
+  background: none;
+  background-image:  none; 
+}

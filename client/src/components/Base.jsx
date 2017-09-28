@@ -55,6 +55,9 @@ const Base = ({
         <IndexLink to="/" style={{color: 'white'}} className="main-title">{ strings.maintitle }</IndexLink>
         </div>}>
 
+
+        {Auth.isAdminUserAuthenticated() ? (
+
         <Toolbar style={{backgroundColor: '#ae0b05'}}>
           <ToolbarGroup style={{backgroundColor: '#ae0b05'}}>
             <FontIcon className="muidocs-icon-custom-sort" />
@@ -80,6 +83,15 @@ const Base = ({
               <ToolbarSeparator />
           </ToolbarGroup>
         </Toolbar>
+
+        ) : (
+        <div className="top-bar-right">
+            <Link to="/profil" style={{marginRight: "5px", color: 'white'}}><FlatButton style={{color: 'white'}} label={ strings.mybook } /></Link>
+        </div>
+        )}
+
+
+
 
         {Auth.isUserAuthenticated() ? (
           <div className="top-bar-right">
