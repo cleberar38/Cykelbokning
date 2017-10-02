@@ -69,7 +69,7 @@ const Bike = ({
                         {tilesData.map((tile) => (
                             <Col key={tile.imgId} md={4} style={{ 'marginTop': '20px' }}>
                                 <Thumbnail className={"bikeImg"} href="#" alt={tile.imgId} src={tile.img} onClick={handleBikeSelection} name={tile.imgId} />
-                                <GridTile className="grid-title" style={{ "backgroundColor": "white", 'marginTop': '-20px' }} title={tile.title}>
+                                <GridTile className="grid-title" style={{ "backgroundColor": "white", "marginTop": "-20px" }} title={tile.title}>
                                     <img style={{ 'width': '100%', 'height': '50px' }} />
                                 </GridTile>
                             </Col>

@@ -86,7 +86,7 @@ let strings = new LocalizedStrings({
         phone: "Telefon",
         maintitle: "Cykelbokningssida",
         msgLoginReg: "Registrera dig eller logga in för att boka cykel",
-        addbiketxt: "Lägg till ny cykel",
+        addbiketxt: "Lägg till",
         bikenametext: "Cykel name",
         biketype: "Cykel typ",
         removebike: "Ta bort cykel",

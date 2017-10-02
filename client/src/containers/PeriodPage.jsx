@@ -49,12 +49,12 @@ class PeriodPage extends React.Component {
     const periodname = encodeURIComponent(this.state.period.periodname);
     const datefrom = encodeURIComponent(this.state.period.datefrom);
     const dateto = encodeURIComponent(this.state.period.dateto);
-    const bikedescurl = encodeURIComponent(this.state.period.bikedescurl);
-    const bikeimgurl = encodeURIComponent(this.state.period.bikeimgurl);
-    const bikename = encodeURIComponent(this.state.period.bikename);
-    const bikeid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    //const bikedescurl = encodeURIComponent(this.state.period.bikedescurl);
+    //const bikeimgurl = encodeURIComponent(this.state.period.bikeimgurl);
+    //const bikename = encodeURIComponent(this.state.period.bikename);
+    //const bikeid = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     
-    const formData = `periodid=${periodid}&periodname=${periodname}&datefrom=${datefrom}&dateto=${dateto}&bikedescurl=${bikedescurl}&bikeimgurl=${bikeimgurl}&bikename=${bikename}&bikeid=${bikeid}`;
+    const formData = `periodid=${periodid}&periodname=${periodname}&datefrom=${datefrom}&dateto=${dateto}`;  //&bikedescurl=${bikedescurl}&bikeimgurl=${bikeimgurl}&bikename=${bikename}&bikeid=${bikeid}
 
     const self = this;
 

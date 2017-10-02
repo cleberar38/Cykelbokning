@@ -31,6 +31,7 @@ class AddBikePage extends React.Component {
 
     //Here you declare the functions and bind it to "this"
     this.addNewBike = this.addNewBike.bind(this);
+    this.onChange = this.onChange.bind(this);
 
   }
 

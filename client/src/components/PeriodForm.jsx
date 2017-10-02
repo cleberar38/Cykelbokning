@@ -77,32 +77,10 @@ const PeriodForm = ({
             />
           </div>
 
-
-          <div className="field-line">
-            <TextField
-              floatingLabelText={strings.bikenametext}
-              name="bikename"
-              errorText={errors.bikename}
-              onChange={onChange}
-              value={period.bikename}
-            />
-          </div>
-
-          <div className="field-line">
-            <TextField
-              floatingLabelText={strings.imgurl}
-              name="bikeimgurl"
-              errorText={errors.bikeimgurl}
-              onChange={onChange}
-              value={period.bikeimgurl}
-            />
-          </div>
-
-
           {Auth.isAdminUserAuthenticated() ? (
           <div className="button-line center-container cardbottomFot">
 
-              <RaisedButton onClick={onSubmit} type="submit" label={strings.sendBtn} primary={false} backgroundColor="#0096D5" />
+              <RaisedButton onClick={onSubmit} type="submit" label={strings.addperiod} primary={false} backgroundColor="#0096D5" />
 
           </div>
           ) : (

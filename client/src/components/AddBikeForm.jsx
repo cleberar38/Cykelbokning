@@ -79,7 +79,7 @@ const AddBikeForm = ({
           {Auth.isAdminUserAuthenticated() ? (
           <div className="button-line center-container cardbottomFot">
 
-              <RaisedButton onClick={onSubmit} type="submit" label={strings.sendBtn} primary={false} backgroundColor="#0096D5" />
+              <RaisedButton onClick={onSubmit} type="submit" label={strings.addbike} primary={false} backgroundColor="#0096D5" />
 
           </div>
           ) : (

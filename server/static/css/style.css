@@ -52,10 +52,6 @@ a {
     display: grid | inline-grid | subgrid !important;
 }
 
-    .container.footer {
-        width: 100%;
-    }
-
 .container-grid {
     margin: 0 auto;
     text-align: center;
@@ -132,29 +128,18 @@ a {
     justify-content: space-around;
 }
 
-
-/*
 .footer {
-  height: 150px;
+    height: 150px;
 }
 
 .footerInLoggad {
-  margin-top: 60px;
-  height: 150px;
+    margin-top: 60px;
+    height: 150px;
 }
 
 .footerLogIn {
-  margin-top: 270px;
-  height: 150px;
-}
-
-*/
-
-.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
+    margin-top: 270px;
+    height: 150px;
 }
 
 ul {
@@ -260,4 +245,22 @@ div.panel-danger > .panel-heading {
     background: none;
     background-image: none;
     color: rgba(174, 11, 5, 1) !important;
+}
+
+.periodbtns {
+    background-color: rgba(174, 11, 5, 1); /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

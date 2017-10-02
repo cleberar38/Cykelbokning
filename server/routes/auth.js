@@ -244,7 +244,7 @@ router.post('/checkbookedperiod', (req, res, next) => {
             console.log("ERROR did not find period: ", err);
             return err;
         }
-        console.log("All period founded!", done);
+        //console.log("All period founded!", done);
         checkPeriod = done;
         return res.status(200).json({
             success: true,
@@ -258,19 +258,36 @@ router.post('/checkbookedperiod', (req, res, next) => {
 router.post('/checkperiod', (req, res, next) => {
 
     var checkPeriod = null;
+    var disabledPeriod = null;
 
     Period.find((err, done) => {
         if (err) {
             console.log("ERROR did not find period: ", err);
             return err;
         }
-        console.log("All period founded!", done);
+        //console.log("All period founded!", done);
         checkPeriod = done;
-        return res.status(200).json({
-            success: true,
-            message: 'Alla period.',
-            done: done
+
+        BikeBooking.find({
+            bikeid: req.body.bikeid
+        }, (err, periodForBike) => {
+            if (err) {
+                console.log("ERROR did not find period: ", err);
+                return err;
+            }
+            console.log("All period  for disabledPeriod!", periodForBike);
+            disabledPeriod = periodForBike;
+
+            return res.status(200).json({
+                success: true,
+                message: 'Alla period.',
+                done: done,
+                disabledPeriod: periodForBike
+            });
+            
         });
+
+       
     });
 
 });
