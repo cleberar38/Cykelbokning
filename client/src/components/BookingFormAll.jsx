@@ -50,7 +50,7 @@ const BookingFormAll = ({
       <MessagesToUserPage messageChanged={ messageChanged } messages={ messages } handleBackBtn={ handleBackBtn } errors={ errors } />
       ) : (
       <form action="/" onSubmit={onSubmit}>
-
+        
         <BikePage handleBikeSelection={ handleBikeSelection } bikeActive={ bikeActive } />
 
         <div>

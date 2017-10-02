@@ -1,47 +1,48 @@
 body {
-  font-family: 'Roboto', sans-serif;
-  margin: 0;
-  font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    font-size: 16px;
 }
 
 a {
-  color: #00bcd4;
-  font-weight: bold;
-  text-decoration: none;
-  transition: color 0.4s;
+    color: #00bcd4;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.4s;
 }
 
-a:hover {
-  color: #1976d2;
-}
+    a:hover {
+        color: #1976d2;
+    }
 
 .text-center {
-  text-align: center;
+    text-align: center;
 }
 
 .top-bar {
-  padding: 10px 15px;
-  margin-bottom: 50px;
-}
-.top-bar::after {
-  content: '';
-  display: block;
-  clear: both;
+    padding: 10px 15px;
+    margin-bottom: 50px;
 }
 
+    .top-bar::after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+
 .top-bar-left {
-  float: left;
-  font-size: 0.8em;
+    float: left;
+    font-size: 0.8em;
 }
 
 .top-bar-right {
-  float: right;
-  padding-top: 20px;
+    float: right;
+    padding-top: 20px;
 }
 
 .top-bar a,
 .nav a {
-  margin: 0 8px;
+    margin: 0 8px;
 }
 
 .container {
@@ -51,6 +52,10 @@ a:hover {
     display: grid | inline-grid | subgrid !important;
 }
 
+    .container.footer {
+        width: 100%;
+    }
+
 .container-grid {
     margin: 0 auto;
     text-align: center;
@@ -59,73 +64,76 @@ a:hover {
 }
 
 .period-container {
-  margin: 0 auto;
-  text-align: center;
-  width: 500px;
-  height: 100%;
+    margin: 0 auto;
+    text-align: center;
+    width: 500px;
+    height: 100%;
 }
 
 .card-heading {
-  padding: 16px;
+    padding: 16px;
 }
 
 .field-line, .button-line {
-  padding: 16px;
-  color: #fff !important;
+    padding: 16px;
+    color: #fff !important;
 }
 
 .error-message {
-  padding: 0 16px;
-  color: tomato;
+    padding: 0 16px;
+    color: tomato;
 }
 
 .success-message {
-  padding: 0 16px;
-  color: green;
+    padding: 0 16px;
+    color: green;
 }
+
 .center-container {
-  margin: 0 auto;
-  text-align: center;
-  max-width: 100%;
-  padding: 20px;
+    margin: 0 auto;
+    text-align: center;
+    max-width: 100%;
+    padding: 20px;
 }
 
 .app-background {
-  background: linear-gradient(rgba(244,244,244,1),rgba(244,	244,	244,1)); /*,url(http://www.crescent.se/wp-content/uploads/2015/06/150409_elcykel_crescent-5-1050x700.png) no-repeat center center fixed*/
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  height:140vh;
+    background: linear-gradient(rgba(244,244,244,1),rgba(244, 244, 244,1)); /*,url(http://www.crescent.se/wp-content/uploads/2015/06/150409_elcykel_crescent-5-1050x700.png) no-repeat center center fixed*/
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    height: 140vh;
 }
 
 .logo {
-  height: 100px;
-  float: left;
-  margin-top: 30px;
+    height: 100px;
+    float: left;
+    margin-top: 30px;
 }
 
 .textLeft {
-  width: 500px;
+    width: 500px;
 }
 
 .cardbottom {
-  margin-bottom: 250px;
+    margin-bottom: 250px;
 }
 
 .cardbottomReg {
- margin-bottom: 210px;
+    margin-bottom: 210px;
 }
 
 .cardbottomFot {
-  margin-bottom: 50px;
+    margin-bottom: 50px;
 }
 
 .root {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
+
+/*
 .footer {
   height: 150px;
 }
@@ -140,93 +148,106 @@ a:hover {
   height: 150px;
 }
 
-ul{
-  list-style-type: none;
+*/
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+ul {
+    list-style-type: none;
 }
 
 .page {
-	width:90%;
+    width: 90%;
 }
 
 .img-grid {
-	width:100%;
-	margin:0 auto;
-	margin-top:.5%;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: .5%;
 }
 
 .img-wrapper {
-	display:inline-block;
-	width:50%;
-	position:relative;
-	float:left;
+    display: inline-block;
+    width: 50%;
+    position: relative;
+    float: left;
 }
 
-.img-wrapper .img-container {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
+    .img-wrapper .img-container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
 
 img {
-	width:100%;
+    width: 100%;
 }
 
 .img-wrapper:after {
-	content:"";
-	padding-top:100%;
-	display:block;
+    content: "";
+    padding-top: 100%;
+    display: block;
 }
 
 .img-wrapper {
-	width: 49.75%;
- }
-.img-wrapper {
-	margin-left:.5%;
-}
-.img-wrapper {
-	margin-top:.5%;
-}
-.img-wrapper {
-	margin-top:.5%;
-	margin-left:.5%;
+    width: 49.75%;
 }
 
-.bikeOn{
-  opacity: 0.2;
+.img-wrapper {
+    margin-left: .5%;
 }
-.bikeOff{
-  opacity: 1;
+
+.img-wrapper {
+    margin-top: .5%;
+}
+
+.img-wrapper {
+    margin-top: .5%;
+    margin-left: .5%;
+}
+
+.bikeOn {
+    opacity: 0.2;
+}
+
+.bikeOff {
+    opacity: 1;
 }
 
 .gridlist {
-  padding: 20px;
-  max-width: 800px;
-  height: 540px;
+    padding: 20px;
+    max-width: 800px;
+    height: 540px;
 }
 
 .gridlist-content {
-  max-width: 520px;
-  height: 445px;
+    max-width: 520px;
+    height: 445px;
 }
 
 .btnPeriodColor {
-  background-color: #d43b00 !important;
+    background-color: #d43b00 !important;
 }
 
-.merinfo{
-  color: #ffffff !important;
-  background-color: 'rgba(174, 11, 5, 0.8)' !important;
+.merinfo {
+    color: #ffffff !important;
+    background-color: 'rgba(174, 11, 5, 0.8)' !important;
 }
 
-.loginBtn span, .registerBtn span, .merinfo span {
-  color: #ffffff !important;
-  background-color: 'rgba(174, 11, 5, 0.8)' !important;
-}
+    .loginBtn span, .registerBtn span, .merinfo span {
+        color: #ffffff !important;
+        background-color: 'rgba(174, 11, 5, 0.8)' !important;
+    }
 
-.panel-default>.panel-heading {
-   "background-color": "rgb(174, 11, 5)" !important;
+.panel-default > .panel-heading {
+    "background-color": "rgb(174, 11, 5)" !important;
 }
 
 div.panel-danger > .panel-heading {
@@ -235,7 +256,8 @@ div.panel-danger > .panel-heading {
 }
 
 .grid-title, .grid-title div {
-  background-color: rgba(174, 11, 5, 1) !important;
-  background: none;
-  background-image:  none; 
+    background-color: #fff !important;
+    background: none;
+    background-image: none;
+    color: rgba(174, 11, 5, 1) !important;
 }
