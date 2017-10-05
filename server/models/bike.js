@@ -5,7 +5,8 @@ const BikeSchema = new mongoose.Schema({
     bikeid: String,
     biketype: String,
     bikename: String,
-    imgurl: String
+    imgurl: String,
+    amount: Number
     // user: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     // period: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Period' }]
 });

@@ -48,7 +48,10 @@ let strings = new LocalizedStrings({
         tillbakahuvsida: "Go back to the main site",
         bikedescurl: "https://cykelbiblioteket.helsingborg.se/",
         mybook: 'My booking',
-        viewallbook: "View all booking"
+        viewallbook: "View all booking",
+        goback: "Go back to booking",
+        amount: "Add the amount of bikes"
+
 
 
     },
@@ -99,7 +102,9 @@ let strings = new LocalizedStrings({
         tillbakahuvsida: "Tillbaka till huvudsidan",
         bikedescurl: "https://cykelbiblioteket.helsingborg.se/",
         mybook: 'Mina bokningar',
-        viewallbook: "Se alla bokningar"
+        viewallbook: "Se alla bokningar",
+        goback: "Tillbaka till bokning",
+        amount: "Vänligen ange mängden cyklar"
     }
 
 });

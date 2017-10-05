@@ -10,6 +10,7 @@ import PeriodPage from './containers/PeriodPage.jsx';
 import ConfirmationPage from './containers/ConfirmationPage.jsx';
 import ProfilePage from './containers/ProfilePage.jsx';
 import AddBikePage from './containers/AddBikePage.jsx';
+import ProfileMessagesPage from './containers/ProfileMessagesPage.jsx';
 
 
 const routes = {
@@ -36,7 +37,11 @@ const routes = {
       path: '/login',
       getComponent: (location, callback) => {
         if (Auth.isUserAuthenticated()) {
-          callback(null, BookingPage);
+            if (Auth.isUserVerified) {
+                callback(null, BookingPage);
+            } else {
+                callback(null, ConfirmationPage);
+            }
         }else {
           callback(null, LoginPage);
         }
@@ -67,6 +72,11 @@ const routes = {
     {
       path: '/message',
       component: MessagesToUserPage
+    },
+
+    {
+        path: '/profilemsg',
+        component: ProfileMessagesPage
     },
 
     {

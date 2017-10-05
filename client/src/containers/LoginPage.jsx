@@ -111,7 +111,7 @@ class LoginPage extends React.Component {
         // change the component-container state
         this.setState({
           errors: {},
-          //isVerified: xhr.response.isVerified
+          isVerified: xhr.response.isVerified
         });
 
         console.log("xhr.response.isVerified : ", response.isVerified);
@@ -119,7 +119,7 @@ class LoginPage extends React.Component {
         if(response.isVerified === false){
           this.setState({
             messageChanged: true,
-            messages: response.message
+            messages: ""
           });
         }
         if(response.isVerified){

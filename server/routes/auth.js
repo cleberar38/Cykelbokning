@@ -24,7 +24,7 @@ router.post('/profile', (req, res, next) => {
                 callback(err, null);
             } else {
 
-                console.log("BikeBooking getting resUserRebook : ", resUserRebook);
+                //console.log("BikeBooking getting resUserRebook : ", resUserRebook);
 
                 Bike.find({
                     bikeid: resUserRebook.bikeid,
@@ -33,8 +33,8 @@ router.post('/profile', (req, res, next) => {
                         console.log("ERROR : ", err);
                         return err;
                     }
-                    console.log("PROFILE getting BIKE NAME : ", resBike);
-                    console.log("PROFILE getting BIKE TYPE : ", resBike)
+                    //console.log("PROFILE getting BIKE NAME : ", resBike);
+                    //console.log("PROFILE getting BIKE TYPE : ", resBike)
                 });
 
                 callback(null, resUserRebook);
@@ -50,7 +50,7 @@ router.post('/profile', (req, res, next) => {
             console.log(err);
         }
 
-        console.log("CALLBACK BikeBooking & retrieveBooking : ", resUserRebook);
+        //console.log("CALLBACK BikeBooking & retrieveBooking : ", resUserRebook);
 
         return res.status(200).json({
             success: true,
@@ -120,10 +120,10 @@ router.post('/signup', (req, res, next) => {
             msg.subject = 'Kontoverifiering - Cykelbiblioteket i Helsingborg.';
             //The line above was used just to demostrate that we can send the token and userId within the URL link
             // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
-            msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbiblioteket. Klicka på länken nedan för att verifiera ditt konto: \nhttp:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token + '';
-            msg.html = '<strong>Hej,<br /><br />Kontrollera ditt konto genom att klicka på länken eller kopiera och klistra in länken i webbläsaren: <br /><a href:"http:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + req.headers.host + '\/#\/confirmation\/?token=' + token.token + '</a></strong>';
+            msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbiblioteket. Klicka på länken nedan för att verifiera ditt konto: \nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '';
+            msg.html = '<strong>Hej,<br /><br />Kontrollera ditt konto genom att klicka på länken eller kopiera och klistra in länken i webbläsaren: <br /><a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '</a></strong>';
 
-            console.log("TOKEN : ", token);
+            //console.log("TOKEN : ", token);
 
             tempToken = token;
 
@@ -132,7 +132,7 @@ router.post('/signup', (req, res, next) => {
 
             return res.status(200).json({
                 success: true,
-                message: 'Ett mejl har skickats till din adress. Klicka på länken i mejlet för att bekräfta ditt konto. : ' + req.body.email + '',
+                message: 'Ditt konto är registrerat ett bekräftelsemejl har skickats till din epost : ' + req.body.email + '',
                 email: req.body.email,
                 token: tempToken.token
             });
@@ -177,10 +177,10 @@ router.post('/resend', (req, res, next) => {
                 html: '<strong>Hello, <br /><br />Please verify your account by clicking the link:<br /> <a href="http://' + req.headers.host + '"/confirmation/' + token.token + '>Click here ro verify!</a></strong>',
             };
             //console.log("sgMail : ", sgMail);
-            console.log("MSG SENDGRID : ", msg);
+            //console.log("MSG SENDGRID : ", msg);
             sgMail.send(msg, (error, result) => {
-                console.log("sgMail callback error", error);
-                console.log("sgMail callback result", result);
+                //console.log("sgMail callback error", error);
+                //console.log("sgMail callback result", result);
 
                 if (error) { return res.status(500).send({ msg: error.message }); }
                 res.status(200).send('Ett bekräftelsemejl har skickats till ' + user.email + '.');
@@ -203,7 +203,7 @@ router.post('/addperiod', (req, res, next) => {
     }
     const done = createNewPeriod(req.body);
 
-    console.log("DONE :", done);
+    //console.log("DONE :", done);
 
     return res.status(200).json({
         success: true,
@@ -225,7 +225,7 @@ router.post('/addbike', (req, res, next) => {
     }
     const done = addNewBike(req.body);
 
-    console.log("DONE :", done);
+    //console.log("DONE :", done);
 
     return res.status(200).json({
         success: true,
@@ -275,7 +275,7 @@ router.post('/checkperiod', (req, res, next) => {
                 console.log("ERROR did not find period: ", err);
                 return err;
             }
-            console.log("All period  for disabledPeriod!", periodForBike);
+            //console.log("All period  for disabledPeriod!", periodForBike);
             disabledPeriod = periodForBike;
 
             return res.status(200).json({
@@ -301,7 +301,7 @@ router.post('/getbikes', (req, res, next) => {
             console.log("ERROR did not find period: ", err);
             return err;
         }
-        console.log("All BIKES founded!", done);
+        //console.log("All BIKES founded!", done);
         checkPeriod = done;
         return res.status(200).json({
             success: true,
@@ -321,7 +321,7 @@ router.post('/checkbike', (req, res, next) => {
             return err;
         }
 
-        console.log("Alla cykel founded!", done);
+        //console.log("Alla cykel founded!", done);
 
 
         return res.status(200).json({
@@ -386,7 +386,7 @@ router.post('/bikebooking', (req, res, next) => {
         nextbookingdate: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
     };
 
-    console.log("bookingBikeData: ", bookingBikeData);
+    //console.log("bookingBikeData: ", bookingBikeData);
 
     const newBooking = new BikeBooking(bookingBikeData);
 
@@ -412,7 +412,7 @@ router.post('/unbookbike', (req, res, next) => {
 
 router.post('/login', (req, res, next) => {
 
-    //var isUserVerified = false;
+    var isUserVerified = false;
 
     const validationResult = validateLoginForm(req.body);
     if (!validationResult.success) {
@@ -458,7 +458,7 @@ router.post('/login', (req, res, next) => {
                 console.log(err);
             }
 
-            console.log("CALLBACK  user.isVerified : ", user.isVerified);
+            //console.log("CALLBACK  user.isVerified : ", user.isVerified);
 
             if (user.isVerified) {
                 return res.json({
@@ -469,14 +469,11 @@ router.post('/login', (req, res, next) => {
                     isVerified: user.isVerified
                 });
             } else {
-                return res.json({
-                    success: true,
-                    message: 'Verifiera ditt email och bekräfta registering',
-                    token,
-                    userdata: userData,
-                    isVerified: user.isVerified
+                return res.status(400).json({
+                    success: false,
+                    message: 'Kontrollera ditt bekräftelse i din email'
                 });
-            }
+            } 
 
         });
 
@@ -503,11 +500,11 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
         }
 
         if (resUserRebook.length !== 0) {
-            console.log("Tyvärr kan du inte boka den här modellen!");
+            //console.log("Tyvärr kan du inte boka den här modellen");
 
             return res.status(200).json({
                 success: true,
-                message: 'Tyvärr kan du inte boka den här modellen!'
+                message: 'Tyvärr kan du inte boka den här modellen'
             });
         } else {
 
@@ -522,11 +519,11 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
                 }
 
                 if (resUserPeriod.length !== 0) {
-                    console.log("Tyvärr kan du inte boka den här modellen!");
+                    //console.log("Tyvärr kan du inte boka den här modellen");
 
                     return res.status(200).json({
                         success: true,
-                        message: 'Tyvärr kan du inte boka den här modellen!'
+                        message: 'Tyvärr kan du inte boka den här modellen'
                     });
                 } else {
 
@@ -540,12 +537,20 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
                         }
                         if (resBikeBooking.length !== 0) {
 
-                            const msg = 'Denna period & cykel är redan bokad';
-                            showMessages200(res, msg);
+                            Bike.find({ bikeid: bookingBikeData.bikeid }, (err, bikeAmount) => {
+                                if (bikeAmount[0].amount === 1) {
 
+                                    createNewBooking(newBooking);
+                                    const msg = 'Tack för din bokning';
+                                    showMessages200(res, msg);
+                                } else {
+                                    const msg = 'Denna period och cykel är redan bokad';
+                                    showMessages200(res, msg);
+                                }
+                            });
                         } else {
                             createNewBooking(newBooking);
-                            const msg = 'Du har lagt till din bokning.';
+                            const msg = 'Tack för din bokning';
                             showMessages200(res, msg);
                         }
                     });
@@ -591,15 +596,15 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
                     showMessages200(res, msg);
                 } else {
                     createNewBooking(newBooking);
-                    const msg = 'Du har lagt till din bokning.';
+                    const msg = 'Tack för din bokning';
                     showMessages200(res, msg);
                 }
             });
-            const msg = 'Denna period & cykel är redan bokad.';
+            const msg = 'Denna period och cykel är redan bokad.';
             //showMessages200(res, msg);
         } else {
             createNewBooking(newBooking);
-            const msg = 'Du har lagt till din bokning.';
+            const msg = 'Tack för din bokning';
             showMessages200(res, msg);
         }
     });
@@ -618,10 +623,10 @@ function createNewBooking(newBooking) {
     //This save the new bikebooking to the DB
     newBooking.save((err, done) => {
         if (err) {
-            console.log("ERROR from New Booking: ", err);
+            //console.log("ERROR from New Booking: ", err);
             return err;
         }
-        console.log("NY CYKEL BOOKING ÄR KLART!", done);
+        //console.log("NY CYKEL BOOKING ÄR KLART!", done);
         return done;
     });
 
@@ -655,7 +660,7 @@ function createNewPeriod(req) {
             console.log("ERROR from New Booking: ", err);
             return err;
         }
-        console.log("NY PERIOD ÄR KLART!", done);
+        //console.log("NY PERIOD ÄR KLART!", done);
         return done;
     });
 
@@ -839,6 +844,10 @@ function validateAddBikeForm(payload) {
         isFormValid = false;
         errors.imgurl = 'Bildadressen börjar med http:// or https://';
     }
+    if (!payload || typeof payload.amount !== 'string' || payload.amount.trim().length === 0) {
+        isFormValid = false;
+        errors.imgurl = 'Vänligen ange mängden cyklar';
+    }
     if (!isFormValid) {
         message = 'Kontrollera formuläret för fel.';
     }
@@ -856,7 +865,8 @@ function addNewBike(req) {
         bikeid: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), //{type: String, unique: true},,
         biketype: req.biketype,
         bikename: req.bikename,
-        imgurl: req.imgurl
+        imgurl: req.imgurl,
+        amount: req.amount
     };
 
     const newBike = new Bike(bikeData);
@@ -866,10 +876,9 @@ function addNewBike(req) {
             console.log("ERROR from Add new Bike: ", err);
             return err;
         }
-        console.log("NY BIKE ÄR KLART!", done);
+        //console.log("NY BIKE ÄR KLART!", done);
         return done;
     });
-
 };
 
 function verifyUserConfirmation(req, res, next) {

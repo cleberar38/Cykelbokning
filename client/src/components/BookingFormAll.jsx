@@ -21,8 +21,15 @@ import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
 import ListExampleMessages from './Profile.jsx'
 import { Button } from 'react-bootstrap';
 import { Grid, Row, Col, Thumbnail, Panel, Jumbotron } from 'react-bootstrap';
+import Checkbox from '../containers/CheckboxPage.jsx';
+
 
 strings.setLanguage(default_lang.lang);
+
+const items = [
+    //&aring;, &auml;, &ouml;, &Aring;, &Auml;, &Ouml;
+    'Jag har läst låneavtalet',
+];
 
 const paneltitle = (
     <h3 style={{ "color": "white", "textAlign": "left" }}>{strings.chooseCykel}</h3>
@@ -51,7 +58,13 @@ const BookingFormAll = ({
     isBikeChecked,
     bike,
     addBike,
-    btnPeriodBg
+    btnPeriodBg,
+    checked,
+    createCheckbox,
+    toggleCheckbox,
+    label
+    
+
 
 }) => (
         <div>
@@ -93,14 +106,29 @@ const BookingFormAll = ({
                                     )}
                                 </div>
                             </div>
-
+                            
                             {Auth.isUserAuthenticated() ? (
-                                <Link to="/message" >
-                                    <div className="button-line center-container cardbottomFot">
-                                        <FlatButton onClick={onSubmit} className="top-btn" style={{ color: 'white' }} backgroundColor="#ae0b05" label={strings.book} />
+                                <div>
 
+                                    <div className="center-container">
+                                        <div className="row">
+                                            <div className="col-sm-12">
+
+
+                                                { items.map(createCheckbox) }
+                                                    
+                                                
+
+                                            </div>
+                                        </div>
                                     </div>
-                                </Link>
+
+                                    <Link to="/message" >
+                                        <div className="button-line center-container cardbottomFot">
+                                            <FlatButton onClick={onSubmit} className="top-btn" style={{ color: 'white' }} backgroundColor="#ae0b05" label={strings.book} />
+                                        </div>
+                                    </Link>
+                                </div>
                             ) : (
                                     <div className="center-container">
                                         <Link to="/login" style={{ color: 'white' }}>
@@ -125,7 +153,9 @@ BookingFormAll.propTypes = {
     value: PropTypes.number.isRequired,
     handleSetPeriod: PropTypes.func.isRequired,
     optionSelected: PropTypes.string.isRequired,
-    errors: PropTypes.object.isRequired
+    errors: PropTypes.object.isRequired,
+    handleBackBtn: PropTypes.func,
+    
 };
 
 export default BookingFormAll;

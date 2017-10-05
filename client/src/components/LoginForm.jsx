@@ -39,7 +39,6 @@ const LoginForm = ({
       ) : (
       <Card zDepth={5} className="container cardbottom">
         <form action="/" onSubmit={ onSubmit }>
-          <h2 className="card-heading">{strings.login}</h2>
 
           {successMessage && <p className="success-message">{successMessage}</p>}
           {errors.summary && <p className="error-message">{errors.summary}</p>}
@@ -69,7 +68,7 @@ const LoginForm = ({
             <RaisedButton type="submit" label={strings.login} primary={false} backgroundColor="#ae0b05" className="loginBtn" onSubmit={handleSubmit} />
           </div>
 
-          <CardText>{strings.douhaveaccount}  <Link to="/signup" style={{color: 'white'}}><FlatButton style={{color: 'white'}} backgroundColor="#ae0b05" label={strings.signup} /></Link></CardText>
+          <CardText><h3>{strings.douhaveaccount}</h3>  <Link to="/signup" style={{ color: "#ae0b05" }}> {strings.signup} </Link></CardText>
 
         </form>
       </Card>

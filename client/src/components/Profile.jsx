@@ -16,25 +16,30 @@ import strings from './lang_config.jsx';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
-import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
-
+import ProfileMessagesPage from '../containers/ProfileMessagesPage.jsx';
 
 strings.setLanguage(default_lang.lang);
 
 const Profile = ({
-  bikename,
+    bikename,
     nextAvailablePeriodDate,
     period,
     profileresult,
     removeBooking,
     name,
-    messageChanged,
     messages,
+    messageChanged,
     handleBackBtn
+
   }) => (
         <div>
+            <div className="center-container">
+                <Link to="/" style={{ color: 'white' }}>
+                    <FlatButton style={{ color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)' }} label={strings.goback} />
+                </Link>
+            </div>
             {messageChanged ? (
-                <MessagesToUserPage messageChanged={messageChanged} messages={messages} handleBackBtn={handleBackBtn} />
+                <ProfileMessagesPage messageChanged={messageChanged} messages={messages} handleBackBtn={handleBackBtn} />
             ) : (
                     <MobileTearSheet>
                         <List>
@@ -45,7 +50,7 @@ const Profile = ({
                                         leftAvatar={<Avatar src="https://image.flaticon.com/icons/svg/125/125855.svg" />}
                                         rightIconButton={(
                                             <IconMenu iconButtonElement={(
-                                                <Link to="/message"><FlatButton style={{ color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)' }} key={profile.bikebookingid} label={strings.unbook} onClick={(evt) => removeBooking(evt, profile.bikebookingid)} name={profile.bikebookingid} secondary={true} style={{ "margin": "12px" }} /></Link>
+                                                <Link to="/profilemsg"><FlatButton style={{ color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)' }} key={profile.bikebookingid} label={strings.unbook} onClick={(evt) => removeBooking(evt, profile.bikebookingid)} name={profile.bikebookingid} secondary={true} style={{ "margin": "12px" }} /></Link>
                                             )}>
                                                 <MenuItem>{strings.unbooked}</MenuItem>
                                             </IconMenu>
@@ -74,9 +79,11 @@ Profile.propTypes = {
     bikename: PropTypes.string.isRequired,
     nextAvailablePeriodDate: PropTypes.string.isRequired,
     period: PropTypes.string.isRequired,
-
     removeBooking: PropTypes.func.isRequired,
-    name: PropTypes.func.isRequired
+    name: PropTypes.string.isRequired,
+    messages: PropTypes.string.isRequired,
+    messageChanged: PropTypes.bool.isRequired,
+    handleBackBtn: PropTypes.func
 };
 
 export default Profile;

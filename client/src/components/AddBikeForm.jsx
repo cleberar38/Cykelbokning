@@ -68,13 +68,24 @@ const AddBikeForm = ({
 
           <div className="field-line">
             <TextField
-              floatingLabelText={strings.imgurl}
-              name="imgurl"
-              errorText={errors.imgurl}
+              floatingLabelText={strings.amount}
+              name="amount"
+              errorText={errors.amount}
               onChange={onChange}
-              value={bike.imgurl}
+              value={bike.amount}
             />
           </div>
+
+          <div className="field-line">
+              <TextField
+                  floatingLabelText={strings.imgurl}
+                  name="imgurl"
+                  errorText={errors.imgurl}
+                  onChange={onChange}
+                  value={bike.imgurl}
+              />
+          </div>
+
 
           {Auth.isAdminUserAuthenticated() ? (
           <div className="button-line center-container cardbottomFot">

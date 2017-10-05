@@ -96,9 +96,6 @@ const Base = ({
                                 </div>
                             )}
 
-
-
-
                         {Auth.isUserAuthenticated() ? (
                             <div className="top-bar-right">
                                 <span style={{ color: 'white' }}><FlatButton style={{ color: 'white' }} label={localStorage.getItem("name")} /></span>

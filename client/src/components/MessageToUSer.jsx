@@ -4,39 +4,38 @@ import { Card, CardTitle, CardText } from 'material-ui/Card';
 import { Link, IndexLink } from 'react-router';
 import Auth from '../modules/Auth';
 import AppBar from 'material-ui/AppBar';
-import strings  from './lang_config.jsx';
+import strings from './lang_config.jsx';
 import default_lang from './default_lang.jsx';
 import RaisedButton from 'material-ui/RaisedButton';
-import {Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 strings.setLanguage(default_lang.lang);
 
 const MessageToUSer = ({
-  messages,
-  messageChanged,
-  errors,
-  handleBackBtn
+    messages,
+    messageChanged,
+    errors,
+    handleBackBtn
 }) => (
-  <div  style={{height: '100%'}}>
-    <div>
-      <Card className="container">
-        <CardTitle title="SBF-bokningsystem" subtitle={ messages }>
+        <div style={{ height: '100%' }}>
+            <div>
+                <Card className="container">
+                    <CardTitle title="" subtitle="">
 
-          { errors !== undefined || errors !== null && Object !== null || Object !== undefined && Object.keys(errors).length === 0 && errors.constructor === Object ?
+                        {errors !== undefined || errors !== null && Object !== null || Object !== undefined && Object.keys(errors).length === 0 && errors.constructor === Object ?
 
-           (<h1 className="display-2">{ strings.thankMsg }</h1>)
-           :
-           (<h1 className="display-2">{ errors.summary }</h1>)
+                            (<h3 className="display-2">{messages}</h3>)
+                            :
+                            (<h3 className="display-2">{errors.summary}</h3>)
 
-          }
+                        }
 
-          <h4 className="display-2">{ messages }</h4>
-        </CardTitle>
-          <Button onClick={ handleBackBtn } bsStyle="primary" className={ "msgbtn " }>Tillbaka till bokning</Button>
-      </Card>
-    </div>
-  </div>
-);
+                    </CardTitle>
+                    <Button onClick={handleBackBtn} bsStyle="primary" className={"msgbtn "}>Tillbaka till bokning</Button>
+                </Card>
+            </div>
+        </div>
+    );
 
 MessageToUSer.propTypes = {
 

@@ -10,6 +10,7 @@ let state = {
     biketype: '', //String,
     bikename: '', //String,
     imgurl: '', //String
+    amount: 0
   },
   message: '',
   messages: '',
@@ -44,8 +45,9 @@ class AddBikePage extends React.Component {
     const bikename = encodeURIComponent(this.state.bike.bikename);
     const biketype = encodeURIComponent(this.state.bike.biketype);
     const imgurl = encodeURIComponent(this.state.bike.imgurl);
+    const amount = encodeURIComponent(this.state.bike.amount);
 
-    const formData = `bikeid=${bikeid}&bikename=${bikename}&biketype=${biketype}&imgurl=${imgurl}`;
+    const formData = `bikeid=${bikeid}&bikename=${bikename}&biketype=${biketype}&amount=${amount}&imgurl=${imgurl}`;
 
     const self = this;
 

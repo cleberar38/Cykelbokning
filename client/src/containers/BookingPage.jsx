@@ -2,6 +2,7 @@ import React from 'react';
 import Auth from '../modules/Auth';
 import BookingFormAll from '../components/BookingFormAll.jsx';
 import PopUpConfirmation from 'react-popconfirm';
+import Checkbox from './CheckboxPage.jsx';
 
 // Set initial state
 let state = {
@@ -29,8 +30,10 @@ let state = {
     messageChanged: false,
     messages: '',
     lastPeriodClicked: null,
-    btnPeriodBg: "#ae0b05"
+    btnPeriodBg: "#ae0b05",
+    checked: false
 };
+
 
 class BookingPage extends React.Component {
 
@@ -57,15 +60,44 @@ class BookingPage extends React.Component {
         this.checkPeriodsAvailable = this.checkPeriodsAvailable.bind(this);
         this.getBikesOnDB = this.getBikesOnDB.bind(this);
         this.checkPeriodsInBooking = this.checkPeriodsInBooking.bind(this);
+        this.handleBackBtn = this.handleBackBtn.bind(this);
+        this.createCheckbox = this.createCheckbox.bind(this);
+        this.createCheckboxes = this.createCheckboxes.bind(this);
+        this.toggleCheckbox = this.toggleCheckbox.bind(this);
 
     }
 
+    
     componentWillMount() {
         this.checkPeriodsAvailable();
         this.getBikesOnDB();
         Auth.setPeriod('');
         Auth.setBikeName('');
+        this.selectedCheckboxes = new Set();
+        
     }
+
+    toggleCheckbox(label){
+        if (this.selectedCheckboxes.has(label)) {
+            this.selectedCheckboxes.delete(label);
+        } else {
+            this.selectedCheckboxes.add(label);
+        }
+    }
+
+    
+    createCheckbox(label) {
+        return <Checkbox
+            label={label}
+            handleCheckboxChange={this.toggleCheckbox}
+            key={label}
+        />;
+    }
+
+    createCheckboxes() {
+        items.map(this.createCheckbox)
+    }
+
 
     /**
      * This method will be executed after initial rendering.
@@ -110,6 +142,14 @@ class BookingPage extends React.Component {
         });
     }
 
+    handleBackBtn() {
+        this.setState({
+            messageChanged: false,
+            messages: ''
+        });
+    }
+
+
     componentWillUnmount() {
         /*
           Check if the component is mounted
@@ -138,10 +178,14 @@ class BookingPage extends React.Component {
     handleChange(event, index, value) {
         this.setState({ value })
     }
-    
+
     processForm(event) {
         // prevent default action. in this case, action is the form submission event
         event.preventDefault();
+
+        for (const checkbox of this.selectedCheckboxes) {
+            console.log(checkbox, 'is selected.');
+        }
 
         const userid = localStorage.getItem('useremail');
         const periodid = localStorage.getItem('bikeperiod');
@@ -261,7 +305,7 @@ class BookingPage extends React.Component {
 
     handleSetPeriod(evt, value) {
 
-        evt.preventDefault();
+        evt !== undefined ? evt.preventDefault() : null;
 
         //console.log("handleSetPeriod Event Target : ", evt.target);
 
@@ -282,7 +326,7 @@ class BookingPage extends React.Component {
                         } else {
                             bg[i].style.backgroundColor = '';
                         }
-                        
+
                     }
 
                     if (evt !== undefined && evt !== "null" && evt !== null) {
@@ -337,7 +381,7 @@ class BookingPage extends React.Component {
             }
         }
 
-        
+
 
     }
 
@@ -443,130 +487,130 @@ class BookingPage extends React.Component {
 
         //if (!this.state.isPeriodChecked) {
 
-            console.log("CHEKING WHICH PERIODS ARE AVAILABLE...!!!");
+        console.log("CHEKING WHICH PERIODS ARE AVAILABLE...!!!");
 
-            const self = this;
-           
-            const periodid = localStorage.getItem('bikeperiod');
-            const bikeid = localStorage.getItem('bike');
+        const self = this;
 
-            // console.log("bikeid : " , bikeid);
+        const periodid = localStorage.getItem('bikeperiod');
+        const bikeid = localStorage.getItem('bike');
 
-            const formData = `periodid=${periodid}&bikeid=${bikeid}`;
+        // console.log("bikeid : " , bikeid);
 
-            // create an AJAX request
-            const xhr = new XMLHttpRequest();
-            xhr.open('post', '/auth/checkperiod');
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhr.responseType = 'json';
-            xhr.addEventListener('load', () => {
-                if (xhr.status === 200) {
-                    // success
+        const formData = `periodid=${periodid}&bikeid=${bikeid}`;
 
-                    let response = null;
+        // create an AJAX request
+        const xhr = new XMLHttpRequest();
+        xhr.open('post', '/auth/checkperiod');
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.responseType = 'json';
+        xhr.addEventListener('load', () => {
+            if (xhr.status === 200) {
+                // success
 
-                    // Opera 8.0+
-                    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+                let response = null;
 
-                    // Firefox 1.0+
-                    var isFirefox = typeof InstallTrigger !== 'undefined';
+                // Opera 8.0+
+                var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 
-                    // Safari 3.0+ "[object HTMLElementConstructor]" 
-                    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+                // Firefox 1.0+
+                var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                    // Internet Explorer 6-11
-                    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+                // Safari 3.0+ "[object HTMLElementConstructor]" 
+                var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
-                    // Edge 20+
-                    var isEdge = !isIE && !!window.StyleMedia;
+                // Internet Explorer 6-11
+                var isIE = /*@cc_on!@*/false || !!document.documentMode;
 
-                    // Chrome 1+
-                    var isChrome = !!window.chrome && !!window.chrome.webstore;
+                // Edge 20+
+                var isEdge = !isIE && !!window.StyleMedia;
 
-                    // Blink engine detection
-                    var isBlink = (isChrome || isOpera) && !!window.CSS;
+                // Chrome 1+
+                var isChrome = !!window.chrome && !!window.chrome.webstore;
 
-                    //IE problem! We have to parse the response since in IE everything became string!
-                    if (isIE) { response = JSON.parse(xhr.response); } else {
-                        response = xhr.response;
-                    }
+                // Blink engine detection
+                var isBlink = (isChrome || isOpera) && !!window.CSS;
 
-                    //TODO: Set the state of the periods available
+                //IE problem! We have to parse the response since in IE everything became string!
+                if (isIE) { response = JSON.parse(xhr.response); } else {
+                    response = xhr.response;
+                }
 
-                    console.log("xh.response : ", response);
-                    console.log("disabledPeriod : ", response.disabledPeriod);
+                //TODO: Set the state of the periods available
 
-                    self.setState({
-                        periodData: response
-                        
-                    });
+                console.log("xh.response : ", response);
+                console.log("disabledPeriod : ", response.disabledPeriod);
+
+                self.setState({
+                    periodData: response
+
+                });
 
 
-                    var bg = document.getElementsByClassName("periodBtn");
+                var bg = document.getElementsByClassName("periodBtn");
 
-                    for (var i = 0, leni = bg.length; i < leni; i++) {
-                            bg[i].classList.remove("disabled");
-                            bg[i].style.backgroundColor = "";
-                        for (var j = 0, lenj = response.disabledPeriod.length; j < lenj; j++) {
-                            var tempPeriod = response.disabledPeriod[j]
-                            if (bg[i].name === tempPeriod.periodid) {
+                for (var i = 0, leni = bg.length; i < leni; i++) {
+                    bg[i].classList.remove("disabled");
+                    bg[i].style.backgroundColor = "";
+                    for (var j = 0, lenj = response.disabledPeriod.length; j < lenj; j++) {
+                        var tempPeriod = response.disabledPeriod[j]
+                        if (bg[i].name === tempPeriod.periodid) {
 
-                                bg[i].classList.add("disabled");
-                                bg[i].style.backgroundColor = "rgba(20,25,22,0.35)";
-                            }
-                                
+                            bg[i].classList.add("disabled");
+                            bg[i].style.backgroundColor = "rgba(20,25,22,0.35)";
                         }
 
-
-                    }
-                                       
-
-                } else {
-                    // failure
-
-                    let response = null;
-
-                    // Opera 8.0+
-                    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-
-                    // Firefox 1.0+
-                    var isFirefox = typeof InstallTrigger !== 'undefined';
-
-                    // Safari 3.0+ "[object HTMLElementConstructor]" 
-                    var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
-
-                    // Internet Explorer 6-11
-                    var isIE = /*@cc_on!@*/false || !!document.documentMode;
-
-                    // Edge 20+
-                    var isEdge = !isIE && !!window.StyleMedia;
-
-                    // Chrome 1+
-                    var isChrome = !!window.chrome && !!window.chrome.webstore;
-
-                    // Blink engine detection
-                    var isBlink = (isChrome || isOpera) && !!window.CSS;
-
-                    //IE problem! We have to parse the response since in IE everything became string!
-                    if (isIE) { response = JSON.parse(xhr.response); } else {
-                        response = xhr.response;
                     }
 
-                    console.log("ERROR", response);
 
                 }
-            });
 
-            xhr.send(formData);
 
-            if (!this._mounted) {
-                this.setState({
-                    isPeriodChecked: true,
-                    //periodData: response
-                });
+            } else {
+                // failure
+
+                let response = null;
+
+                // Opera 8.0+
+                var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+                // Firefox 1.0+
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+
+                // Safari 3.0+ "[object HTMLElementConstructor]" 
+                var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+                // Internet Explorer 6-11
+                var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+                // Edge 20+
+                var isEdge = !isIE && !!window.StyleMedia;
+
+                // Chrome 1+
+                var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+                // Blink engine detection
+                var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+                //IE problem! We have to parse the response since in IE everything became string!
+                if (isIE) { response = JSON.parse(xhr.response); } else {
+                    response = xhr.response;
+                }
+
+                console.log("ERROR", response);
+
             }
+        });
+
+        xhr.send(formData);
+
+        if (!this._mounted) {
+            this.setState({
+                isPeriodChecked: true,
+                //periodData: response
+            });
+        }
         //} else {
-            //console.log("ALREADY CHECKED PERIOD...!!!");
+        //console.log("ALREADY CHECKED PERIOD...!!!");
         //}
     }
 
@@ -747,6 +791,11 @@ class BookingPage extends React.Component {
                 isBookingPeriodChecked={this.state.isBookingPeriodChecked}
                 messageChanged={this.state.messageChanged}
                 messages={this.state.messages}
+                handleBackBtn={this.handleBackBtn}
+                createCheckbox={this.createCheckbox}
+                createCheckboxes={this.createCheckboxes}
+                toggleCheckbox={this.toggleCheckbox}
+               
             />
         );
     }

@@ -10,7 +10,9 @@ let state = {
   nextAvailablePeriodDate: '',
   period: '',
   profileresult: null,
-  name: ''
+  name: '',
+  messageChanged: false,
+  messages: ''
 
 };
 
@@ -27,6 +29,7 @@ class ProfilePage extends React.Component {
 
     this.getProfileInfo = this.getProfileInfo.bind(this);
     this.removeBooking = this.removeBooking.bind(this);
+    this.handleBackBtn = this.handleBackBtn.bind(this);
 
   }
 
@@ -45,6 +48,15 @@ class ProfilePage extends React.Component {
   componentDidMount(props) {
     console.log("ProfilePage state : ", this.state);
 
+  }
+
+  handleBackBtn() {
+      console.log("handleBackBtn props", props);
+      console.log("handleBackBtn this.props", this.props);
+      this.setState({
+          messages: '',
+          messageChanged: false
+      });
   }
 
   removeBooking(evt, bikebookingid) {
@@ -94,10 +106,8 @@ class ProfilePage extends React.Component {
 
           console.log("xhr.response.done : ", response.done);
 
-          this.setState({
-            messageChanged: true,
-            messages: 'Avbokningar är helt klart! '
-          })
+         
+         
 
       } else {
         // failure
@@ -257,6 +267,7 @@ class ProfilePage extends React.Component {
         name={this.state.name}
         messageChanged={this.state.messageChanged}
         messages={this.state.messages}
+        handleBackBtn={this.handleBackBtn}
 
       />
     );
