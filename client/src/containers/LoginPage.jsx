@@ -50,9 +50,9 @@ class LoginPage extends React.Component {
 
 
   componentDidMount() {
-    console.log("LoginPage props : ", this.props);
-    console.log("LoginPage props : ", this.state);
-    
+
+      window.scrollTo(0, 0);
+
   }
 
   /**

@@ -61,6 +61,56 @@ router.post('/profile', (req, res, next) => {
     });
 });
 
+router.post('/adminprofile', (req, res, next) => {
+
+    //This function with callback is used to get the response from the server
+    //outside of the instance of BikeBooking model
+    function retrieveBooking(email, callback) {
+        let allBookning = [];
+
+        BikeBooking.find((err, resUserRebook) => {
+            if (err) {
+                callback(err, null);
+            } else {
+
+                //console.log("BikeBooking getting resUserRebook : ", resUserRebook);
+
+                User.find((err, resUser) => {
+                    if (err) {
+                        console.log("ERROR : ", err);
+                        return err;
+                    }
+                    //console.log("resUser[i]", resUser);
+
+                    //console.log("resUserRebook[i]", resUserRebook);
+                    callback(null, { booking: resUserRebook, user: resUser });
+
+                });
+
+
+            }
+
+        });
+    };
+
+    //Call the function above to get the response from the server
+    //In this case it verify if the user is verified
+    retrieveBooking({}, function (err, resUserRebook) {
+        if (err) {
+            console.log(err);
+        }
+
+        //console.log("CALLBACK BikeBooking & retrieveBooking : ", resUserRebook);
+
+        return res.status(200).json({
+            success: true,
+            result: resUserRebook
+            //message: 'Sorry you have not book any bike!'
+        });
+
+    });
+});
+
 router.post('/confirmation', (req, res, next) => {
 
     verifyUserConfirmation(req, res, next);
@@ -117,11 +167,11 @@ router.post('/signup', (req, res, next) => {
 
             msg.to = req.body.email;
             msg.from = 'none@reply.com';
-            msg.subject = 'Kontoverifiering - Cykelbiblioteket i Helsingborg.';
+            msg.subject = 'Cykelbiblioteket i Helsingborg';
             //The line above was used just to demostrate that we can send the token and userId within the URL link
             // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
-            msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbiblioteket. Klicka på länken nedan för att verifiera ditt konto: \nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '';
-            msg.html = '<strong>Hej,<br /><br />Kontrollera ditt konto genom att klicka på länken eller kopiera och klistra in länken i webbläsaren: <br /><a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '</a></strong>';
+            msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
+            msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
 
             //console.log("TOKEN : ", token);
 
@@ -260,34 +310,45 @@ router.post('/checkperiod', (req, res, next) => {
     var checkPeriod = null;
     var disabledPeriod = null;
 
-    Period.find((err, done) => {
+    Period.find((err, period) => {
         if (err) {
             console.log("ERROR did not find period: ", err);
             return err;
         }
         //console.log("All period founded!", done);
-        checkPeriod = done;
+        checkPeriod = period;
 
         BikeBooking.find({
             bikeid: req.body.bikeid
-        }, (err, periodForBike) => {
+        }, (err, bikebookning) => {
             if (err) {
                 console.log("ERROR did not find period: ", err);
                 return err;
             }
-            //console.log("All period  for disabledPeriod!", periodForBike);
-            disabledPeriod = periodForBike;
 
-            return res.status(200).json({
-                success: true,
-                message: 'Alla period.',
-                done: done,
-                disabledPeriod: periodForBike
+
+            Bike.find({ bikename: req.body.bikeid }, (err, bikesAmount) => {
+
+                if (err) {
+                    console.log("ERROR: ", err);
+                    return err;
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    message: 'Alla period.',
+                    period: period,
+                    bikeAmount: bikesAmount,
+                    bikebookning: bikebookning
+                });
+
             });
+
             
+
         });
 
-       
+
     });
 
 });
@@ -405,7 +466,7 @@ router.post('/unbookbike', (req, res, next) => {
 
     return res.status(200).json({
         success: true,
-        messages: "Avbokning är klart!"
+        messages: "Cykeln har avbokats"
     });
 
 });
@@ -473,7 +534,7 @@ router.post('/login', (req, res, next) => {
                     success: false,
                     message: 'Kontrollera ditt bekräftelse i din email'
                 });
-            } 
+            }
 
         });
 
@@ -487,71 +548,52 @@ router.post('/login', (req, res, next) => {
  * @param {object}  -
  * @returns {object} -
  *
- */
+ */ 
 function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData) {
 
-    BikeBooking.find({
+   BikeBooking.find({
         bikeid: bookingBikeData.bikeid,
-        userid: req.body.userid
-    }, (err, resUserRebook) => {
-        if (err) {
-            console.log("ERROR: ", err);
-            return err;
-        }
+        periodid: bookingBikeData.periodid
+    }, (err, amountBikeInBooking) => {
+         
+    
+        Bike.find({ bikename: bookingBikeData.bikeid }, (err, bikeAmount) => {
 
-        if (resUserRebook.length !== 0) {
-            //console.log("Tyvärr kan du inte boka den här modellen");
+            if (err) { console.log("ERROR : ", err); return err; }
 
-            return res.status(200).json({
-                success: true,
-                message: 'Tyvärr kan du inte boka den här modellen'
-            });
-        } else {
+            Period.find((err, availablePeriod) => {
 
-            BikeBooking.find({
-                periodid: bookingBikeData.periodid,
-                userid: req.body.userid
-            }, (err, resUserPeriod) => {
+                if (amountBikeInBooking.length === bikeAmount[0].amount * availablePeriod.length) {
 
-                if (err) {
-                    console.log("ERROR: ", err);
-                    return err;
-                }
+                    const msg = 'Denna period och cykel är redan bokad';
+                    showMessages200(res, msg);
 
-                if (resUserPeriod.length !== 0) {
-                    //console.log("Tyvärr kan du inte boka den här modellen");
-
-                    return res.status(200).json({
-                        success: true,
-                        message: 'Tyvärr kan du inte boka den här modellen'
-                    });
                 } else {
 
+
                     BikeBooking.find({
-                        periodid: bookingBikeData.periodid,
                         bikeid: bookingBikeData.bikeid,
-                    }, (err, resBikeBooking) => {
+                        userid: req.body.userid
+                    }, (err, resUserRebook) => {
                         if (err) {
-                            console.log("ERROR : ", err);
+                            console.log("ERROR: ", err);
                             return err;
                         }
-                        if (resBikeBooking.length !== 0) {
 
-                            Bike.find({ bikeid: bookingBikeData.bikeid }, (err, bikeAmount) => {
-                                if (bikeAmount[0].amount === 1) {
+                        if (resUserRebook.length !== 0) {
 
-                                    createNewBooking(newBooking);
-                                    const msg = 'Tack för din bokning';
-                                    showMessages200(res, msg);
-                                } else {
-                                    const msg = 'Denna period och cykel är redan bokad';
-                                    showMessages200(res, msg);
-                                }
+                            return res.status(200).json({
+                                success: true,
+                                message: 'Tyvärr kan du inte boka den här modellen'
                             });
                         } else {
+
+
                             createNewBooking(newBooking);
                             const msg = 'Tack för din bokning';
                             showMessages200(res, msg);
+
+
                         }
                     });
 
@@ -559,7 +601,8 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
 
             });
 
-        }
+            
+        });
     });
 
 };

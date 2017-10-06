@@ -197,6 +197,8 @@ class PeriodPage extends React.Component {
    */
   componentDidMount() {
 
+    window.scrollTo(0, 0);
+
     //console.log("Auth.isAdminUserAuthenticated()", Auth.isAdminUserAuthenticated());
 
     if(Auth.isAdminUserAuthenticated()){

@@ -12,48 +12,53 @@ let state = {
 
 class ProfileMessagesPage extends React.Component {
 
-  /**
-   * Class constructor.
-   */
-  constructor(props) {
-    super(props);
+    /**
+     * Class constructor.
+     */
+    constructor(props) {
+        super(props);
 
-    // Retrieve the last state
-    this.state = state;
+        // Retrieve the last state
+        this.state = state;
 
-    this.handleBackBtn.bind(this);
+        this.handleBackBtn.bind(this);
 
-  }
+    }
 
-  componentWillMount() {
-      this.setState({
-          messageChanged: true,
-          messages: 'Avbokningar klart',
-          errors: {}
-      });
-  }
+    componentWillMount() {
+        this.setState({
+            messageChanged: true,
+            messages: 'Cykeln har avbokats',
+            errors: {}
+        });
+    }
 
-  handleBackBtn() {
-      this.setState({
-        messageChanged: false,
-        messages: ''
-      });
-  }
-    
+    componentDidMount() {
 
-  /**
-   * Render the component.
-   */
-  render() {
-    return (
-        <ProfileMessages
-        messageChanged={ this.state.messageChanged }
-        messages={ this.state.messages}
-        errors={ this.state.errors }
-        handleBackBtn={ this.state.handleBackBtn }
-      />
-    );
-  }
+        window.scrollTo(0, 0);
+
+    }
+
+    handleBackBtn() {
+        this.setState({
+            messageChanged: false,
+            messages: ''
+        });
+    }
+
+    /**
+     * Render the component.
+     */
+    render() {
+        return (
+            <ProfileMessages
+                messageChanged={this.state.messageChanged}
+                messages={this.state.messages}
+                errors={this.state.errors}
+                handleBackBtn={this.state.handleBackBtn}
+            />
+        );
+    }
 }
 
 export default ProfileMessagesPage;

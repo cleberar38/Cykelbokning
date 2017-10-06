@@ -29,6 +29,11 @@ class BikePage extends React.Component {
     // Retrieve the last state
     this.state = state;
     this.addBike = this.addBike.bind(this);
+    }
+
+  componentDidMount() {
+
+      window.scrollTo(0, 0);
   }
 
   addBike(event){

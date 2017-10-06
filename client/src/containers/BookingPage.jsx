@@ -30,8 +30,8 @@ let state = {
     messageChanged: false,
     messages: '',
     lastPeriodClicked: null,
-    btnPeriodBg: "#ae0b05",
-    checked: false
+    btnPeriodBg: "#ae0b05"
+
 };
 
 
@@ -62,22 +62,23 @@ class BookingPage extends React.Component {
         this.checkPeriodsInBooking = this.checkPeriodsInBooking.bind(this);
         this.handleBackBtn = this.handleBackBtn.bind(this);
         this.createCheckbox = this.createCheckbox.bind(this);
-        this.createCheckboxes = this.createCheckboxes.bind(this);
-        this.toggleCheckbox = this.toggleCheckbox.bind(this);
 
+        this.toggleCheckbox = this.toggleCheckbox.bind(this);
     }
 
-    
+
     componentWillMount() {
         this.checkPeriodsAvailable();
         this.getBikesOnDB();
         Auth.setPeriod('');
         Auth.setBikeName('');
         this.selectedCheckboxes = new Set();
-        
+
     }
 
-    toggleCheckbox(label){
+    toggleCheckbox(label) {
+
+
         if (this.selectedCheckboxes.has(label)) {
             this.selectedCheckboxes.delete(label);
         } else {
@@ -85,24 +86,23 @@ class BookingPage extends React.Component {
         }
     }
 
-    
+
     createCheckbox(label) {
+
         return <Checkbox
             label={label}
             handleCheckboxChange={this.toggleCheckbox}
             key={label}
+
         />;
     }
-
-    createCheckboxes() {
-        items.map(this.createCheckbox)
-    }
-
 
     /**
      * This method will be executed after initial rendering.
      */
     componentDidMount() {
+
+        window.scrollTo(0, 0);
 
         this._mounted = true;
 
@@ -148,8 +148,6 @@ class BookingPage extends React.Component {
             messages: ''
         });
     }
-
-
     componentWillUnmount() {
         /*
           Check if the component is mounted
@@ -538,25 +536,45 @@ class BookingPage extends React.Component {
                 //TODO: Set the state of the periods available
 
                 console.log("xh.response : ", response);
-                console.log("disabledPeriod : ", response.disabledPeriod);
+                console.log("bikebookning : ", response.bikebookning);
+
+
 
                 self.setState({
                     periodData: response
 
                 });
 
+                /**************************************
+                *
+                *THIS PART IS TO DISABLE THE PERIOD BUTTONS
+                *
+                ***************************************/
 
-                var bg = document.getElementsByClassName("periodBtn");
+                let totalPeriodWithBike = response.period.length * response.bikeAmount[0].amount;
 
-                for (var i = 0, leni = bg.length; i < leni; i++) {
-                    bg[i].classList.remove("disabled");
-                    bg[i].style.backgroundColor = "";
-                    for (var j = 0, lenj = response.disabledPeriod.length; j < lenj; j++) {
-                        var tempPeriod = response.disabledPeriod[j]
-                        if (bg[i].name === tempPeriod.periodid) {
+                var periodBtn = document.getElementsByClassName("periodBtn");
 
-                            bg[i].classList.add("disabled");
-                            bg[i].style.backgroundColor = "rgba(20,25,22,0.35)";
+                for (var i = 0, leni = periodBtn.length; i < leni; i++) {
+
+                    periodBtn[i].classList.remove("disabled");
+                    periodBtn[i].style.backgroundColor = "";
+
+                    let periodbookedCount = 0;
+
+                    for (var j = 0, lenj = response.bikebookning.length; j < lenj; j++) {
+
+                        var tempPeriod = response.bikebookning[j]
+
+                        if (periodBtn[i].name === tempPeriod.periodid) {
+
+                            if (periodbookedCount === totalPeriodWithBike / response.bikeAmount[0].amount) {
+
+                            }
+
+
+                            periodBtn[i].classList.add("disabled");
+                            periodBtn[i].style.backgroundColor = "rgba(20,25,22,0.35)";
                         }
 
                     }
@@ -793,9 +811,8 @@ class BookingPage extends React.Component {
                 messages={this.state.messages}
                 handleBackBtn={this.handleBackBtn}
                 createCheckbox={this.createCheckbox}
-                createCheckboxes={this.createCheckboxes}
                 toggleCheckbox={this.toggleCheckbox}
-               
+
             />
         );
     }

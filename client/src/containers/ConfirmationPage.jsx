@@ -22,7 +22,13 @@ class ConfirmationPage extends React.Component {
 
     this.handleConfirmation = this.handleConfirmation.bind(this);
   }
-  
+
+  componentDidMount() {
+
+      window.scrollTo(0, 0);
+
+  }
+
   handleConfirmation() {
 
     let token = document.location.hash.split("token=")[1];

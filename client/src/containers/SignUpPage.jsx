@@ -30,6 +30,12 @@ class SignUpPage extends React.Component {
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
+    }
+
+  componentDidMount() {
+
+      window.scrollTo(0, 0);
+
   }
 
   /**

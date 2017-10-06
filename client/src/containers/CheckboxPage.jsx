@@ -18,7 +18,13 @@ class Checkbox extends Component {
         this.toggleCheckboxChange = this.toggleCheckboxChange.bind(this);
     }
 
-    toggleCheckboxChange(){
+    componentDidMount() {
+
+        window.scrollTo(0, 0);
+
+    }
+
+    toggleCheckboxChange() {
         const { handleCheckboxChange, label } = this.props;
 
         this.setState(({ isChecked }) => (
@@ -42,9 +48,10 @@ class Checkbox extends Component {
                         value={label}
                         checked={isChecked}
                         onChange={this.toggleCheckboxChange}
+
                     />
 
-                    {label}
+                    <a href="https://cykelbiblioteket.helsingborg.se/cykelbibliotekets-laneavtal/" target="_blank"> {label} </a>
                 </label>
             </div>
         );
@@ -53,8 +60,7 @@ class Checkbox extends Component {
 
 Checkbox.propTypes = {
     label: PropTypes.string.isRequired,
-    handleCheckboxChange: PropTypes.func.isRequired,
+    handleCheckboxChange: PropTypes.func.isRequired
 };
 
 export default Checkbox;
-

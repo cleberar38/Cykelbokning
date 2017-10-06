@@ -43,7 +43,7 @@ const Profile = ({
             ) : (
                     <MobileTearSheet>
                         <List>
-                            <Subheader>Cykelhanteringssida</Subheader>
+                            <Subheader>Mina bokningar</Subheader>
                             {profileresult !== null ? profileresult.map((profile) => (
                                 <div key={profile._id}>
                                     <ListItem
@@ -57,10 +57,24 @@ const Profile = ({
                                         )}
                                         primaryText={profile.periodid}
                                         secondaryText={
-                                            <p>
-                                                <span style={{ color: darkBlack }}>{profile.bikeid} </span><br /><span><span>Bokat datum: </span>{profile.bookeddate}</span><br />
-                                                <span><a href="https://cykelbiblioteket.helsingborg.se/vara-cyklar/" target="_blank">{strings.meromcykel}</a></span>
-                                            </p>
+                                            <div className={Auth.isAdminUserAuthenticated() ? "admprofile" : "userprofile"}>
+                                                {Auth.isAdminUserAuthenticated() ? (
+                                                    <div>
+                                                        <span style={{ color: darkBlack }}>{profile.name} </span><br />
+                                                        <span style={{ color: darkBlack }}>{profile.phone} </span><br />
+                                                        <span style={{ color: darkBlack }}>{profile.address} </span><br />
+                                                        <span style={{ color: darkBlack }}>{profile.city} </span><br />
+                                                        <span style={{ color: darkBlack }}>{profile.bikeid} </span><br /><span><span>Bokat datum: </span>{profile.bookeddate}</span><br />
+                                                        <span><a href="https://cykelbiblioteket.helsingborg.se/vara-cyklar/" target="_blank">{strings.meromcykel}</a></span>
+                                                    </div>
+                                                )
+                                                    : (
+                                                        <div>
+                                                            <span style={{ color: darkBlack }}>{profile.bikeid} </span><br /><span><span>Bokat datum: </span>{profile.bookeddate}</span><br />
+                                                            <span><a href="https://cykelbiblioteket.helsingborg.se/vara-cyklar/" target="_blank">{strings.meromcykel}</a></span>
+                                                        </div>
+                                                    )}
+                                            </div>
                                         }
                                         secondaryTextLines={2} />
                                     <Divider inset={true} />

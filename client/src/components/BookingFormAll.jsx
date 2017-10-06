@@ -63,7 +63,8 @@ const BookingFormAll = ({
     createCheckbox,
     toggleCheckbox,
     label
-    
+
+
 
 
 }) => (
@@ -96,7 +97,7 @@ const BookingFormAll = ({
                                     {isBikeAvailable !== true ? null : (
                                         <div style={{ "margin": "auto", "maxWidth": "960px" }}>
                                             <ul>
-                                                {periodData !== null ? periodData.done.map((post) => (
+                                                {periodData !== null ? periodData.period.map((post) => (
                                                     <li key={post._id} style={{ padding: 5 }}>
                                                         <button className="periodbtns periodBtn" key={post._id} name={post.periodname} onClick={(evt, props) => handleSetPeriod(evt, post.periodname)}>{post.periodname}</button>
                                                     </li>
@@ -106,19 +107,14 @@ const BookingFormAll = ({
                                     )}
                                 </div>
                             </div>
-                            
+
                             {Auth.isUserAuthenticated() ? (
                                 <div>
 
                                     <div className="center-container">
                                         <div className="row">
                                             <div className="col-sm-12">
-
-
-                                                { items.map(createCheckbox) }
-                                                    
-                                                
-
+                                                {items.map(createCheckbox)}
                                             </div>
                                         </div>
                                     </div>
@@ -128,6 +124,10 @@ const BookingFormAll = ({
                                             <FlatButton onClick={onSubmit} className="top-btn" style={{ color: 'white' }} backgroundColor="#ae0b05" label={strings.book} />
                                         </div>
                                     </Link>
+
+
+
+
                                 </div>
                             ) : (
                                     <div className="center-container">
@@ -155,7 +155,6 @@ BookingFormAll.propTypes = {
     optionSelected: PropTypes.string.isRequired,
     errors: PropTypes.object.isRequired,
     handleBackBtn: PropTypes.func,
-    
 };
 
 export default BookingFormAll;

@@ -264,3 +264,11 @@ div.panel-danger > .panel-heading {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.admprofile {
+    height: 130px !important;
+}
+
+.userprofile {
+    height: 60px !important;
+}
