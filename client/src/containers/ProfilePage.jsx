@@ -12,8 +12,9 @@ let state = {
     profileresult: null,
     name: '',
     messageChanged: false,
-    messages: ''
-
+    messages: '',
+    isNotPreDeleted: true,
+    alertVisible: false
 };
 
 class ProfilePage extends React.Component {
@@ -28,35 +29,36 @@ class ProfilePage extends React.Component {
         this.state = state;
 
         this.getProfileInfo = this.getProfileInfo.bind(this);
+        this.preRemoveBooking = this.preRemoveBooking.bind(this);
         this.removeBooking = this.removeBooking.bind(this);
         this.handleBackBtn = this.handleBackBtn.bind(this);
-
+        this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
+        this.handleAlertShow = this.handleAlertShow.bind(this);
     }
 
     componentWillMount(props) {
-
         var userid = localStorage.getItem("useremail");
-
-
-
         this.getProfileInfo(userid);
-
-        console.log("ProfilePage state : ", this.state);
-        console.log("ProfilePage props : ", this.props);
-    }
-
-    componentDidMount() {
-
-            window.scrollTo(0, 0);
-
     }
 
     handleBackBtn() {
-        console.log("handleBackBtn props", props);
-        console.log("handleBackBtn this.props", this.props);
         this.setState({
             messages: '',
             messageChanged: false
+        });
+    }
+
+    handleAlertDismiss() {
+        this.setState({alertVisible: false});
+    }
+
+    handleAlertShow() {
+        this.setState({alertVisible: true});
+    }
+
+    preRemoveBooking(evt, bikebookingid) {
+        this.setState({
+            isNotPreDeleted: !this.state.isNotPreDeleted
         });
     }
 
@@ -105,10 +107,9 @@ class ProfilePage extends React.Component {
                     response = xhr.response;
                 }
 
-                console.log("xhr.response.done : ", response.done);
-
-
-
+                this.setState({
+                    isNotPreDeleted: true
+                });
 
             } else {
                 // failure
@@ -165,9 +166,11 @@ class ProfilePage extends React.Component {
 
         let whichprofile = 'profile';
 
-        if (Auth.isAdminUserAuthenticated()) {
+        if (Auth.isAdminUserAuthenticated() && localStorage.getItem("usertype") === "admin") {
             whichprofile = 'adminprofile';
         }
+
+        console.log("whichprofile ", whichprofile);
 
         // create an AJAX request
         const xhr = new XMLHttpRequest();
@@ -207,7 +210,7 @@ class ProfilePage extends React.Component {
                 }
 
 
-                if (Auth.isAdminUserAuthenticated()) {
+                if (Auth.isAdminUserAuthenticated() && localStorage.getItem("usertype") === "admin") {
 
                     for (var i = 0, leni = response.result.booking.length; i < leni; i++) {
                         for (var j = 0, lenj = response.result.user.length; j < lenj; j++) {
@@ -217,6 +220,8 @@ class ProfilePage extends React.Component {
                                 response.result.booking[i].phone = response.result.user[j].phone;
                                 response.result.booking[i].address = response.result.user[j].address;
                                 response.result.booking[i].city = response.result.user[j].city;
+                                response.result.booking[i].adminprofile = response.result.user[j].adminprofile;
+                                
                             }
                         }
                     }
@@ -233,9 +238,6 @@ class ProfilePage extends React.Component {
                     });
 
                 }
-
-
-                //console.log("Response from AUTH profile : ", xhr.response.result )
 
             } else {
                 // failure
@@ -279,7 +281,8 @@ class ProfilePage extends React.Component {
                 });
             }
         });
-        if (Auth.isAdminUserAuthenticated()) {
+
+        if (Auth.isAdminUserAuthenticated() && localStorage.getItem("usertype") === "admin") {
             xhr.send();
         } else {
             xhr.send(formData);
@@ -296,11 +299,16 @@ class ProfilePage extends React.Component {
                 nextAvailablePeriodDate={this.state.nextAvailablePeriodDate}
                 period={this.state.period}
                 profileresult={this.state.profileresult}
+                preRemoveBooking={this.preRemoveBooking}
                 removeBooking={this.removeBooking}
                 name={this.state.name}
                 messageChanged={this.state.messageChanged}
                 messages={this.state.messages}
                 handleBackBtn={this.handleBackBtn}
+                isNotPreDeleted={this.state.isNotPreDeleted}
+                alertVisible={this.state.alertVisible}
+                handleAlertDismiss={this.handleAlertDismiss}
+                handleAlertShow={this.handleAlertShow}
 
             />
         );

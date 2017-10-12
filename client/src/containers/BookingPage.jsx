@@ -62,7 +62,6 @@ class BookingPage extends React.Component {
         this.checkPeriodsInBooking = this.checkPeriodsInBooking.bind(this);
         this.handleBackBtn = this.handleBackBtn.bind(this);
         this.createCheckbox = this.createCheckbox.bind(this);
-
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
     }
 
@@ -85,7 +84,6 @@ class BookingPage extends React.Component {
             this.selectedCheckboxes.add(label);
         }
     }
-
 
     createCheckbox(label) {
 
@@ -188,12 +186,13 @@ class BookingPage extends React.Component {
         const userid = localStorage.getItem('useremail');
         const periodid = localStorage.getItem('bikeperiod');
         const bikeid = localStorage.getItem('bike');
+        const admincomment = document.getElementsByClassName('admincomment')[0];
+        const usertype = Auth.getUserType();
 
-        // console.log("bikeid : " , bikeid);
+        const value = admincomment !== undefined ? admincomment.value : "";
 
-        const formData = `userid=${userid}&periodid=${periodid}&bikeid=${bikeid}`;
+        const formData = `userid=${userid}&periodid=${periodid}&bikeid=${bikeid}&admincomment=${value}&usertype=${usertype}`;
 
-        //console.log(formData);
         const self = this;
 
         // create an AJAX request
@@ -304,11 +303,6 @@ class BookingPage extends React.Component {
     handleSetPeriod(evt, value) {
 
         evt !== undefined ? evt.preventDefault() : null;
-
-        //console.log("handleSetPeriod Event Target : ", evt.target);
-
-        //evt.target.classList.add("disabled") or evt.target.classList.remove("disabled")
-
 
         var bg = document.getElementsByClassName("periodBtn");
 
@@ -476,23 +470,15 @@ class BookingPage extends React.Component {
                     bookingPeriodData: response
                 });
             }
-        } else {
-            console.log("BOOKING ALREADY CHECKED...!!!");
         }
     }
 
     checkPeriodsAvailable() {
 
-        //if (!this.state.isPeriodChecked) {
-
-        console.log("CHEKING WHICH PERIODS ARE AVAILABLE...!!!");
-
         const self = this;
 
         const periodid = localStorage.getItem('bikeperiod');
         const bikeid = localStorage.getItem('bike');
-
-        // console.log("bikeid : " , bikeid);
 
         const formData = `periodid=${periodid}&bikeid=${bikeid}`;
 
@@ -533,13 +519,6 @@ class BookingPage extends React.Component {
                     response = xhr.response;
                 }
 
-                //TODO: Set the state of the periods available
-
-                console.log("xh.response : ", response);
-                console.log("bikebookning : ", response.bikebookning);
-
-
-
                 self.setState({
                     periodData: response
 
@@ -550,38 +529,53 @@ class BookingPage extends React.Component {
                 *THIS PART IS TO DISABLE THE PERIOD BUTTONS
                 *
                 ***************************************/
-
-                let totalPeriodWithBike = response.period.length * response.bikeAmount[0].amount;
-
                 var periodBtn = document.getElementsByClassName("periodBtn");
 
-                for (var i = 0, leni = periodBtn.length; i < leni; i++) {
+                var invalidEntries = 0;
 
-                    periodBtn[i].classList.remove("disabled");
-                    periodBtn[i].style.backgroundColor = "";
+                function isString(obj) {
+                    return obj !== undefined;
+                }
 
-                    let periodbookedCount = 0;
+                function filterByID(item) {
 
-                    for (var j = 0, lenj = response.bikebookning.length; j < lenj; j++) {
+                    if (isString(item.periodid)) {
 
-                        var tempPeriod = response.bikebookning[j]
+                        return true;
+                    }
+                    invalidEntries++;
+                    return false;
+                }
 
-                        if (periodBtn[i].name === tempPeriod.periodid) {
-
-                            if (periodbookedCount === totalPeriodWithBike / response.bikeAmount[0].amount) {
-
-                            }
+                var arrByID = response.bikebookning.filter(filterByID);
 
 
+                for (var i = 0, leni = response.period.length; i < leni; i++) {
+
+                    var tempperiod = response.period[i];
+                    var total = 0;
+
+                    if (periodBtn.length !== 0) {
+                        periodBtn[i].classList.remove("disabled");
+                        periodBtn[i].style.backgroundColor = "";
+                    }
+
+                    for (var j = 0, lenj = arrByID.length; j < lenj; j++) {
+
+                        var tempbooking = arrByID[j];
+
+                        if (tempbooking.periodid === tempperiod.periodname) {
+                            total++;
+                        }
+                    }
+
+                    if (response.bikeAmount.length !== 0) {
+                        if (total === response.bikeAmount[0].amount) {
                             periodBtn[i].classList.add("disabled");
                             periodBtn[i].style.backgroundColor = "rgba(20,25,22,0.35)";
                         }
-
                     }
-
-
                 }
-
 
             } else {
                 // failure
@@ -623,20 +617,14 @@ class BookingPage extends React.Component {
 
         if (!this._mounted) {
             this.setState({
-                isPeriodChecked: true,
-                //periodData: response
+                isPeriodChecked: true
             });
         }
-        //} else {
-        //console.log("ALREADY CHECKED PERIOD...!!!");
-        //}
     }
 
     getBikesOnDB() {
 
         if (!this.state.isBikeChecked) {
-
-            console.log("CHEKING WHICH PERIODS ARE AVAILABLE...!!!");
 
             const self = this;
 
@@ -676,10 +664,6 @@ class BookingPage extends React.Component {
                     if (isIE) { response = JSON.parse(xhr.response); } else {
                         response = xhr.response;
                     }
-
-                    //TODO: Set the state of the periods available
-
-                    console.log("getBikesOnDB - xh.response : ", response)
 
                     self.setState({
                         tilesData: response
@@ -729,9 +713,6 @@ class BookingPage extends React.Component {
                     //periodData: response
                 });
             }
-
-        } else {
-            console.log("ALREADY CHECKED BIKE...!!!");
         }
     }
 
@@ -812,7 +793,6 @@ class BookingPage extends React.Component {
                 handleBackBtn={this.handleBackBtn}
                 createCheckbox={this.createCheckbox}
                 toggleCheckbox={this.toggleCheckbox}
-
             />
         );
     }

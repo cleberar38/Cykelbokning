@@ -20,7 +20,7 @@ import Auth from '../modules/Auth';
 import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
 import ListExampleMessages from './Profile.jsx'
 import { Button } from 'react-bootstrap';
-import { Grid, Row, Col, Thumbnail, Panel, Jumbotron } from 'react-bootstrap';
+import { FormControl, ControlLabel, FormGroup, Grid, Row, Col, Thumbnail, Panel, Jumbotron } from 'react-bootstrap';
 import Checkbox from '../containers/CheckboxPage.jsx';
 
 
@@ -103,6 +103,14 @@ const BookingFormAll = ({
                                                     </li>
                                                 )) : null}
                                             </ul>
+
+                                            {Auth.isAdminUserAuthenticated() && Auth.getUserType() === "admin" ? (
+                                                <FormGroup controlId="formControlsTextarea">
+                                                    <ControlLabel>{strings.adminnote}</ControlLabel>
+                                                    <FormControl className="admincomment" componentClass="textarea" placeholder="Kommentar" />
+                                                </FormGroup>
+                                            ) : null}
+
                                         </div>
                                     )}
                                 </div>
@@ -124,9 +132,6 @@ const BookingFormAll = ({
                                             <FlatButton onClick={onSubmit} className="top-btn" style={{ color: 'white' }} backgroundColor="#ae0b05" label={strings.book} />
                                         </div>
                                     </Link>
-
-
-
 
                                 </div>
                             ) : (

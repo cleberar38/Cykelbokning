@@ -12,15 +12,15 @@ import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
-import MenuItem from 'material-ui/MenuItem';
+import MenuItems from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import ActionAndroid from 'material-ui/svg-icons/action/android';
-import { Button, Panel } from 'react-bootstrap';
+import { MenuItem, NavDropdown, NavItem, Nav, Navbar, Button, Panel } from 'react-bootstrap';
 
 strings.setLanguage(default_lang.lang);
 
-const mainDiv = {
-    innerHeight: window.innerHeight,
+const mainDiv = () => {
+    return window.innerHeight;
 };
 
 const styles = {
@@ -29,7 +29,7 @@ const styles = {
     },
 };
 
-function handleResetForm() {
+const handleResetForm = () => {
 
     const bikeClass = 'bikeImg';
     const allBikes = document.getElementsByClassName(bikeClass);
@@ -40,13 +40,23 @@ function handleResetForm() {
     }
 
     Auth.deauthenticateUser();
-}
+};
+
+const toggleNavBarMenu = () => {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
+};
 
 const Base = ({
   children
 }) => (
 
-        <div style={{ height: mainDiv.innerHeight }}>
+        <div style={{ height: mainDiv }}>
+
             <Panel footer={<a href="https://cykelbiblioteket.helsingborg.se/" target="_blank"><FlatButton style={{ color: 'white' }} backgroundColor="#ae0b05" label={strings.tillbakahuvsida} /></a>}>
                 <div>
                     <AppBar style={{ backgroundColor: '#ae0b05' }}
@@ -57,7 +67,7 @@ const Base = ({
                             </div>}>
 
 
-                        {Auth.isAdminUserAuthenticated() ? (
+                        {Auth.isAdminUserAuthenticated() && localStorage.getItem("usertype") === "admin" ? (
 
                             <Toolbar style={{ backgroundColor: '#ae0b05' }}>
                                 <ToolbarGroup style={{ backgroundColor: '#ae0b05' }}>
@@ -71,15 +81,15 @@ const Base = ({
                                         }
                                     >
 
-                                        <MenuItem>
+                                        <MenuItems>
                                             <Link to="/addbike" style={{ color: 'black' }}><FlatButton style={{ color: 'black' }} label={strings.addbike} primary={false} /></Link>
-                                        </MenuItem>
-                                        <MenuItem>
+                                        </MenuItems>
+                                        <MenuItems>
                                             <Link to="/createperiod" style={{ color: 'black' }}><FlatButton style={{ color: 'black' }} label={strings.addperiod} primary={false} /></Link>
-                                        </MenuItem>
-                                        <MenuItem>
+                                        </MenuItems>
+                                        <MenuItems>
                                             <Link to="/profil" style={{ color: 'black' }}><FlatButton style={{ color: 'black' }} label={strings.viewallbook} primary={false} /></Link>
-                                        </MenuItem>
+                                        </MenuItems>
                                     </IconMenu>
                                     <ToolbarSeparator />
                                 </ToolbarGroup>
@@ -87,7 +97,7 @@ const Base = ({
 
                         ) : (
                                 <div>
-                                    {Auth.isUserAuthenticated() ? (
+                                    {Auth.isUserAuthenticated() && localStorage.getItem("usertype") === "user" ? (
                                         <div className="top-bar-right">
                                             <Link to="/profil" style={{ marginRight: "5px", color: 'white' }}><FlatButton style={{ color: 'white' }} label={strings.mybook} /></Link>
                                         </div>

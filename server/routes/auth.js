@@ -14,6 +14,8 @@ const BikePeriodView = require('mongoose').model('BikePeriodView');
 
 router.post('/profile', (req, res, next) => {
 
+    console.log("USER PROFILE");
+
     //This function with callback is used to get the response from the server
     //outside of the instance of BikeBooking model
     function retrieveBooking(email, callback) {
@@ -24,8 +26,6 @@ router.post('/profile', (req, res, next) => {
                 callback(err, null);
             } else {
 
-                //console.log("BikeBooking getting resUserRebook : ", resUserRebook);
-
                 Bike.find({
                     bikeid: resUserRebook.bikeid,
                 }, (err, resBike) => {
@@ -33,8 +33,6 @@ router.post('/profile', (req, res, next) => {
                         console.log("ERROR : ", err);
                         return err;
                     }
-                    //console.log("PROFILE getting BIKE NAME : ", resBike);
-                    //console.log("PROFILE getting BIKE TYPE : ", resBike)
                 });
 
                 callback(null, resUserRebook);
@@ -50,17 +48,58 @@ router.post('/profile', (req, res, next) => {
             console.log(err);
         }
 
-        //console.log("CALLBACK BikeBooking & retrieveBooking : ", resUserRebook);
-
         return res.status(200).json({
             success: true,
             result: resUserRebook
-            //message: 'Sorry you have not book any bike!'
         });
 
     });
 });
 
+router.post('/adminprofile', (req, res, next) => {
+
+    console.log("ADMIN PROFILE");
+
+    //This function with callback is used to get the response from the server
+    //outside of the instance of BikeBooking model
+    function retrieveBooking(email, callback) {
+        let allBookning = [];
+
+        BikeBooking.find((err, resUserRebook) => {
+            if (err) {
+                callback(err, null);
+            } else {
+
+                User.find((err, resUser) => {
+                    if (err) {
+                        console.log("ERROR : ", err);
+                        return err;
+                    }
+
+                    callback(null, { booking: resUserRebook, user: resUser });
+
+                });
+            }
+
+        });
+    };
+
+    //Call the function above to get the response from the server
+    //In this case it verify if the user is verified
+    retrieveBooking({}, function (err, resUserRebook) {
+        if (err) {
+            console.log(err);
+        }
+
+        return res.status(200).json({
+            success: true,
+            result: resUserRebook
+        });
+
+    });
+});
+
+/*
 router.post('/adminprofile', (req, res, next) => {
 
     //This function with callback is used to get the response from the server
@@ -74,20 +113,20 @@ router.post('/adminprofile', (req, res, next) => {
             } else {
 
                 //console.log("BikeBooking getting resUserRebook : ", resUserRebook);
+               
+                    User.find((err, resUser) => {
+                        if (err) {
+                            console.log("ERROR : ", err);
+                            return err;
+                        }
+                        console.log("resUser[i]", resUser);
 
-                User.find((err, resUser) => {
-                    if (err) {
-                        console.log("ERROR : ", err);
-                        return err;
-                    }
-                    //console.log("resUser[i]", resUser);
-
-                    //console.log("resUserRebook[i]", resUserRebook);
-                    callback(null, { booking: resUserRebook, user: resUser });
-
-                });
-
-
+                        console.log("resUserRebook[i]", resUserRebook);
+                        callback(null, { booking: resUserRebook, user: resUser });
+                        
+                    });
+               
+               
             }
 
         });
@@ -109,7 +148,7 @@ router.post('/adminprofile', (req, res, next) => {
         });
 
     });
-});
+});*/
 
 router.post('/confirmation', (req, res, next) => {
 
@@ -173,7 +212,6 @@ router.post('/signup', (req, res, next) => {
             msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
             msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
 
-            //console.log("TOKEN : ", token);
 
             tempToken = token;
 
@@ -226,11 +264,8 @@ router.post('/resend', (req, res, next) => {
                 text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n',
                 html: '<strong>Hello, <br /><br />Please verify your account by clicking the link:<br /> <a href="http://' + req.headers.host + '"/confirmation/' + token.token + '>Click here ro verify!</a></strong>',
             };
-            //console.log("sgMail : ", sgMail);
-            //console.log("MSG SENDGRID : ", msg);
+
             sgMail.send(msg, (error, result) => {
-                //console.log("sgMail callback error", error);
-                //console.log("sgMail callback result", result);
 
                 if (error) { return res.status(500).send({ msg: error.message }); }
                 res.status(200).send('Ett bekräftelsemejl har skickats till ' + user.email + '.');
@@ -253,8 +288,6 @@ router.post('/addperiod', (req, res, next) => {
     }
     const done = createNewPeriod(req.body);
 
-    //console.log("DONE :", done);
-
     return res.status(200).json({
         success: true,
         message: 'Du har lagt till en ny period.',
@@ -275,8 +308,6 @@ router.post('/addbike', (req, res, next) => {
     }
     const done = addNewBike(req.body);
 
-    //console.log("DONE :", done);
-
     return res.status(200).json({
         success: true,
         message: 'Du har lagt till en ny cykel.',
@@ -294,7 +325,7 @@ router.post('/checkbookedperiod', (req, res, next) => {
             console.log("ERROR did not find period: ", err);
             return err;
         }
-        //console.log("All period founded!", done);
+
         checkPeriod = done;
         return res.status(200).json({
             success: true,
@@ -315,7 +346,7 @@ router.post('/checkperiod', (req, res, next) => {
             console.log("ERROR did not find period: ", err);
             return err;
         }
-        //console.log("All period founded!", done);
+
         checkPeriod = period;
 
         BikeBooking.find({
@@ -325,7 +356,6 @@ router.post('/checkperiod', (req, res, next) => {
                 console.log("ERROR did not find period: ", err);
                 return err;
             }
-
 
             Bike.find({ bikename: req.body.bikeid }, (err, bikesAmount) => {
 
@@ -343,12 +373,7 @@ router.post('/checkperiod', (req, res, next) => {
                 });
 
             });
-
-            
-
         });
-
-
     });
 
 });
@@ -362,7 +387,7 @@ router.post('/getbikes', (req, res, next) => {
             console.log("ERROR did not find period: ", err);
             return err;
         }
-        //console.log("All BIKES founded!", done);
+
         checkPeriod = done;
         return res.status(200).json({
             success: true,
@@ -381,9 +406,6 @@ router.post('/checkbike', (req, res, next) => {
             console.log("ERROR did not find bikes: ", err);
             return err;
         }
-
-        //console.log("Alla cykel founded!", done);
-
 
         return res.status(200).json({
             success: true,
@@ -444,15 +466,13 @@ router.post('/bikebooking', (req, res, next) => {
         userid: req.body.userid,
         periodid: req.body.periodid,
         bookeddate: new Date(),
-        nextbookingdate: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+        nextbookingdate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+        admincomment: req.body.admincomment
     };
-
-    //console.log("bookingBikeData: ", bookingBikeData);
 
     const newBooking = new BikeBooking(bookingBikeData);
 
     checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData);
-    //checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData);
 
 });
 
@@ -519,15 +539,14 @@ router.post('/login', (req, res, next) => {
                 console.log(err);
             }
 
-            //console.log("CALLBACK  user.isVerified : ", user.isVerified);
-
             if (user.isVerified) {
                 return res.json({
                     success: true,
                     message: 'Du har loggat in!',
                     token,
                     userdata: userData,
-                    isVerified: user.isVerified
+                    isVerified: user.isVerified,
+                    usertype: user.usertype
                 });
             } else {
                 return res.status(400).json({
@@ -548,15 +567,15 @@ router.post('/login', (req, res, next) => {
  * @param {object}  -
  * @returns {object} -
  *
- */ 
+ */
 function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData) {
 
-   BikeBooking.find({
+    BikeBooking.find({
         bikeid: bookingBikeData.bikeid,
         periodid: bookingBikeData.periodid
     }, (err, amountBikeInBooking) => {
-         
-    
+
+
         Bike.find({ bikename: bookingBikeData.bikeid }, (err, bikeAmount) => {
 
             if (err) { console.log("ERROR : ", err); return err; }
@@ -570,38 +589,46 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
 
                 } else {
 
+                    if (req.body.usertype === "admin") {
 
-                    BikeBooking.find({
-                        bikeid: bookingBikeData.bikeid,
-                        userid: req.body.userid
-                    }, (err, resUserRebook) => {
-                        if (err) {
-                            console.log("ERROR: ", err);
-                            return err;
-                        }
+                        createNewBooking(newBooking);
+                        const msg = 'Tack för din bokning';
+                        showMessages200(res, msg);
 
-                        if (resUserRebook.length !== 0) {
+                    } else {
 
-                            return res.status(200).json({
-                                success: true,
-                                message: 'Tyvärr kan du inte boka den här modellen'
-                            });
-                        } else {
+                        BikeBooking.find({
+                            bikeid: bookingBikeData.bikeid,
+                            userid: req.body.userid
+                        }, (err, resUserRebook) => {
+                            if (err) {
+                                console.log("ERROR: ", err);
+                                return err;
+                            }
+
+                            if (resUserRebook.length !== 0) {
+
+                                return res.status(200).json({
+                                    success: true,
+                                    message: 'Tyvärr kan du inte boka den här modellen'
+                                });
+                            } else {
+
+                                createNewBooking(newBooking);
+                                const msg = 'Tack för din bokning';
+                                showMessages200(res, msg);
+                            }
+                        });
+                    }
 
 
-                            createNewBooking(newBooking);
-                            const msg = 'Tack för din bokning';
-                            showMessages200(res, msg);
 
 
-                        }
-                    });
 
                 }
 
             });
 
-            
         });
     });
 
@@ -644,7 +671,7 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
                 }
             });
             const msg = 'Denna period och cykel är redan bokad.';
-            //showMessages200(res, msg);
+
         } else {
             createNewBooking(newBooking);
             const msg = 'Tack för din bokning';
@@ -666,10 +693,10 @@ function createNewBooking(newBooking) {
     //This save the new bikebooking to the DB
     newBooking.save((err, done) => {
         if (err) {
-            //console.log("ERROR from New Booking: ", err);
+            console.log("ERROR : ", err);
             return err;
         }
-        //console.log("NY CYKEL BOOKING ÄR KLART!", done);
+
         return done;
     });
 
@@ -700,10 +727,10 @@ function createNewPeriod(req) {
 
     newPeriod.save((err, done) => {
         if (err) {
-            console.log("ERROR from New Booking: ", err);
+            console.log("ERROR : ", err);
             return err;
         }
-        //console.log("NY PERIOD ÄR KLART!", done);
+
         return done;
     });
 
@@ -919,7 +946,7 @@ function addNewBike(req) {
             console.log("ERROR from Add new Bike: ", err);
             return err;
         }
-        //console.log("NY BIKE ÄR KLART!", done);
+
         return done;
     });
 };
@@ -949,117 +976,6 @@ function verifyUserConfirmation(req, res, next) {
             });
         });
     });
-
-};
-
-/**
- * calculateTotalAmountPeriodsAvailable
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function calculateTotalAmountPeriodsAvailable() {
-
-};
-
-/**
- * checkIfPeriodIsAvailable
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function checkIfPeriodIsAvailable() {
-
-};
-
-/**
- * removePeriod
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function removePeriod() {
-
-};
-
-/**
- * removeUserPartially
- * update User Table but do not remove the user
- * @param {object}  -
- * @returns {object} -
- *
- */
-function removeUserPartially() {
-
-};
-
-/**
- * removeUserCompletly
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function removeUserCompletly() {
-
-};
-
-/**
- * updateBikeAmount
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function updateBikeAmount() {
-
-};
-
-/**
- * createNewBike
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function createNewBike() {
-
-};
-
-/**
- * removeBike
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function removeBike() {
-
-};
-
-/**
- * calculateOneYearAfterToday
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function calculateOneYearAfterToday() {
-
-
-};
-
-/**
- * showErrors
- *
- * @param {object}  -
- * @returns {object} -
- *
- */
-function showErrors() {
 
 };
 

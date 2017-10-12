@@ -50,7 +50,9 @@ let strings = new LocalizedStrings({
         mybook: 'My booking',
         viewallbook: "View all booking",
         goback: "Go back to booking",
-        amount: "Add the amount of bikes"
+        amount: "Add the amount of bikes",
+        adminnote: "Admin kommentar",
+        areyousure: "Är du säker på att du vill avboka cykeln?"
 
 
 
@@ -104,7 +106,9 @@ let strings = new LocalizedStrings({
         mybook: 'Mina bokningar',
         viewallbook: "Se alla bokningar",
         goback: "Tillbaka till bokning",
-        amount: "Vänligen ange mängden cyklar"
+        amount: "Vänligen ange mängden cyklar",
+        adminnote: "Admin kommentar",
+        areyousure: "Är du säker på att du vill avboka cykeln?"
     }
 
 });
