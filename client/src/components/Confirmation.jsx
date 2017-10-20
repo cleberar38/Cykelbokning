@@ -19,11 +19,9 @@ const Confirmation = ({
   <div  style={{height: '100%'}}>
     <div>
       <Card className="container">
-        <CardTitle title="Bekräftelse sida." subtitle="Go to your email and click on the link sent to you.">
-          <h1 className="display-2">{ strings.thankMsg }</h1>
-          <h4 className="display-2">{ messages }</h4>
+        <CardTitle title={ strings.accountregistered } subtitle="">
         </CardTitle>
-        <Link to="/" onClick={ () => handleConfirmation() } style={{color: "white"}}><Button  bsStyle="primary" className={ "msgbtn " }>BEKRÄFTA OCH BOKA</Button></Link>
+        <Link to="/login" onClick={() => handleConfirmation()} style={{ color: "white" }}><Button bsStyle="primary" className={"msgbtn "}>{ strings.confirmlogin }</Button></Link>
       </Card>
     </div>
   </div>

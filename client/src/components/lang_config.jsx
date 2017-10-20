@@ -49,13 +49,16 @@ let strings = new LocalizedStrings({
         bikedescurl: "https://cykelbiblioteket.helsingborg.se/",
         mybook: 'My booking',
         viewallbook: "View all booking",
+        viewallusers: "View all users",
         goback: "Go back to booking",
         amount: "Add the amount of bikes",
         adminnote: "Admin kommentar",
-        areyousure: "Är du säker på att du vill avboka cykeln?"
-
-
-
+        areyousure: "Är du säker på att du vill avboka cykeln?",
+        accountregistered: "Thank your for your registration!",
+        sorttx: "Sortera",
+        confirmlogin: "Confirm and login",
+        resetpassword: "Reset password",
+        forgotpassword: "Forgot your password?"
     },
 
     sv: {
@@ -105,12 +108,17 @@ let strings = new LocalizedStrings({
         bikedescurl: "https://cykelbiblioteket.helsingborg.se/",
         mybook: 'Mina bokningar',
         viewallbook: "Se alla bokningar",
+        viewallusers: "Se alla användare",
         goback: "Tillbaka till bokning",
         amount: "Vänligen ange mängden cyklar",
         adminnote: "Admin kommentar",
-        areyousure: "Är du säker på att du vill avboka cykeln?"
+        areyousure: "Är du säker på att du vill avboka cykeln?",
+        accountregistered: "Tack för din registrering!",
+        sorttx: "Sortera",
+        confirmlogin: "Bekräfta och logga in",
+        resetpassword: "Återställ lösenord",
+        forgotpassword: "Glömt ditt lösenord?"
     }
-
 });
 
 export default strings;

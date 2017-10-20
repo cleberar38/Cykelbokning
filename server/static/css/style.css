@@ -328,3 +328,39 @@ div.panel-danger > .panel-heading {
         }
 }
 /*======================================================= Top Navbar End ===========================================================*/
+
+/*======================================================= React Data Grid ===========================================================*/
+
+
+.link-right {
+  position: absolute;
+  right: 0px;
+  padding: 10px;
+}
+
+.link-right a {
+  padding: 10px;
+}
+
+.disabled-link {
+  cursor: not-allowed;
+  color: lightgrey
+}
+
+.disabled-link:hover {
+  color: lightgray;
+}
+
+/*======================================================= React Data Grid End ===========================================================*/
+
+
+.col-md-3 strong{
+  background-color: background-color: rgba(174, 11, 5, 1);
+  padding: 5px;
+  display: inline-block;
+}
+
+.col-md-3 {
+  padding: 5px;
+  display: inline-block;
+}

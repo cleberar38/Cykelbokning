@@ -90,6 +90,12 @@ const Base = ({
                                         <MenuItems>
                                             <Link to="/profil" style={{ color: 'black' }}><FlatButton style={{ color: 'black' }} label={strings.viewallbook} primary={false} /></Link>
                                         </MenuItems>
+                                        <MenuItems>
+                                            <Link to="/users" style={{ color: 'black' }}><FlatButton style={{ color: 'black' }} label={strings.viewallusers} primary={false} /></Link>
+                                        </MenuItems>
+                                        <MenuItems>
+                                            <Link to="/sort" style={{ color: 'black' }}><FlatButton style={{ color: 'black' }} label={strings.sorttx} primary={false} /></Link>
+                                        </MenuItems>
                                     </IconMenu>
                                     <ToolbarSeparator />
                                 </ToolbarGroup>

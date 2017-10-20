@@ -11,6 +11,9 @@ import ConfirmationPage from './containers/ConfirmationPage.jsx';
 import ProfilePage from './containers/ProfilePage.jsx';
 import AddBikePage from './containers/AddBikePage.jsx';
 import ProfileMessagesPage from './containers/ProfileMessagesPage.jsx';
+import UsersPage from './containers/UsersPage.jsx';
+import SortFilterPage from './containers/SortFilterPage.jsx';
+import ForgotPasswordPage from './containers/ForgotPasswordPage.jsx';
 
 
 const routes = {
@@ -105,7 +108,29 @@ const routes = {
         }
       }
     },
- 
+
+    {
+        path: '/users',
+        getComponent: (location, callback) => {
+            if (Auth.isAdminUserAuthenticated()) {
+                callback(null, UsersPage);
+            } else {
+                callback(null, BookingPage);
+            }
+        }
+    },
+
+    {
+        path: '/sort',
+        getComponent: (location, callback) => {
+            if (Auth.isAdminUserAuthenticated()) {
+                callback(null, SortFilterPage);
+            } else {
+                callback(null, BookingPage);
+            }
+        }
+    },
+
     {
       path: '/profil',
       getComponent: (location, callback) => {
@@ -115,6 +140,10 @@ const routes = {
           callback(null, LoginPage);
         }
       }
+    },
+    {
+      path: '/forgot',
+      component: ForgotPasswordPage
     }
 
   ]

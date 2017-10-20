@@ -16,7 +16,7 @@ import strings from './lang_config.jsx';
 import { Link } from 'react-router';
 import FlatButton from 'material-ui/FlatButton';
 import ProfileMessagesPage from '../containers/ProfileMessagesPage.jsx';
-import { Pager, Button, ListGroup, ListGroupItem, Media, Alert } from 'react-bootstrap';
+import { FormControl, ControlLabel, FormGroup, Pager, Button, ListGroup, ListGroupItem, Media, Alert } from 'react-bootstrap';
 
 strings.setLanguage(default_lang.lang);
 
@@ -34,7 +34,8 @@ const Profile = ({
     isNotPreDeleted,
     handleAlertDismiss,
     alertVisible,
-    handleAlertShow
+    handleAlertShow,
+    saveComment
 
   }) => (
     <div>
@@ -44,6 +45,7 @@ const Profile = ({
 
             <div>
                 <Subheader>Mina bokningar</Subheader>
+
                 <ListGroup>
                     {profileresult !== null ? profileresult.map((profile) => (
                         <ListGroupItem key={profile._id} header={profile.name}>
@@ -58,6 +60,13 @@ const Profile = ({
                                     <span style={{ color: darkBlack }}><strong>Bokat datum: </strong>{profile.bookeddate}</span><br />
                                     <span style={{ color: darkBlack }}><a href="https://cykelbiblioteket.helsingborg.se/vara-cyklar/" target="_blank">{strings.meromcykel}</a></span><br />
                                     <span style={{ color: darkBlack }}><strong>Kommentar: </strong>{profile.admincomment}</span>
+                                    <FormGroup controlId="formControlsTextarea">
+                                        <ControlLabel>{strings.adminnote}</ControlLabel>
+                                        <FormControl id={profile.bikebookingid} className="adminnewcomment" componentClass="textarea" name="adminnewcomment" placeholder="Kommentar" />
+                                        <span>
+                                          <Link to="/"><Button key={profile.bikebookingid} bsStyle="danger"  onClick={(evt) => saveComment(evt, profile.bikebookingid)}>Spara kommentar</Button></Link>
+                                        </span>
+                                    </FormGroup>
                                 </span>
                             ) : (
                             <div>
@@ -73,7 +82,7 @@ const Profile = ({
                             )}
                             {alertVisible ? (
                                 <Alert bsStyle="danger" onDismiss={handleAlertDismiss}>
-                                  <h4>Är du säker?</h4><br />
+                                  <h4>Ã„r du sÃ¤ker?</h4><br />
                                   <span>
                                     <Link to="/profilemsg"><Button key={profile.bikebookingid} bsStyle="danger" onClick={(evt) => removeBooking(evt, profile.bikebookingid)}>Avboka</Button></Link>
                                     <span> eller </span>
@@ -86,7 +95,7 @@ const Profile = ({
                             )}
                         </ListGroupItem>
                     )) : null }
-                </ListGroup> 
+                </ListGroup>
             </div>
         )}
     </div>

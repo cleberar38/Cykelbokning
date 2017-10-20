@@ -24,9 +24,9 @@ const MessageToUSer = ({
 
                         {errors !== undefined || errors !== null && Object !== null || Object !== undefined && Object.keys(errors).length === 0 && errors.constructor === Object ?
 
-                            (<h3 className="display-2">{messages}</h3>)
+                            (<h4 className="display-2">{messages}</h4>)
                             :
-                            (<h3 className="display-2">{errors.summary}</h3>)
+                            (<h4 className="display-2">{errors.summary}</h4>)
 
                         }
 

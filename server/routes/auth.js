@@ -12,150 +12,6 @@ const User = require('mongoose').model('User');
 const Token = require('mongoose').model('Token');
 const BikePeriodView = require('mongoose').model('BikePeriodView');
 
-router.post('/profile', (req, res, next) => {
-
-    console.log("USER PROFILE");
-
-    //This function with callback is used to get the response from the server
-    //outside of the instance of BikeBooking model
-    function retrieveBooking(email, callback) {
-
-
-        BikeBooking.find({ userid: email }, (err, resUserRebook) => {
-            if (err) {
-                callback(err, null);
-            } else {
-
-                Bike.find({
-                    bikeid: resUserRebook.bikeid,
-                }, (err, resBike) => {
-                    if (err) {
-                        console.log("ERROR : ", err);
-                        return err;
-                    }
-                });
-
-                callback(null, resUserRebook);
-            }
-
-        });
-    };
-
-    //Call the function above to get the response from the server
-    //In this case it verify if the user is verified
-    retrieveBooking(req.body.userid, function (err, resUserRebook) {
-        if (err) {
-            console.log(err);
-        }
-
-        return res.status(200).json({
-            success: true,
-            result: resUserRebook
-        });
-
-    });
-});
-
-router.post('/adminprofile', (req, res, next) => {
-
-    console.log("ADMIN PROFILE");
-
-    //This function with callback is used to get the response from the server
-    //outside of the instance of BikeBooking model
-    function retrieveBooking(email, callback) {
-        let allBookning = [];
-
-        BikeBooking.find((err, resUserRebook) => {
-            if (err) {
-                callback(err, null);
-            } else {
-
-                User.find((err, resUser) => {
-                    if (err) {
-                        console.log("ERROR : ", err);
-                        return err;
-                    }
-
-                    callback(null, { booking: resUserRebook, user: resUser });
-
-                });
-            }
-
-        });
-    };
-
-    //Call the function above to get the response from the server
-    //In this case it verify if the user is verified
-    retrieveBooking({}, function (err, resUserRebook) {
-        if (err) {
-            console.log(err);
-        }
-
-        return res.status(200).json({
-            success: true,
-            result: resUserRebook
-        });
-
-    });
-});
-
-/*
-router.post('/adminprofile', (req, res, next) => {
-
-    //This function with callback is used to get the response from the server
-    //outside of the instance of BikeBooking model
-    function retrieveBooking(email, callback) {
-        let allBookning = [];
-
-        BikeBooking.find((err, resUserRebook) => {
-            if (err) {
-                callback(err, null);
-            } else {
-
-                //console.log("BikeBooking getting resUserRebook : ", resUserRebook);
-               
-                    User.find((err, resUser) => {
-                        if (err) {
-                            console.log("ERROR : ", err);
-                            return err;
-                        }
-                        console.log("resUser[i]", resUser);
-
-                        console.log("resUserRebook[i]", resUserRebook);
-                        callback(null, { booking: resUserRebook, user: resUser });
-                        
-                    });
-               
-               
-            }
-
-        });
-    };
-
-    //Call the function above to get the response from the server
-    //In this case it verify if the user is verified
-    retrieveBooking({}, function (err, resUserRebook) {
-        if (err) {
-            console.log(err);
-        }
-
-        //console.log("CALLBACK BikeBooking & retrieveBooking : ", resUserRebook);
-
-        return res.status(200).json({
-            success: true,
-            result: resUserRebook
-            //message: 'Sorry you have not book any bike!'
-        });
-
-    });
-});*/
-
-router.post('/confirmation', (req, res, next) => {
-
-    verifyUserConfirmation(req, res, next);
-
-});
-
 router.post('/signup', (req, res, next) => {
 
     const validationResult = validateSignupForm(req.body);
@@ -212,7 +68,6 @@ router.post('/signup', (req, res, next) => {
             msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
             msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
 
-
             tempToken = token;
 
             //Uncomment this line to send EMAIL to the user
@@ -231,45 +86,270 @@ router.post('/signup', (req, res, next) => {
 
 });
 
-router.post('/resend', (req, res, next) => {
+router.post('/login', (req, res, next) => {
 
-    req.assert('email', 'E-post är inte giltig').isEmail();
-    req.assert('email', 'E-post kan inte vara tomt').notEmpty();
-    req.sanitize('email').normalizeEmail({ remove_dots: false });
+    var isUserVerified = false;
+
+    const validationResult = validateLoginForm(req.body);
+    if (!validationResult.success) {
+        return res.status(400).json({
+            success: false,
+            message: validationResult.message,
+            errors: validationResult.errors
+        });
+    }
+    return passport.authenticate('local-login', (err, token, userData) => {
+        if (err) {
+            if (err.name === 'IncorrectCredentialsError') {
+                return res.status(400).json({
+                    success: false,
+                    message: err.message
+                });
+            }
+            return res.status(400).json({
+                success: false,
+                message: 'Kunde inte bearbeta formuläret.'
+            });
+        }
+
+        //This function with callback is used to get the response from the server
+        //outside of the instance of User model
+        function retrieveUser(uname, callback) {
+            // If we found a token, find a matching user
+            User.findOne({ email: uname }, function (err, user) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, user);
+                }
+
+            });
+
+        };
+
+        //Call the function above to get the response from the server
+        //In this case it verify if the user is verified
+        retrieveUser(req.body.email, function (err, user) {
+            if (err) {
+                console.log(err);
+            }
+
+            if (user.isVerified) {
+                return res.json({
+                    success: true,
+                    message: 'Du har loggat in!',
+                    token,
+                    userdata: userData,
+                    isVerified: user.isVerified,
+                    usertype: user.usertype
+                });
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Kontrollera ditt bekräftelse i din email'
+                });
+            }
+
+        });
+
+    })(req, res, next);
+
+});
+
+router.post('/profile', (req, res, next) => {
+    //This function with callback is used to get the response from the server
+    //outside of the instance of BikeBooking model
+    function retrieveBooking(email, callback) {
+
+
+        BikeBooking.find({ userid: email }, (err, resUserRebook) => {
+            if (err) {
+                callback(err, null);
+            } else {
+
+                Bike.find({
+                    bikeid: resUserRebook.bikeid,
+                }, (err, resBike) => {
+                    if (err) {
+                        console.log("ERROR : ", err);
+                        return err;
+                    }
+                });
+
+                callback(null, resUserRebook);
+            }
+
+        });
+    };
+
+    //Call the function above to get the response from the server
+    //In this case it verify if the user is verified
+    retrieveBooking(req.body.userid, function (err, resUserRebook) {
+        if (err) {
+            console.log(err);
+        }
+
+        return res.status(200).json({
+            success: true,
+            result: resUserRebook
+        });
+
+    });
+});
+
+router.post('/adminprofile', (req, res, next) => {
+
+
+
+    //This function with callback is used to get the response from the server
+    //outside of the instance of BikeBooking model
+    function retrieveBooking(email, callback) {
+        let allBookning = [];
+
+        BikeBooking.find((err, resUserRebook) => {
+            if (err) {
+                callback(err, null);
+            } else {
+
+                User.find((err, resUser) => {
+                    if (err) {
+                        console.log("ERROR : ", err);
+                        return err;
+                    }
+
+                    callback(null, { booking: resUserRebook, user: resUser });
+
+                });
+            }
+
+        });
+    };
+
+    //Call the function above to get the response from the server
+    //In this case it verify if the user is verified
+    retrieveBooking({}, function (err, resUserRebook) {
+        if (err) {
+            console.log(err);
+        }
+
+        return res.status(200).json({
+            success: true,
+            result: resUserRebook
+        });
+
+    });
+});
+
+router.post('/users', (req, res, next) => {
+
+
+    //This function with callback is used to get the response from the server
+    //outside of the instance of User model
+    function retrieveBooking({}, callback) {
+        let allBookning = [];
+
+
+
+                User.find((err, resUsers) => {
+                    if (err) {
+                        console.log("ERROR : ", err);
+                        return err;
+                    }
+
+                    callback(null, { users: resUsers });
+
+                });
+
+    };
+
+    //Call the function above to get the response from the server
+    //In this case it verify if the user is verified
+    retrieveBooking({}, function (err, resUsers) {
+        if (err) {
+            console.log(err);
+        }
+
+        return res.status(200).json({
+            success: true,
+            result: resUsers
+        });
+
+    });
+});
+
+router.post('/confirmation', (req, res, next) => {
+
+    verifyUserConfirmation(req, res, next);
+
+});
+
+router.post('/reset', (req, res, next) => {
+
+  /*
+  User.findOne({ passwordResetToken: req.params.token, passwordResetExpires: { $gt: Date.now() } }, function(err, user) {
+    if (!user) { console.log("ERROR Reseting Password", err) return res.redirect('/forgot');}
+    res.render('reset', {
+      user: req.user
+    });
+  });
+  */
+  verifyResetPassword(req, res, next);
+
+});
+
+router.post('/forgot', (req, res, next) => {
 
     // Check for validation errors
-    var errors = req.validationErrors();
+    var errors = validateResetPassword(req.body);
+    console.log(errors);
     if (errors) return res.status(400).send(errors);
 
     User.findOne({ email: req.body.email }, function (err, user) {
         if (!user) return res.status(400).send({ msg: 'Vi kunde inte hitta en användare med det mailet.' });
-        if (user.isVerified) return res.status(400).send({ msg: 'Detta konto har redan verifierats. Vänligen logga in.' });
+        //if (user.isVerified) return res.status(400).send({ msg: 'Detta konto har redan verifierats. Vänligen logga in.' });
 
-        // Create a verification token, save it, and send email
-        var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+        // Create a new verification token for this user
+        let token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
 
-        // Save the token
-        token.save(function (err) {
-            if (err) { return res.status(500).send({ msg: err.message }); }
+        user.passwordResetToken = token;
+        user.passwordResetExpires = Date.now() + 3600000; //Expire in 1hour
 
-            // Send the email
-            // using SendGrid's v3 Node.js Library
-            // https://github.com/sendgrid/sendgrid-nodejs
-            const sgMail = require('@sendgrid/mail');
-            sgMail.setApiKey(config.SENDGRID_APIKEY);
-            const msg = {
-                to: 'cleber.arruda@helsingborg.se',
-                from: 'c_leverdo@hotmail.com',
-                subject: 'Kontoverifiering och bekräftelse!',
-                text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n',
-                html: '<strong>Hello, <br /><br />Please verify your account by clicking the link:<br /> <a href="http://' + req.headers.host + '"/confirmation/' + token.token + '>Click here ro verify!</a></strong>',
-            };
+        user.save((err) => {
+            // if(err) throw new Error(err); //This line was used to just GET the right Error info!
+            if (err) return new Error(err);
+        })
 
-            sgMail.send(msg, (error, result) => {
+        const sgMail = require('@sendgrid/mail');
 
-                if (error) { return res.status(500).send({ msg: error.message }); }
-                res.status(200).send('Ett bekräftelsemejl har skickats till ' + user.email + '.');
-            });
+        sgMail.setApiKey(config.SENDGRID_APIKEY);
+
+        msg.to = req.body.email;
+        msg.from = 'none@reply.com';
+        msg.subject = 'Återställ lösenord - Cykelbiblioteket i Helsingborg';
+        //The line above was used just to demostrate that we can send the token and userId within the URL link
+        // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
+        msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
+        msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
+
+        tempToken = token;
+
+        /*
+        User.update({ bikebookingid: req.body.bikebookingid }, { $set: { admincomment: req.body.admincomment }}).exec();
+        return res.status(200).json({
+            success: true,
+            messages: "Komment uppdaterad"
+        });
+        */
+
+        //Uncomment this line to send EMAIL to the user
+        //sgMail.send(msg);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Ditt lösenord har ändrats ett bekräftelsemejl har skickats till din epost : ' + req.body.email + '',
+            email: req.body.email,
+            token: tempToken.token,
+            user: user
         });
 
     });
@@ -476,6 +556,16 @@ router.post('/bikebooking', (req, res, next) => {
 
 });
 
+router.post('/newcomment', (req, res, next) => {
+
+  BikeBooking.update({ bikebookingid: req.body.bikebookingid }, { $set: { admincomment: req.body.admincomment }}).exec();
+  return res.status(200).json({
+      success: true,
+      messages: "Komment uppdaterad"
+  });
+
+});
+
 router.post('/unbookbike', (req, res, next) => {
 
     const unbookingBikeData = {
@@ -488,76 +578,6 @@ router.post('/unbookbike', (req, res, next) => {
         success: true,
         messages: "Cykeln har avbokats"
     });
-
-});
-
-router.post('/login', (req, res, next) => {
-
-    var isUserVerified = false;
-
-    const validationResult = validateLoginForm(req.body);
-    if (!validationResult.success) {
-        return res.status(400).json({
-            success: false,
-            message: validationResult.message,
-            errors: validationResult.errors
-        });
-    }
-    return passport.authenticate('local-login', (err, token, userData) => {
-        if (err) {
-            if (err.name === 'IncorrectCredentialsError') {
-                return res.status(400).json({
-                    success: false,
-                    message: err.message
-                });
-            }
-            return res.status(400).json({
-                success: false,
-                message: 'Kunde inte bearbeta formuläret.'
-            });
-        }
-
-        //This function with callback is used to get the response from the server
-        //outside of the instance of User model
-        function retrieveUser(uname, callback) {
-            // If we found a token, find a matching user
-            User.findOne({ email: uname }, function (err, user) {
-                if (err) {
-                    callback(err, null);
-                } else {
-                    callback(null, user);
-                }
-
-            });
-
-        };
-
-        //Call the function above to get the response from the server
-        //In this case it verify if the user is verified
-        retrieveUser(req.body.email, function (err, user) {
-            if (err) {
-                console.log(err);
-            }
-
-            if (user.isVerified) {
-                return res.json({
-                    success: true,
-                    message: 'Du har loggat in!',
-                    token,
-                    userdata: userData,
-                    isVerified: user.isVerified,
-                    usertype: user.usertype
-                });
-            } else {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Kontrollera ditt bekräftelse i din email'
-                });
-            }
-
-        });
-
-    })(req, res, next);
 
 });
 
@@ -787,6 +807,29 @@ function validateSignupForm(payload) {
 
 };
 
+function validateResetPassword(payload) {
+
+    console.log("payload : ", payload);
+
+    const errors = {};
+    let isFormValid = true;
+    let message = '';
+    if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
+        isFormValid = false;
+        errors.email = 'Ange en korrekt e-postadress.';
+    }
+
+    if (!isFormValid) {
+        message = 'Kontrollera formuläret för fel.';
+    }
+    return {
+        success: isFormValid,
+        message,
+        errors
+    };
+
+};
+
 /**
  * validatePeriodForm
  *
@@ -954,7 +997,7 @@ function addNewBike(req) {
 function verifyUserConfirmation(req, res, next) {
 
     // Find a matching token
-    Token.findOne({ token: req.body.token }, function (err, token) {
+    User.findOne({ token: req.body.token }, function (err, token) {
         if (!token) return res.status(400).json({ type: 'not-verified', message: 'Vi kunde inte hitta ett giltigt token. Din token min har gått ut.' });
 
         // If we found a token, find a matching user
@@ -963,12 +1006,12 @@ function verifyUserConfirmation(req, res, next) {
             if (user.isVerified) return res.status(400).json({ type: 'already-verified', message: 'Den här användaren har redan verifierats.' });
 
             // Verify and save the user
-            user.isVerified = true;
+            user.pass = true;
             user.save(function (err) {
                 if (err) { return res.status(500).json({ message: err.message }); }
                 res.status(200).json({
                     success: true,
-                    message: 'Kontot har verifierats!',
+                    message: 'Tack för din registrering!',
                     token,
                     user: user
                     //". You have successfully logged in The account has been verified. Please log in."
@@ -979,4 +1022,33 @@ function verifyUserConfirmation(req, res, next) {
 
 };
 
+function verifyResetPassword(req, res, next){
+  // Find a matching token
+  User.findOne({ passwordResetToken: req.body.token, passwordResetExpires: { $gt: Date.now() } }, function (err, token) {
+      if (!token) return res.status(400).json({ type: 'not-verified', message: 'Vi kunde inte hitta ett giltigt token. Din token min har gått ut.' });
+
+      // If we found a token, find a matching user
+      User.findOne({ _id: token._userId }, function (err, user) {
+          if (!user) return res.status(400).json({ message: 'Vi kunde inte hitta en användare för denna token.' });
+          //if (user.isVerified) return res.status(400).json({ type: 'already-verified', message: 'Den här användaren har redan verifierats.' });
+
+          // Verify and save the user
+          //user.isVerified = true;
+          user.password = req.body.password;
+          user.passwordResetToken = undefined;
+          user.passwordResetExpires = undefined;
+
+          user.save(function (err) {
+              if (err) { return res.status(500).json({ message: err.message }); }
+              res.status(200).json({
+                  success: true,
+                  message: 'Ditt lösenord har ändrats!',
+                  token,
+                  user: user
+                  //". You have successfully logged in The account has been verified. Please log in."
+              });
+          });
+      });
+  });
+}
 module.exports = router;
