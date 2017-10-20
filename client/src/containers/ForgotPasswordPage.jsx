@@ -60,7 +60,7 @@ class ForgotPasswordPage extends React.Component {
       if (xhr.status === 200) {
         // success
 
-          const response = null;
+          let response = null;
 
           // Opera 8.0+
           var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
@@ -114,7 +114,7 @@ class ForgotPasswordPage extends React.Component {
       } else {
         // failure
 
-          const response = null;
+          let response = null;
 
           // Opera 8.0+
           var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
