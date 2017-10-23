@@ -14,7 +14,7 @@ import ProfileMessagesPage from './containers/ProfileMessagesPage.jsx';
 import UsersPage from './containers/UsersPage.jsx';
 import SortFilterPage from './containers/SortFilterPage.jsx';
 import ForgotPasswordPage from './containers/ForgotPasswordPage.jsx';
-
+import ResetPasswordPage from './containers/ResetPasswordPage.jsx';
 
 const routes = {
   // Base component (wrapper for the whole application).
@@ -144,6 +144,10 @@ const routes = {
     {
       path: '/forgot',
       component: ForgotPasswordPage
+    },
+    {
+      path: '/reset',
+      component: ResetPasswordPage
     }
 
   ]

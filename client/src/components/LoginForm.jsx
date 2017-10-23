@@ -66,6 +66,7 @@ const LoginForm = ({
 
           <div className="button-line">
             <RaisedButton type="submit" label={strings.login} primary={false} backgroundColor="#ae0b05" className="loginBtn" onSubmit={handleSubmit} />
+            <p style={{ marginTop: "10px"  }}><Link to="/forgot" style={{ color: "#ae0b05" }}> {strings.forgotpassword} </Link></p>
           </div>
 
           <CardText><h3>{strings.douhaveaccount}</h3>  <Link to="/signup" style={{ color: "#ae0b05" }}> {strings.signup} </Link></CardText>

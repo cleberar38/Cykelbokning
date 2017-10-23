@@ -17,257 +17,26 @@ class ResetPasswordPage extends React.Component {
       messages: '',
       errors: {},
       user: {
-        email: '',
-        password: '',
+        passwordconfirm: '',
+        password: ''
 
       }
     };
-
-    this.processForm = this.processForm.bind(this);
-    this.changeUser = this.changeUser.bind(this);
-    }
-
-  componentDidMount() {
-
-      window.scrollTo(0, 0);
-
-  }
-
-  /**
-   * Process the form.
-   *
-   * @param {object} event - the JavaScript event object
-   */
-  processForm(event) {
-    // prevent default action. in this case, action is the form submission event
-    event.preventDefault();
-
-    // create a string for an HTTP body message
-
-    const email = encodeURIComponent(this.state.user.email);
-    const password = encodeURIComponent(this.state.user.password);
-    const passwordconfirm = encodeURIComponent(this.state.user.passwordconfirm);
-
-    const formData = `email=${email}&password=${password}`;
-
-    const self = this;
-
-    // create an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('post', '/auth/reset');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.responseType = 'json';
-
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        // success
-
-          let response = null;
-
-          // Opera 8.0+
-          var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-
-          // Firefox 1.0+
-          var isFirefox = typeof InstallTrigger !== 'undefined';
-
-          // Safari 3.0+ "[object HTMLElementConstructor]"
-          var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
-
-          // Internet Explorer 6-11
-          var isIE = /*@cc_on!@*/false || !!document.documentMode;
-
-          // Edge 20+
-          var isEdge = !isIE && !!window.StyleMedia;
-
-          // Chrome 1+
-          var isChrome = !!window.chrome && !!window.chrome.webstore;
-
-          // Blink engine detection
-          var isBlink = (isChrome || isOpera) && !!window.CSS;
-
-          //IE problem! We have to parse the response since in IE everything became string!
-          if (isIE) { response = JSON.parse(xhr.response); } else {
-              response = xhr.response;
-          }
-
-        // change the component-container state
-        this.setState({
-          errors: {}
-        });
-
-        // set a message
-        localStorage.setItem('successMessage', response.message);
-
-        self.setState({
-          messages: response.message,
-          messageChanged: response.success,
-          token: response.token,
-          user: {
-            email: response.email
-          }
-
-        });
-
-        //TODO: Use this with a button to user to confirm his/her registartion
-        //self.handleConfirmation(xhr.response.email, xhr.response.token);
-
-      } else {
-        // failure
-
-          let response = null;
-
-          // Opera 8.0+
-          var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-
-          // Firefox 1.0+
-          var isFirefox = typeof InstallTrigger !== 'undefined';
-
-          // Safari 3.0+ "[object HTMLElementConstructor]"
-          var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
-
-          // Internet Explorer 6-11
-          var isIE = /*@cc_on!@*/false || !!document.documentMode;
-
-          // Edge 20+
-          var isEdge = !isIE && !!window.StyleMedia;
-
-          // Chrome 1+
-          var isChrome = !!window.chrome && !!window.chrome.webstore;
-
-          // Blink engine detection
-          var isBlink = (isChrome || isOpera) && !!window.CSS;
-
-          //IE problem! We have to parse the response since in IE everything became string!
-          if (isIE) { response = JSON.parse(xhr.response); } else {
-              response = xhr.response;
-          }
-
-        const errors = response.errors ? response.errors : {};
-        errors.summary = response.message;
-
-        this.setState({
-          errors
-        });
-      }
-    });
-
-    xhr.send(formData);
-
-  }
-
-
-  /**
-   * Change the user object.
-   *
-   * @param {object} event - the JavaScript event object
-   */
-  changeUser(event) {
-    const field = event.target.name;
-    const user = this.state.user;
-    user[field] = event.target.value;
-
-    this.setState({
-      user
-    });
-  }
-
-  /**
-   * Render the component.
-   */
-  render() {
-    return (
-      <ResetPassword
-        onSubmit={this.processForm}
-        onChange={this.changeUser}
-        errors={this.state.errors}
-        user={this.state.user}
-        messageChanged={this.state.messageChanged}
-        messages={this.state.messages}
-
-      />
-    );
-  }
-}
-
-ResetPasswordPage.contextTypes = {
-  router: PropTypes.object.isRequired
-};
-
-export default ResetPasswordPage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import "babel-polyfill";
-import React from 'react';
-import Auth from '../modules/Auth';
-import ResetPassword from '../components/ResetPassword.jsx';
-
-// Set initial state
-let state = {
-  messages: '',
-  messageChanged: false,
-  user: {
-    password: ''
-  }
-};
-
-class ResetPasswordPage extends React.Component {
-
-  /**
-   * Class constructor.
-   */
-  constructor(props) {
-    super(props);
-
-    // Retrieve the last state
-    this.state = state;
 
     this.handleConfirmation = this.handleConfirmation.bind(this);
     this.changeUser = this.changeUser.bind(this);
   }
 
-  componentDidMount() {
-
-      window.scrollTo(0, 0);
-
-  }
-
-  handleConfirmation() {
-
-    let token = document.location.hash.split("token=")[1];
+  handleConfirmation(event) {
 
     // //prevent default action. in this case, action is the form submission event
     event.preventDefault();
-    const password = encodeURIComponent(this.state.user.password);
-    const formData = `token=${token}&password${password}`;
+
+    let token = document.location.hash.split("token=")[1];
+    const password = this.state.user.password;
+    const passwordconfirm = this.state.user.passwordconfirm;
+
+    const formData = `token=${token}&password=${password}&passwordconfirm=${passwordconfirm}`;
 
     const self = this;
 
@@ -310,8 +79,8 @@ class ResetPasswordPage extends React.Component {
           }
 
         self.setState({
-          messages: response.message,
           messageChanged: response.success,
+          messages: response.message
         });
 
       } else {
@@ -363,21 +132,22 @@ class ResetPasswordPage extends React.Component {
 
   }
 
+
   /**
    * Change the user object.
    *
    * @param {object} event - the JavaScript event object
    */
   changeUser(event) {
-    const field = event.target.name;
-    const user = this.state.user;
+    let field = event.target.name;
+    let user = this.state.user;
     user[field] = event.target.value;
 
     this.setState({
       user
     });
-  }
 
+  }
 
   /**
    * Render the component.
@@ -385,14 +155,20 @@ class ResetPasswordPage extends React.Component {
   render() {
     return (
       <ResetPassword
-        messageChanged={ this.props.messageChanged }
-        messages={ this.props.messages }
-        handleConfirmation={ this.handleConfirmation }
-        user={this.state.user}
+        onSubmit={this.handleConfirmation}
         onChange={this.changeUser}
+        errors={this.state.errors}
+        user={this.state.user}
+        messageChanged={this.state.messageChanged}
+        messages={this.state.messages}
+
       />
     );
   }
 }
+
+ResetPasswordPage.contextTypes = {
+  router: PropTypes.object.isRequired
+};
 
 export default ResetPasswordPage;

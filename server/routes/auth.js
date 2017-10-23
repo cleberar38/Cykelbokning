@@ -4,13 +4,13 @@ const passport = require('passport');
 const router = new express.Router();
 const crypto = require('crypto');
 const config = require('../../config');
-
 const Bike = require('mongoose').model('Bike');
 const BikeBooking = require('mongoose').model('BikeBooking');
 const Period = require('mongoose').model('Period');
 const User = require('mongoose').model('User');
 const Token = require('mongoose').model('Token');
 const BikePeriodView = require('mongoose').model('BikePeriodView');
+const bcrypt = require('bcrypt');
 
 router.post('/signup', (req, res, next) => {
 
@@ -71,7 +71,7 @@ router.post('/signup', (req, res, next) => {
             tempToken = token;
 
             //Uncomment this line to send EMAIL to the user
-            sgMail.send(msg);
+            //sgMail.send(msg);
 
             return res.status(200).json({
                 success: true,
@@ -285,74 +285,43 @@ router.post('/confirmation', (req, res, next) => {
 
 router.post('/reset', (req, res, next) => {
 
-  /*
-  User.findOne({ passwordResetToken: req.params.token, passwordResetExpires: { $gt: Date.now() } }, function(err, user) {
-    if (!user) { console.log("ERROR Reseting Password", err) return res.redirect('/forgot');}
-    res.render('reset', {
-      user: req.user
+    const validationResult = validateResetPassword(req.body);
+
+    if (!validationResult.success) {
+        return res.status(400).json({
+            success: false,
+            message: validationResult.message,
+            errors: validationResult.errors
+        });
+    }
+
+    const token = req.body.token;
+
+    //passwordResetExpires: { $gt: Date.now() }
+    User.findOne({ 'passwordResetToken': token }, function (err, user) {
+        if (err) return err;
+
+        user.password = req.body.password;
+        user.passwordResetToken = '';
+        user.passwordResetExpires = null;
+
+        user.save((err) => {
+            // if(err) throw new Error(err); //This line was used to just GET the right Error info!
+            if (err) return new Error(err);
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Ditt lösenord ändrats',
+        });
+
     });
-  });
-  */
-  verifyResetPassword(req, res, next);
 
 });
 
 router.post('/forgot', (req, res, next) => {
 
-    // Check for validation errors
-    var errors = validateResetPassword(req.body);
-    console.log(errors);
-    if (errors) return res.status(400).send(errors);
-
-    User.findOne({ email: req.body.email }, function (err, user) {
-        if (!user) return res.status(400).send({ msg: 'Vi kunde inte hitta en användare med det mailet.' });
-        //if (user.isVerified) return res.status(400).send({ msg: 'Detta konto har redan verifierats. Vänligen logga in.' });
-
-        // Create a new verification token for this user
-        let token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
-
-        user.passwordResetToken = token;
-        user.passwordResetExpires = Date.now() + 3600000; //Expire in 1hour
-
-        user.save((err) => {
-            // if(err) throw new Error(err); //This line was used to just GET the right Error info!
-            if (err) return new Error(err);
-        })
-
-        const sgMail = require('@sendgrid/mail');
-
-        sgMail.setApiKey(config.SENDGRID_APIKEY);
-
-        msg.to = req.body.email;
-        msg.from = 'none@reply.com';
-        msg.subject = 'Återställ lösenord - Cykelbiblioteket i Helsingborg';
-        //The line above was used just to demostrate that we can send the token and userId within the URL link
-        // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
-        msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
-        msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
-
-        tempToken = token;
-
-        /*
-        User.update({ bikebookingid: req.body.bikebookingid }, { $set: { admincomment: req.body.admincomment }}).exec();
-        return res.status(200).json({
-            success: true,
-            messages: "Komment uppdaterad"
-        });
-        */
-
-        //Uncomment this line to send EMAIL to the user
-        //sgMail.send(msg);
-
-        return res.status(200).json({
-            success: true,
-            message: 'Ditt lösenord har ändrats ett bekräftelsemejl har skickats till din epost : ' + req.body.email + '',
-            email: req.body.email,
-            token: tempToken.token,
-            user: user
-        });
-
-    });
+    validateForgotPassword(req, res, next);
 
 });
 
@@ -651,7 +620,6 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
 
         });
     });
-
 };
 
 /**
@@ -698,7 +666,6 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
             showMessages200(res, msg);
         }
     });
-
 };
 
 /**
@@ -719,7 +686,6 @@ function createNewBooking(newBooking) {
 
         return done;
     });
-
 };
 
 /**
@@ -753,7 +719,6 @@ function createNewPeriod(req) {
 
         return done;
     });
-
 };
 
 /**
@@ -769,7 +734,6 @@ function showMessages200(res, msg) {
         success: true,
         message: msg
     });
-
 };
 
 /**
@@ -804,19 +768,33 @@ function validateSignupForm(payload) {
         message,
         errors
     };
-
 };
 
+/**
+ * Validate the sign up form
+ *
+ * @param {object} payload - the HTTP body message
+ * @returns {object} The result of validation. Object contains a boolean validation result,
+ *                   errors tips, and a global message for the whole form.
+ */
 function validateResetPassword(payload) {
-
-    console.log("payload : ", payload);
 
     const errors = {};
     let isFormValid = true;
     let message = '';
-    if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
+
+    if (!payload || typeof payload.password !== 'string' || payload.password.trim().length < 8) {
         isFormValid = false;
-        errors.email = 'Ange en korrekt e-postadress.';
+        errors.password = 'Lösenordet måste ha minst 8 tecken.';
+    }
+    if (!payload || typeof payload.passwordconfirm !== 'string' || payload.passwordconfirm.trim().length < 8) {
+        isFormValid = false;
+        errors.passwordconfirm = 'Lösenordet måste ha minst 8 tecken.';
+    }
+
+    if (payload.password !==  payload.passwordconfirm) {
+        isFormValid = false;
+        errors.password = 'Lösenordet matcha inte varandra.';
     }
 
     if (!isFormValid) {
@@ -827,6 +805,75 @@ function validateResetPassword(payload) {
         message,
         errors
     };
+};
+
+function validateForgotPassword(req, res, next) {
+
+    var payload = req.body;
+    console.log("payload : ", payload);
+
+    const errors = {};
+    let isFormValid = true;
+    let message = '';
+
+    if (!payload || typeof payload.email !== 'string' || !validator.isEmail(payload.email)) {
+        isFormValid = false;
+        errors.email = 'Ange en korrekt e-postadress.';
+    }
+
+    if (!isFormValid) {
+        message = 'Kontrollera formuläret för fel.';
+        return {
+            success: isFormValid,
+            message,
+            errors
+        };
+    }
+
+    if(isFormValid){
+
+        User.find({email: req.body.email }, function (err, user) {
+            if(err) throw new Error(err);
+
+            let token = crypto.randomBytes(16).toString('hex');
+
+            User.update({ email: req.body.email }, { passwordResetToken: token, passwordResetExpires:  Date.now() + 3600000 }, function(errors, response){
+
+                if(errors) throw new Error(errors);
+
+                if (!response) return res.status(400).send({ msg: 'Vi kunde inte hitta en användare med det mailet.' });
+
+                /*
+                let msg = {};
+
+                const sgMail = require('@sendgrid/mail');
+
+                sgMail.setApiKey(config.SENDGRID_APIKEY);
+
+                msg.to = req.body.email;
+                msg.from = 'none@reply.com';
+                msg.subject = 'Återställ lösenord - Cykelbiblioteket i Helsingborg';
+                //The line above was used just to demostrate that we can send the token and userId within the URL link
+                // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
+                msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
+                msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
+
+                //Uncomment this line to send EMAIL to the user
+                //sgMail.send(msg);
+
+                */
+
+                return res.status(200).json({
+                    success: isFormValid,
+                    message: 'Ett bekräftelsemejl har skickats till din epost : ' + req.body.email + '',
+                    //email: req.body.email,
+                    //token: tempToken.token,
+                    //user: response
+                });
+
+            });
+        });
+    }
 
 };
 
@@ -878,7 +925,6 @@ function validatePeriodForm(payload) {
         message,
         errors
     };
-
 };
 
 /**
@@ -909,7 +955,6 @@ function validateLoginForm(payload) {
         message,
         errors
     };
-
 };
 
 function getAllPlats(payload) {
@@ -937,7 +982,6 @@ function getAllPlats(payload) {
         message,
         errors
     };
-
 };
 
 function validateAddBikeForm(payload) {
@@ -969,7 +1013,6 @@ function validateAddBikeForm(payload) {
         message,
         errors
     };
-
 };
 
 function addNewBike(req) {
@@ -1019,36 +1062,64 @@ function verifyUserConfirmation(req, res, next) {
             });
         });
     });
-
 };
 
 function verifyResetPassword(req, res, next){
+
   // Find a matching token
-  User.findOne({ passwordResetToken: req.body.token, passwordResetExpires: { $gt: Date.now() } }, function (err, token) {
+  User.find({ passwordResetToken: req.body.token, passwordResetExpires: { $gt: Date.now() } }, function (err, user) {
       if (!token) return res.status(400).json({ type: 'not-verified', message: 'Vi kunde inte hitta ett giltigt token. Din token min har gått ut.' });
 
+
+      /*
+
       // If we found a token, find a matching user
-      User.findOne({ _id: token._userId }, function (err, user) {
+      User.find({ userid: token.userid }, function (err, user) {
           if (!user) return res.status(400).json({ message: 'Vi kunde inte hitta en användare för denna token.' });
           //if (user.isVerified) return res.status(400).json({ type: 'already-verified', message: 'Den här användaren har redan verifierats.' });
 
           // Verify and save the user
           //user.isVerified = true;
-          user.password = req.body.password;
-          user.passwordResetToken = undefined;
-          user.passwordResetExpires = undefined;
 
-          user.save(function (err) {
-              if (err) { return res.status(500).json({ message: err.message }); }
-              res.status(200).json({
-                  success: true,
-                  message: 'Ditt lösenord har ändrats!',
-                  token,
-                  user: user
-                  //". You have successfully logged in The account has been verified. Please log in."
-              });
+
+
+
+      });
+
+      */
+
+
+      // generate a salt
+      bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+          if (err) return next(err);
+
+          // hash the password using our new salt
+          bcrypt.hash(user.password, salt, function(err, hash) {
+              if (err) return next(err);
+
+              // override the cleartext password with the hashed one
+              user.password = hash;
+              //next();
           });
       });
+
+
+      //user.password = req.body.password;
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+
+      user.save(function (err) {
+          if (err) { return res.status(500).json({ message: err.message }); }
+          res.status(200).json({
+              success: true,
+              message: 'Ditt lösenord har ändrats!',
+              token,
+              user: user
+              //". You have successfully logged in The account has been verified. Please log in."
+          });
+      });
+
   });
 }
+
 module.exports = router;
