@@ -25,6 +25,7 @@ class ResetPasswordPage extends React.Component {
 
     this.handleConfirmation = this.handleConfirmation.bind(this);
     this.changeUser = this.changeUser.bind(this);
+    this.handleBackBtn = this.handleBackBtn.bind(this);
   }
 
   handleConfirmation(event) {
@@ -149,6 +150,13 @@ class ResetPasswordPage extends React.Component {
 
   }
 
+  handleBackBtn() {
+    this.setState({
+      messageChanged: false,
+      messages: ''
+    });
+  }
+
   /**
    * Render the component.
    */
@@ -161,6 +169,7 @@ class ResetPasswordPage extends React.Component {
         user={this.state.user}
         messageChanged={this.state.messageChanged}
         messages={this.state.messages}
+        handleBackBtn={this.handleBackBtn}
 
       />
     );

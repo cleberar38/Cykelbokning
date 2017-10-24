@@ -10,9 +10,7 @@ strings.setLanguage(default_lang.lang);
 const SortFilter = ({
   filterresult,
   getBookings,
-  sortTable,
-
-
+  sortTable
 
   }) => (
     <div>
@@ -27,7 +25,6 @@ const SortFilter = ({
         </thead>
         <tbody>
         {filterresult !== null ? filterresult.map((sorts, index) => (
-
 
           <Row key={Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)} style={{"border": "1px solid black", "margin":"0px", "padding":"5px"}} >
 

@@ -20,6 +20,7 @@ const MessageToUSer = ({
         <div style={{ height: '100%' }}>
             <div>
                 <Card className="container">
+
                     <CardTitle title="" subtitle="">
 
                         {errors !== undefined || errors !== null && Object !== null || Object !== undefined && Object.keys(errors).length === 0 && errors.constructor === Object ?
@@ -31,7 +32,7 @@ const MessageToUSer = ({
                         }
 
                     </CardTitle>
-                    <Button onClick={handleBackBtn} bsStyle="primary" className={"msgbtn "}>Tillbaka till bokning</Button>
+                    <RaisedButton href="/" label={strings.goback} primary={false} backgroundColor="#ae0b05" className="msgbtn" />
                 </Card>
             </div>
         </div>

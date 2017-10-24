@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+function toLower (v) {
+  return v.toLowerCase();
+}
+
 // define the User model schema
 const UserSchema = new mongoose.Schema({
     userid: { type: String, unique: true },
-    email: { type: String, index: { unique: true } },
+    email: { type: String, set: toLower, index: { unique: true } },
     password: String,
     name: String,
     address: String,
@@ -36,7 +40,11 @@ UserSchema.pre('save', function saveHook(next) {
     const user = this;
 
     // proceed further only if the password is modified or the user is new
-    if (!user.isModified('password')) return next();
+    if (!user.isModified('password')){
+      console.log("!user.isModified(password)");
+      return next();
+
+    }
 
     return bcrypt.genSalt((saltError, salt) => {
         if (saltError) { return next(saltError); }

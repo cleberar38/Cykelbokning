@@ -229,6 +229,7 @@ img {
     .loginBtn span, .registerBtn span, .merinfo span {
         color: #ffffff !important;
         background-color: 'rgba(174, 11, 5, 0.8)' !important;
+
     }
 
 .panel-default > .panel-heading {
@@ -364,3 +365,17 @@ div.panel-danger > .panel-heading {
   padding: 5px;
   display: inline-block;
 }
+
+/*======================================================= FORGOT PASSWORD ===========================================================*/
+
+.gobacktopright {
+  margin: 0;
+  top: 0;
+  left: 0;
+  width: 40%;
+
+}
+
+
+
+/*======================================================= FORGOT PASSWORD END  ===========================================================*/

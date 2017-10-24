@@ -25,10 +25,15 @@ class ForgotPasswordPage extends React.Component {
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
+    this.handleBackBtn = this.handleBackBtn.bind(this);
+
     }
 
-  componentDidMount() {
-      window.scrollTo(0, 0);
+  handleBackBtn() {
+    this.setState({
+      messageChanged: false,
+      messages: ''
+    });
   }
 
   /**
@@ -181,6 +186,7 @@ class ForgotPasswordPage extends React.Component {
         user={this.state.user}
         messageChanged={this.state.messageChanged}
         messages={this.state.messages}
+        handleBackBtn={this.handleBackBtn}
 
       />
     );

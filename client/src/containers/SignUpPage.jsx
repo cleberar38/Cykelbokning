@@ -32,12 +32,6 @@ class SignUpPage extends React.Component {
     this.changeUser = this.changeUser.bind(this);
     }
 
-  componentDidMount() {
-
-      window.scrollTo(0, 0);
-
-  }
-
   /**
    * Process the form.
    *
@@ -77,7 +71,7 @@ class SignUpPage extends React.Component {
           // Firefox 1.0+
           var isFirefox = typeof InstallTrigger !== 'undefined';
 
-          // Safari 3.0+ "[object HTMLElementConstructor]" 
+          // Safari 3.0+ "[object HTMLElementConstructor]"
           var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
           // Internet Explorer 6-11
@@ -115,7 +109,7 @@ class SignUpPage extends React.Component {
 
         });
 
-        //TODO: Use this with a button to user to confirm his/her registartion  
+        //TODO: Use this with a button to user to confirm his/her registartion
         //self.handleConfirmation(xhr.response.email, xhr.response.token);
 
       } else {
@@ -129,7 +123,7 @@ class SignUpPage extends React.Component {
           // Firefox 1.0+
           var isFirefox = typeof InstallTrigger !== 'undefined';
 
-          // Safari 3.0+ "[object HTMLElementConstructor]" 
+          // Safari 3.0+ "[object HTMLElementConstructor]"
           var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
           // Internet Explorer 6-11

@@ -19,10 +19,12 @@ const ForgotPassword = ({
   user,
   messageChanged,
   messages,
+  handleBackBtn
+
 }) => (
   <div>
   {messageChanged ? (
-  <MessagesToUserPage  messageChanged={ messageChanged } messages={ messages } />
+  <MessagesToUserPage handleBackBtn={ handleBackBtn } messageChanged={ messageChanged } messages={ messages } />
   ) : (
   <Card zDepth={5} className="container cardbottomReg">
     <form action="/" onSubmit={onSubmit}>
