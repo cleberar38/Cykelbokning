@@ -34,6 +34,7 @@ class ResetPasswordPage extends React.Component {
     event.preventDefault();
 
     let token = document.location.hash.split("token=")[1];
+
     const password = this.state.user.password;
     const passwordconfirm = this.state.user.passwordconfirm;
 

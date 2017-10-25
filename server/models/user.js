@@ -18,7 +18,8 @@ const UserSchema = new mongoose.Schema({
     removed: Boolean,
     isVerified: { type: Boolean, default: false },
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
+    token: String
     //bike: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bike' }]
     //period: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Period' }],
 });

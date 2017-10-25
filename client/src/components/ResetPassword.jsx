@@ -28,7 +28,7 @@ const ResetPassword = ({
   ) : (
   <Card zDepth={5} className="container cardbottomReg">
     <form action="" onSubmit={onSubmit}>
-      <h2 className="card-heading">{strings.signup}</h2>
+      <h2 className="card-heading">{strings.resetpassword}</h2>
 
       {errors.summary && <p className="error-message">{errors.summary}</p>}
 

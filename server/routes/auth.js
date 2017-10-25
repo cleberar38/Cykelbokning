@@ -49,12 +49,10 @@ router.post('/signup', (req, res, next) => {
             if (err) return err;
 
             // Create a verification token for this user
-            let token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex') });
+            let token = crypto.randomBytes(16).toString('hex');
 
-            token.save((err) => {
-                // if(err) throw new Error(err); //This line was used to just GET the right Error info!
-                if (err) return new Error(err);
-            })
+            user.token = token;
+
 
             const sgMail = require('@sendgrid/mail');
 
@@ -65,13 +63,17 @@ router.post('/signup', (req, res, next) => {
             msg.subject = 'Cykelbiblioteket i Helsingborg';
             //The line above was used just to demostrate that we can send the token and userId within the URL link
             // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
-            msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
-            msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token.token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
+            msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
+            msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
 
             tempToken = token;
 
+            user.save(function (err) {
+                if (err) { return res.status(500).json({ message: err.message }); }
+            });
+
             //Uncomment this line to send EMAIL to the user
-            //sgMail.send(msg);
+            sgMail.send(msg);
 
             return res.status(200).json({
                 success: true,
@@ -843,7 +845,7 @@ function validateForgotPassword(req, res, next) {
 
                 if (!response) return res.status(400).send({ msg: 'Vi kunde inte hitta en användare med det mailet.' });
 
-                /*
+
                 let msg = {};
 
                 const sgMail = require('@sendgrid/mail');
@@ -859,9 +861,9 @@ function validateForgotPassword(req, res, next) {
                 msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
 
                 //Uncomment this line to send EMAIL to the user
-                //sgMail.send(msg);
+                sgMail.send(msg);
 
-                */
+
 
                 return res.status(200).json({
                     success: isFormValid,
@@ -1039,27 +1041,33 @@ function addNewBike(req) {
 
 function verifyUserConfirmation(req, res, next) {
 
+
     // Find a matching token
     User.findOne({ token: req.body.token }, function (err, token) {
         if (!token) return res.status(400).json({ type: 'not-verified', message: 'Vi kunde inte hitta ett giltigt token. Din token min har gått ut.' });
 
         // If we found a token, find a matching user
-        User.findOne({ _id: token._userId }, function (err, user) {
+        User.findOne({ userid: token.userid }, function (err, user) {
             if (!user) return res.status(400).json({ message: 'Vi kunde inte hitta en användare för denna token.' });
             if (user.isVerified) return res.status(400).json({ type: 'already-verified', message: 'Den här användaren har redan verifierats.' });
 
             // Verify and save the user
-            user.pass = true;
-            user.save(function (err) {
-                if (err) { return res.status(500).json({ message: err.message }); }
-                res.status(200).json({
-                    success: true,
-                    message: 'Tack för din registrering!',
-                    token,
-                    user: user
-                    //". You have successfully logged in The account has been verified. Please log in."
-                });
+            user.isVerified = true;
+            user.token = '';
+
+            user.save((err) => {
+                // if(err) throw new Error(err); //This line was used to just GET the right Error info!
+                if (err) return new Error(err);
             });
+
+            res.status(200).json({
+                success: true,
+                message: 'Tack för din registrering!'
+                //token,
+                //user: user
+                //". You have successfully logged in The account has been verified. Please log in."
+            });
+
         });
     });
 };
@@ -1069,25 +1077,6 @@ function verifyResetPassword(req, res, next){
   // Find a matching token
   User.find({ passwordResetToken: req.body.token, passwordResetExpires: { $gt: Date.now() } }, function (err, user) {
       if (!token) return res.status(400).json({ type: 'not-verified', message: 'Vi kunde inte hitta ett giltigt token. Din token min har gått ut.' });
-
-
-      /*
-
-      // If we found a token, find a matching user
-      User.find({ userid: token.userid }, function (err, user) {
-          if (!user) return res.status(400).json({ message: 'Vi kunde inte hitta en användare för denna token.' });
-          //if (user.isVerified) return res.status(400).json({ type: 'already-verified', message: 'Den här användaren har redan verifierats.' });
-
-          // Verify and save the user
-          //user.isVerified = true;
-
-
-
-
-      });
-
-      */
-
 
       // generate a salt
       bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
@@ -1113,8 +1102,8 @@ function verifyResetPassword(req, res, next){
           res.status(200).json({
               success: true,
               message: 'Ditt lösenord har ändrats!',
-              token,
-              user: user
+              //token,
+              //user: user
               //". You have successfully logged in The account has been verified. Please log in."
           });
       });

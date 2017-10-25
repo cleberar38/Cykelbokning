@@ -27,6 +27,8 @@ module.exports = new PassportLocalStrategy({
     isVerified: req.body.isVerified ? req.body.isVerified : false,
     passwordResetToken: req.body.passwordResetToken !== undefined ? req.body.passwordResetToken : '',
     passwordResetExpires: req.body.passwordResetExpires !== undefined ? req.body.passwordResetExpires : ''
+
+
   };
 
   const newUser = new User(userData);
