@@ -58,7 +58,9 @@ let strings = new LocalizedStrings({
         sorttx: "Sortera",
         confirmlogin: "Confirm and login",
         resetpassword: "Reset password",
-        forgotpassword: "Forgot your password?"
+        forgotpassword: "Forgot your password?",
+        cancelLabel: "Cancel",
+        datepickerhint: "Choose date - yyyy-mm-dd"
     },
 
     sv: {
@@ -117,7 +119,9 @@ let strings = new LocalizedStrings({
         sorttx: "Sortera",
         confirmlogin: "Bekräfta och logga in",
         resetpassword: "Återställ lösenord",
-        forgotpassword: "Glömt ditt lösenord?"
+        forgotpassword: "Glömt ditt lösenord?",
+        cancelLabel: "Avbryt",
+        datepickerhint: "Välja upphämtningsdatum - yyyy-mm-dd"
     }
 });
 

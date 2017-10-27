@@ -8,7 +8,9 @@ const BikeBookingSchema = new mongoose.Schema({
     periodid: String,
     bookeddate: Date,
     nextbookingdate: Date,
-    admincomment: String
+    admincomment: String,
+    pickuptime: String,
+    pickupdate: String
     // user: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     // bike: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bike' }],
     // period: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Period' }],

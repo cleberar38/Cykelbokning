@@ -30,8 +30,11 @@ let state = {
     messageChanged: false,
     messages: '',
     lastPeriodClicked: null,
-    btnPeriodBg: "#ae0b05"
-
+    btnPeriodBg: "#ae0b05",
+    pickuptime: '',
+    pickupdate: '',
+    showErrorMsg: false,
+    hasError: false
 };
 
 
@@ -65,18 +68,17 @@ class BookingPage extends React.Component {
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
     }
 
-
     componentWillMount() {
         this.checkPeriodsAvailable();
         this.getBikesOnDB();
         Auth.setPeriod('');
         Auth.setBikeName('');
+        Auth.setPickupDate('');
+        Auth.setPickupTime('');
         this.selectedCheckboxes = new Set();
-
     }
 
     toggleCheckbox(label) {
-
 
         if (this.selectedCheckboxes.has(label)) {
             this.selectedCheckboxes.delete(label);
@@ -168,7 +170,6 @@ class BookingPage extends React.Component {
         this.setState({
             lastPeriodClicked: self.state.lastPeriodClicked
         });
-
     }
 
     handleChange(event, index, value) {
@@ -187,11 +188,12 @@ class BookingPage extends React.Component {
         const periodid = localStorage.getItem('bikeperiod');
         const bikeid = localStorage.getItem('bike');
         const admincomment = document.getElementsByClassName('admincomment')[0];
+        const pickuptime = localStorage.getItem('pickuptime');
+        const pickupdate = localStorage.getItem('pickupdate');
         const usertype = Auth.getUserType();
-
         const value = admincomment !== undefined ? admincomment.value : "";
 
-        const formData = `userid=${userid}&periodid=${periodid}&bikeid=${bikeid}&admincomment=${value}&usertype=${usertype}`;
+        const formData = `userid=${userid}&periodid=${periodid}&bikeid=${bikeid}&admincomment=${value}&usertype=${usertype}&pickuptime=${pickuptime}&pickupdate=${pickupdate}`;
 
         const self = this;
 
@@ -212,7 +214,7 @@ class BookingPage extends React.Component {
                 // Firefox 1.0+
                 var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                // Safari 3.0+ "[object HTMLElementConstructor]" 
+                // Safari 3.0+ "[object HTMLElementConstructor]"
                 var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
                 // Internet Explorer 6-11
@@ -232,17 +234,27 @@ class BookingPage extends React.Component {
                     response = xhr.response;
                 }
 
+                console.log("Message To the User : ", response.message);
+
                 // change the component-container state
-                self.setState({
+                this.setState({
                     messages: response.message,
-                    messageChanged: response.success
+                    messageChanged: response.success,
+                    showErrorMsg: false,
+                    pickuptime: localStorage.getItem('pickuptime'),
+                    pickupdate: localStorage.getItem('pickupdate'),
+                    hasError: false
                 });
+
+                console.log("This STATE : ", this.state);
 
                 // save the token
                 Auth.authenticateUser(response.token);
 
                 Auth.setPeriod('');
                 Auth.setBikeName('');
+                Auth.setPickupTime('');
+                Auth.setPickupDate('');
 
                 //Does not work
                 //this.props.router.replace("/message");
@@ -258,7 +270,7 @@ class BookingPage extends React.Component {
                 // Firefox 1.0+
                 var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                // Safari 3.0+ "[object HTMLElementConstructor]" 
+                // Safari 3.0+ "[object HTMLElementConstructor]"
                 var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
                 // Internet Explorer 6-11
@@ -282,16 +294,17 @@ class BookingPage extends React.Component {
                 const errors = response.errors ? response.errors : {};
                 errors.summary = response.message;
 
-                console.log("ERROR : ", errors);
 
-                self.setState({
-                    messages: errors.periodid,
-                    messageChanged: true
-                });
 
                 this.setState({
-                    errors
+                    messages: errors.summary,
+                    messageChanged: true,
+                    showErrorMsg: true,
+                    errors,
+                    hasError: true
                 });
+
+
             }
         });
 
@@ -318,7 +331,6 @@ class BookingPage extends React.Component {
                         } else {
                             bg[i].style.backgroundColor = '';
                         }
-
                     }
 
                     if (evt !== undefined && evt !== "null" && evt !== null) {
@@ -330,7 +342,6 @@ class BookingPage extends React.Component {
             }
         }
     }
-
 
     handleBikeSelection(evt) {
 
@@ -372,9 +383,6 @@ class BookingPage extends React.Component {
                 }
             }
         }
-
-
-
     }
 
     checkPeriodsInBooking() {
@@ -400,7 +408,7 @@ class BookingPage extends React.Component {
                     // Firefox 1.0+
                     var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                    // Safari 3.0+ "[object HTMLElementConstructor]" 
+                    // Safari 3.0+ "[object HTMLElementConstructor]"
                     var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
                     // Internet Explorer 6-11
@@ -437,7 +445,7 @@ class BookingPage extends React.Component {
                     // Firefox 1.0+
                     var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                    // Safari 3.0+ "[object HTMLElementConstructor]" 
+                    // Safari 3.0+ "[object HTMLElementConstructor]"
                     var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
                     // Internet Explorer 6-11
@@ -499,7 +507,7 @@ class BookingPage extends React.Component {
                 // Firefox 1.0+
                 var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                // Safari 3.0+ "[object HTMLElementConstructor]" 
+                // Safari 3.0+ "[object HTMLElementConstructor]"
                 var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
                 // Internet Explorer 6-11
@@ -571,8 +579,10 @@ class BookingPage extends React.Component {
 
                     if (response.bikeAmount.length !== 0) {
                         if (total === response.bikeAmount[0].amount) {
-                            periodBtn[i].classList.add("disabled");
-                            periodBtn[i].style.backgroundColor = "rgba(20,25,22,0.35)";
+                            if(periodBtn[i] !== undefined){
+                                periodBtn[i].classList.add("disabled");
+                                periodBtn[i].style.backgroundColor = "rgba(20,25,22,0.35)";
+                            }
                         }
                     }
                 }
@@ -588,7 +598,7 @@ class BookingPage extends React.Component {
                 // Firefox 1.0+
                 var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                // Safari 3.0+ "[object HTMLElementConstructor]" 
+                // Safari 3.0+ "[object HTMLElementConstructor]"
                 var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
                 // Internet Explorer 6-11
@@ -645,7 +655,7 @@ class BookingPage extends React.Component {
                     // Firefox 1.0+
                     var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                    // Safari 3.0+ "[object HTMLElementConstructor]" 
+                    // Safari 3.0+ "[object HTMLElementConstructor]"
                     var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
                     // Internet Explorer 6-11
@@ -680,7 +690,7 @@ class BookingPage extends React.Component {
                     // Firefox 1.0+
                     var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                    // Safari 3.0+ "[object HTMLElementConstructor]" 
+                    // Safari 3.0+ "[object HTMLElementConstructor]"
                     var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
                     // Internet Explorer 6-11
@@ -780,6 +790,7 @@ class BookingPage extends React.Component {
                 handleTimeChange={this.handleTimeChange}
                 handleDateChange={this.handleDateChange}
                 errors={this.state.errors}
+                hasError={this.state.hasError}
                 successMessage={this.state.successMessage}
                 booking={this.state.booking}
                 handleUserConfirmation={this.handleUserConfirmation}
@@ -793,6 +804,8 @@ class BookingPage extends React.Component {
                 handleBackBtn={this.handleBackBtn}
                 createCheckbox={this.createCheckbox}
                 toggleCheckbox={this.toggleCheckbox}
+                pickuptime={this.state.pickuptime}
+                pickupdate={this.state.pickupdate}
             />
         );
     }

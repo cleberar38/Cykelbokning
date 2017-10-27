@@ -117,6 +117,22 @@ class Auth {
         return localStorage.getItem('name');
     }
 
+    static setPickupTime(pickuptime) {
+        localStorage.setItem('pickuptime', pickuptime);
+    }
+
+    static getPickupTime() {
+        return localStorage.getItem('pickuptime');
+    }
+
+    static setPickupDate(pickupdate) {
+        localStorage.setItem('pickupdate', pickupdate);
+    }
+
+    static getPickupDate() {
+        return localStorage.getItem('pickupdate');
+    }
+
 }
 
 export default Auth;

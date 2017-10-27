@@ -73,7 +73,7 @@ router.post('/signup', (req, res, next) => {
             });
 
             //Uncomment this line to send EMAIL to the user
-            sgMail.send(msg);
+            //sgMail.send(msg);
 
             return res.status(200).json({
                 success: true,
@@ -502,12 +502,12 @@ router.post('/period', (req, res, next) => {
 
 router.post('/bikebooking', (req, res, next) => {
 
-    const getPlatsResults = getAllPlats(req.body);
-    if (!getPlatsResults.success) {
+    const bookingFormResult = checkBookingForm(req.body);
+    if (!bookingFormResult.success) {
         return res.status(400).json({
             success: false,
-            message: getPlatsResults.message,
-            errors: getPlatsResults.errors
+            message: bookingFormResult.message,
+            errors: bookingFormResult.errors
         });
     }
 
@@ -518,7 +518,9 @@ router.post('/bikebooking', (req, res, next) => {
         periodid: req.body.periodid,
         bookeddate: new Date(),
         nextbookingdate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
-        admincomment: req.body.admincomment
+        admincomment: req.body.admincomment,
+        pickuptime: req.body.pickuptime,
+        pickupdate: req.body.pickupdate
     };
 
     const newBooking = new BikeBooking(bookingBikeData);
@@ -861,7 +863,7 @@ function validateForgotPassword(req, res, next) {
                 msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
 
                 //Uncomment this line to send EMAIL to the user
-                sgMail.send(msg);
+                //sgMail.send(msg);
 
 
 
@@ -959,7 +961,7 @@ function validateLoginForm(payload) {
     };
 };
 
-function getAllPlats(payload) {
+function checkBookingForm(payload) {
 
     const errors = {};
     let isFormValid = true;
@@ -975,6 +977,14 @@ function getAllPlats(payload) {
     if (!payload || typeof payload.bikeid !== 'string' || payload.bikeid.trim().length === 0) {
         isFormValid = false;
         errors.bikeid = 'Välja Cykel';
+    }
+    if (!payload || typeof payload.pickuptime !== 'string' || payload.pickuptime.trim().length === 0) {
+        isFormValid = false;
+        errors.pickuptime = 'Välja Cykelupphämtningstid';
+    }
+    if (!payload || typeof payload.pickupdate !== 'string' || payload.pickupdate.trim().length === 0) {
+        isFormValid = false;
+        errors.pickupdate = 'Välja Cykelupphämtningsdatum';
     }
     if (!isFormValid) {
         message = 'Form har fel.';

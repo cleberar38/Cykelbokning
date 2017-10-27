@@ -5,7 +5,9 @@ import MessageToUSer from '../components/MessageToUSer.jsx';
 
 // Set initial state
 let state = {
-
+    messagesTouser: '',
+    messageChanged: false,
+    hasError: null
 };
 
 let self = this;
@@ -20,15 +22,17 @@ class MessageToUSerPage extends React.Component {
 
         // Retrieve the last state
         this.state = state;
-
     }
 
     componentDidMount() {
-
-        window.scrollTo(0, 0);
-
+        this.setState({
+            messagesToUser: this.props.messagesToUser,
+            messageChanged: this.props.messageChanged,
+            pickupdate: this.props.pickupdate,
+            pickuptime: this.props.pickuptime,
+            hasError: this.props.hasError
+        });
     }
-
 
     /**
      * Render the component.
@@ -36,10 +40,14 @@ class MessageToUSerPage extends React.Component {
     render() {
         return (
             <MessageToUSer
-                messageChanged={this.props.messageChanged}
-                messages={this.props.messages}
+                messageChanged={this.state.messageChanged}
+                messagesToUser={this.state.messagesTouser}
                 errors={this.props.errors}
+                hasError={this.state.hasError}
                 handleBackBtn={this.props.handleBackBtn}
+                pickupdate={this.state.pickupdate}
+                pickuptime={this.state.pickuptime}
+                showErrorMsg={this.props.showErrorMsg}
             />
         );
     }

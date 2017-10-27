@@ -56,9 +56,10 @@ const Profile = ({
                                     <span style={{ color: darkBlack }}><strong>Adress: </strong>{profile.address} </span><br />
                                     <span style={{ color: darkBlack }}><strong>Kommun: </strong>{profile.city} </span><br />
                                     <span style={{ color: darkBlack }}><strong>Cykel: </strong>{profile.bikeid} </span><br />
+                                    <span style={{ color: darkBlack }}><strong>Upphämtningstid: </strong>{profile.pickuptime} </span><br />
+                                    <span style={{ color: darkBlack }}><strong>Upphämtningsdatum: </strong>{profile.pickupdate} </span><br />
                                     <span style={{ color: darkBlack }}><strong>Period: </strong>{profile.periodid} </span><br />
                                     <span style={{ color: darkBlack }}><strong>Bokat datum: </strong>{profile.bookeddate}</span><br />
-                                    <span style={{ color: darkBlack }}><a href="https://cykelbiblioteket.helsingborg.se/vara-cyklar/" target="_blank">{strings.meromcykel}</a></span><br />
                                     <span style={{ color: darkBlack }}><strong>Kommentar: </strong>{profile.admincomment}</span>
                                     <FormGroup controlId="formControlsTextarea">
                                         <ControlLabel>{strings.adminnote}</ControlLabel>
@@ -67,6 +68,7 @@ const Profile = ({
                                           <Link to="/"><Button key={profile.bikebookingid} bsStyle="danger"  onClick={(evt) => saveComment(evt, profile.bikebookingid)}>Spara kommentar</Button></Link>
                                         </span>
                                     </FormGroup>
+                                    <span style={{ color: darkBlack }}><a href="https://cykelbiblioteket.helsingborg.se/vara-cyklar/" target="_blank">{strings.meromcykel}</a></span><br />
                                 </span>
                             ) : (
                             <div>
@@ -74,6 +76,8 @@ const Profile = ({
                                 <span>
                                     <span style={{ color: darkBlack }}><strong>Cykel: </strong>{profile.bikeid} </span><br />
                                     <span style={{ color: darkBlack }}><strong>Bokat datum: </strong>{profile.bookeddate}</span><br />
+                                    <span style={{ color: darkBlack }}><strong>Upphämtningstid: </strong>{profile.pickuptime} </span><br />
+                                    <span style={{ color: darkBlack }}><strong>Upphämtningsdatum: </strong>{profile.pickupdate} </span><br />
                                     <span style={{ color: darkBlack }}><a href="https://cykelbiblioteket.helsingborg.se/vara-cyklar/" target="_blank">{strings.meromcykel}</a></span>
                                 </span>
                                 ) : null

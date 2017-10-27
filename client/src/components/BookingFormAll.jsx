@@ -22,7 +22,8 @@ import ListExampleMessages from './Profile.jsx'
 import { Button } from 'react-bootstrap';
 import { FormControl, ControlLabel, FormGroup, Grid, Row, Col, Thumbnail, Panel, Jumbotron } from 'react-bootstrap';
 import Checkbox from '../containers/CheckboxPage.jsx';
-
+import PickupTimePage from '../containers/PickupTimePage.jsx';
+import BookingMsgPage from '../containers/BookingMsgPage.jsx';
 
 strings.setLanguage(default_lang.lang);
 
@@ -62,16 +63,17 @@ const BookingFormAll = ({
     checked,
     createCheckbox,
     toggleCheckbox,
-    label
-
-
-
+    label,
+    pickuptime,
+    pickupdate,
+    showErrorMsg,
+    hasError
 
 }) => (
         <div>
             <Jumbotron>
                 {messageChanged ? (
-                    <MessagesToUserPage messageChanged={messageChanged} messages={messages} handleBackBtn={handleBackBtn} errors={errors} />
+                    <MessagesToUserPage pickuptime={pickuptime} pickupdate={pickupdate} messageChanged={messageChanged} messagesToUser={messages} handleBackBtn={handleBackBtn} hasError={hasError} errors={errors} showErrorMsg={showErrorMsg} />
                 ) : (
                         <form action="/" onSubmit={onSubmit}>
 
@@ -110,10 +112,13 @@ const BookingFormAll = ({
                                                     <FormControl className="admincomment" componentClass="textarea" placeholder="Kommentar" />
                                                 </FormGroup>
                                             ) : null}
-
+                                            <div style={{ "margin": "auto", "maxWidth": "960px" }}>
+                                              <PickupTimePage />
+                                            </div>
                                         </div>
                                     )}
                                 </div>
+
                             </div>
 
                             {Auth.isUserAuthenticated() ? (
@@ -159,7 +164,8 @@ BookingFormAll.propTypes = {
     handleSetPeriod: PropTypes.func.isRequired,
     optionSelected: PropTypes.string.isRequired,
     errors: PropTypes.object.isRequired,
-    handleBackBtn: PropTypes.func,
+    handleBackBtn: PropTypes.func
+
 };
 
 export default BookingFormAll;

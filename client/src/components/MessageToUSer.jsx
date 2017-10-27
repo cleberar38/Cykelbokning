@@ -12,10 +12,14 @@ import { Button } from 'react-bootstrap';
 strings.setLanguage(default_lang.lang);
 
 const MessageToUSer = ({
-    messages,
+    messagesToUser,
     messageChanged,
     errors,
-    handleBackBtn
+    handleBackBtn,
+    pickuptime,
+    pickupdate,
+    showErrorMsg,
+    hasError
 }) => (
         <div style={{ height: '100%' }}>
             <div>
@@ -23,14 +27,26 @@ const MessageToUSer = ({
 
                     <CardTitle title="" subtitle="">
 
-                        {errors !== undefined || errors !== null && Object !== null || Object !== undefined && Object.keys(errors).length === 0 && errors.constructor === Object ?
+                        <div>
+                        {hasError ?
 
-                            (<h4 className="display-2">{messages}</h4>)
+                            <div>
+                              <h4 className="display-2">{errors.summary}</h4>
+                              <h5 className="display-2 color-red">{errors.periodid}</h5>
+                              <h5 className="display-2 color-red">{errors.bikeid}</h5>
+                              <h5 className="display-2 color-red">{errors.pickuptime}</h5>
+                              <h5 className="display-2 color-red">{errors.pickupdate}</h5>
+                            </div>
+
                             :
-                            (<h4 className="display-2">{errors.summary}</h4>)
 
+                            <div className="display-2">
+                                <h2>Tack för din bokning.</h2>
+                                <h5>Du hämtar lånecykeln <strong>{pickupdate}</strong> kl. <strong>{pickuptime}</strong> på stadsbyggnadsförvaltningen Järnvägsgatan 22, Helsingborg.</h5>
+                                <h4>Du kan se din bokning under ”Mina bokningar”.</h4>
+                            </div>
                         }
-
+                        </div>
                     </CardTitle>
                     <RaisedButton href="/" label={strings.goback} primary={false} backgroundColor="#ae0b05" className="msgbtn" />
                 </Card>
@@ -39,7 +55,6 @@ const MessageToUSer = ({
     );
 
 MessageToUSer.propTypes = {
-
 };
 
 export default MessageToUSer;
