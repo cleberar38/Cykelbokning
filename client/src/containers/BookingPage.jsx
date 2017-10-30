@@ -33,8 +33,10 @@ let state = {
     btnPeriodBg: "#ae0b05",
     pickuptime: '',
     pickupdate: '',
+    terms: false,
     showErrorMsg: false,
-    hasError: false
+    hasError: false,
+    termsCheckboxIsSelected: false
 };
 
 
@@ -168,7 +170,8 @@ class BookingPage extends React.Component {
         this._mounted = false;
 
         this.setState({
-            lastPeriodClicked: self.state.lastPeriodClicked
+            lastPeriodClicked: self.state.lastPeriodClicked,
+            termsCheckboxIsSelected: false
         });
     }
 
@@ -180,8 +183,13 @@ class BookingPage extends React.Component {
         // prevent default action. in this case, action is the form submission event
         event.preventDefault();
 
+        let terms = false;
+
         for (const checkbox of this.selectedCheckboxes) {
-            console.log(checkbox, 'is selected.');
+            terms =  true;
+            this.setState({
+                terms: terms
+            });
         }
 
         const userid = localStorage.getItem('useremail');
@@ -193,7 +201,7 @@ class BookingPage extends React.Component {
         const usertype = Auth.getUserType();
         const value = admincomment !== undefined ? admincomment.value : "";
 
-        const formData = `userid=${userid}&periodid=${periodid}&bikeid=${bikeid}&admincomment=${value}&usertype=${usertype}&pickuptime=${pickuptime}&pickupdate=${pickupdate}`;
+        const formData = `userid=${userid}&periodid=${periodid}&bikeid=${bikeid}&admincomment=${value}&usertype=${usertype}&pickuptime=${pickuptime}&pickupdate=${pickupdate}&terms=${terms}`;
 
         const self = this;
 

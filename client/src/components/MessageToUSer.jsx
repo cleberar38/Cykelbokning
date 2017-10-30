@@ -36,6 +36,7 @@ const MessageToUSer = ({
                               <h5 className="display-2 color-red">{errors.bikeid}</h5>
                               <h5 className="display-2 color-red">{errors.pickuptime}</h5>
                               <h5 className="display-2 color-red">{errors.pickupdate}</h5>
+                              <h5 className="display-2 color-red">{errors.terms}</h5>
                             </div>
 
                             :

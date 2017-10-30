@@ -131,13 +131,9 @@ const BookingFormAll = ({
                                             </div>
                                         </div>
                                     </div>
-
-                                    <Link to="/message" >
                                         <div className="button-line center-container cardbottomFot">
-                                            <FlatButton onClick={onSubmit} className="top-btn" style={{ color: 'white' }} backgroundColor="#ae0b05" label={strings.book} />
+                                            <FlatButton to="/message" onClick={onSubmit} className="top-btn" style={{ color: 'white' }} backgroundColor="#ae0b05" label={strings.book} />
                                         </div>
-                                    </Link>
-
                                 </div>
                             ) : (
                                     <div className="center-container">

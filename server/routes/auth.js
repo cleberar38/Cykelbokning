@@ -520,7 +520,8 @@ router.post('/bikebooking', (req, res, next) => {
         nextbookingdate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
         admincomment: req.body.admincomment,
         pickuptime: req.body.pickuptime,
-        pickupdate: req.body.pickupdate
+        pickupdate: req.body.pickupdate,
+        terms: req.body.terms
     };
 
     const newBooking = new BikeBooking(bookingBikeData);
@@ -613,13 +614,7 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
                             }
                         });
                     }
-
-
-
-
-
                 }
-
             });
 
         });
@@ -985,6 +980,10 @@ function checkBookingForm(payload) {
     if (!payload || typeof payload.pickupdate !== 'string' || payload.pickupdate.trim().length === 0) {
         isFormValid = false;
         errors.pickupdate = 'Välja Cykelupphämtningsdatum';
+    }
+    if (!payload || typeof payload.terms !== 'string' || payload.terms.trim().length === 0 || payload.terms === 'false') {
+        isFormValid = false;
+        errors.terms = 'Välja jag har läst låneavtalet';
     }
     if (!isFormValid) {
         message = 'Form har fel.';
