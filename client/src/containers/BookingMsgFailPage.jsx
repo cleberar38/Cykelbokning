@@ -26,6 +26,8 @@ class BookingMsgFailPage extends React.Component {
     render() {
         return (
             <BookingMsgFail
+                hasError={this.props.hasError}
+                errors={this.props.errors}
                 messages={this.props.messages}
             />
         );

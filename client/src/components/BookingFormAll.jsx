@@ -84,7 +84,7 @@ const BookingFormAll = ({
                   <div>
                     { isBookingComplete ? <BookingMsgPage  messages={messages} pickuptime={pickuptime} pickupdate={pickupdate} hasError={hasError} errors={errors} />
                       :
-                      <BookingMsgFailPage messages={messages} />
+                      <BookingMsgFailPage messages={messages} messages={messages} hasError={hasError} errors={errors} />
                     }
                   </div>
                 ) : (

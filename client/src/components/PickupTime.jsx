@@ -20,11 +20,8 @@ const PickupTime = ({
   value
 }) => (
     <div>
-        <DatePicker floatingLabelText="Cykelupphämtningsdatum" hintText={strings.datepickerhint} cancelLabel={strings.cancelLabel} onChange={(evt, date) => (
-            Auth.setPickupDate(new Intl.DateTimeFormat('sv-SE').format(date))
-        )} />
         <SelectField
-          floatingLabelText="Cykelupphämtningstid"
+          floatingLabelText="Väljia tid för hämtning"
           value={value}
           onChange={(event, index, value ) => onChange(event, index, value)}
           autoWidth={true}
