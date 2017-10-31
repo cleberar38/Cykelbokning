@@ -30,7 +30,6 @@ const Profile = ({
     name,
     messages,
     messageChanged,
-    isNotPreDeleted,
     handleAlertDismiss,
     alertVisible,
     handleAlertShow,
@@ -113,8 +112,7 @@ Profile.propTypes = {
     removeBooking: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
     messages: PropTypes.string.isRequired,
-    messageChanged: PropTypes.bool.isRequired,
-    isNotPreDeleted: PropTypes.bool.isRequired
+    messageChanged: PropTypes.bool.isRequired
 };
 
 export default Profile;

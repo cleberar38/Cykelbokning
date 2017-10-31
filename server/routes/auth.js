@@ -367,6 +367,21 @@ router.post('/addbike', (req, res, next) => {
 
 });
 
+router.post('/removebike', (req, res, next) => {
+
+    const removeBikeData = {
+        _id: req.body._id, //{type: String, unique: true},,
+    };
+
+    Bike.find(removeBikeData).remove().exec();
+
+    return res.status(200).json({
+        success: true,
+        messages: "Cykeln tas bort."
+    });
+
+});
+
 router.post('/checkbookedperiod', (req, res, next) => {
 
     var checkPeriod = null;

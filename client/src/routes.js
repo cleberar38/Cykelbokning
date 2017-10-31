@@ -10,11 +10,13 @@ import PeriodPage from './containers/PeriodPage.jsx';
 import ConfirmationPage from './containers/ConfirmationPage.jsx';
 import ProfilePage from './containers/ProfilePage.jsx';
 import AddBikePage from './containers/AddBikePage.jsx';
+import RemoveBikeMsgPage from './containers/RemoveBikeMsgPage.jsx';
 import ProfileMessagesPage from './containers/ProfileMessagesPage.jsx';
 import UsersPage from './containers/UsersPage.jsx';
 import SortFilterPage from './containers/SortFilterPage.jsx';
 import ForgotPasswordPage from './containers/ForgotPasswordPage.jsx';
 import ResetPasswordPage from './containers/ResetPasswordPage.jsx';
+RemoveBikeMsgPage
 
 const routes = {
   // Base component (wrapper for the whole application).
@@ -81,6 +83,13 @@ const routes = {
         path: '/profilemsg',
         component: ProfileMessagesPage
     },
+
+    {
+        path: '/removebikemsg',
+        component: RemoveBikeMsgPage
+    },
+
+
 
     {
       path: '/confirmation',

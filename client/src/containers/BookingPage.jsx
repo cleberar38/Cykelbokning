@@ -38,7 +38,8 @@ let state = {
     hasError: false,
     isBooking: false,
     termsCheckboxIsSelected: false,
-    isBookingComplete: false
+    isBookingComplete: false,
+    alertVisible: false
 };
 
 
@@ -70,6 +71,9 @@ class BookingPage extends React.Component {
         this.handleBackBtn = this.handleBackBtn.bind(this);
         this.createCheckbox = this.createCheckbox.bind(this);
         this.toggleCheckbox = this.toggleCheckbox.bind(this);
+        this.removeBike = this.removeBike.bind(this);
+        this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
+        this.handleAlertShow = this.handleAlertShow.bind(this);
     }
 
     componentWillMount() {
@@ -80,6 +84,14 @@ class BookingPage extends React.Component {
         Auth.setPickupDate('');
         Auth.setPickupTime('');
         this.selectedCheckboxes = new Set();
+    }
+
+    handleAlertDismiss() {
+        this.setState({alertVisible: false});
+    }
+
+    handleAlertShow() {
+        this.setState({alertVisible: true});
     }
 
     toggleCheckbox(label) {
@@ -152,6 +164,7 @@ class BookingPage extends React.Component {
             messages: ''
         });
     }
+
     componentWillUnmount() {
         /*
           Check if the component is mounted
@@ -776,6 +789,101 @@ class BookingPage extends React.Component {
         }
     }
 
+    removeBike(evt, bikebookingid) {
+        // prevent default action. in this case, action is the form submission event
+        event.preventDefault();
+
+        console.log("bikebookingid :", bikebookingid);
+
+        const formData = `_id=${bikebookingid}`;
+
+        const self = this;
+
+        // create an AJAX request
+        const xhr = new XMLHttpRequest();
+        xhr.open('post', '/auth/removebike');
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.responseType = 'json';
+        xhr.addEventListener('load', () => {
+            if (xhr.status === 200) {
+                // success
+
+                let response = null;
+
+                // Opera 8.0+
+                var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+                // Firefox 1.0+
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+
+                // Safari 3.0+ "[object HTMLElementConstructor]"
+                var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+                // Internet Explorer 6-11
+                var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+                // Edge 20+
+                var isEdge = !isIE && !!window.StyleMedia;
+
+                // Chrome 1+
+                var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+                // Blink engine detection
+                var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+                //IE problem! We have to parse the response since in IE everything became string!
+                if (isIE) { response = JSON.parse(xhr.response); } else {
+                    response = xhr.response;
+                }
+
+
+            } else {
+                // failure
+
+                let response = null;
+
+                // Opera 8.0+
+                var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+                // Firefox 1.0+
+                var isFirefox = typeof InstallTrigger !== 'undefined';
+
+                // Safari 3.0+ "[object HTMLElementConstructor]"
+                var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+                // Internet Explorer 6-11
+                var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+                // Edge 20+
+                var isEdge = !isIE && !!window.StyleMedia;
+
+                // Chrome 1+
+                var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+                // Blink engine detection
+                var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+                //IE problem! We have to parse the response since in IE everything became string!
+                if (isIE) { response = JSON.parse(xhr.response); } else {
+                    response = xhr.response;
+                }
+
+                // change the component state
+                const errors = response.errors ? response.errors : {};
+                errors.summary = response.message;
+
+                console.log("ERROR : ", errors);
+
+                this.setState({
+                    errors
+                });
+            }
+        });
+
+        xhr.send(formData);
+
+    }
+
     /**
      * Render the component.
      * handleBackBtn={this.handleBackBtn}
@@ -819,6 +927,10 @@ class BookingPage extends React.Component {
                 pickuptime={this.state.pickuptime}
                 pickupdate={this.state.pickupdate}
                 isBookingComplete={this.state.isBookingComplete}
+                removeBike={this.removeBike}
+                handleAlertDismiss={this.handleAlertDismiss}
+                handleAlertShow={this.handleAlertShow}
+                alertVisible={this.state.alertVisible}
             />
         );
     }

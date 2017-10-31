@@ -1,7 +1,7 @@
 import "babel-polyfill";
 import React from 'react';
 import Auth from '../modules/Auth';
-import ProfileMessages from '../components/ProfileMessages.jsx';
+import RemoveBikeMsg from '../components/RemoveBikeMsg.jsx';
 
 // Set initial state
 let state = {
@@ -9,7 +9,7 @@ let state = {
     errors: {}
 };
 
-class ProfileMessagesPage extends React.Component {
+class RemoveBikeMsgPage extends React.Component {
     /**
      * Class constructor.
      */
@@ -22,7 +22,7 @@ class ProfileMessagesPage extends React.Component {
 
     componentWillMount() {
         this.setState({
-            messages: 'Cykeln har avbokats',
+            messages: 'Cykeln tas bort.',
             errors: {}
         });
     }
@@ -32,7 +32,7 @@ class ProfileMessagesPage extends React.Component {
      */
     render() {
         return (
-            <ProfileMessages
+            <RemoveBikeMsg
                 messages={this.state.messages}
                 errors={this.state.errors}
             />
@@ -40,4 +40,4 @@ class ProfileMessagesPage extends React.Component {
     }
 }
 
-export default ProfileMessagesPage;
+export default RemoveBikeMsgPage;

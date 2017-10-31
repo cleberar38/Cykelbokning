@@ -12,7 +12,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 strings.setLanguage(default_lang.lang);
 
-const ProfileMessages = ({
+const RemoveBikeMsg = ({
     messages,
     errors,
 }) => (
@@ -38,8 +38,8 @@ const ProfileMessages = ({
         </div>
     );
 
-ProfileMessages.propTypes = {
+RemoveBikeMsg.propTypes = {
 
 };
 
-export default ProfileMessages;
+export default RemoveBikeMsg;

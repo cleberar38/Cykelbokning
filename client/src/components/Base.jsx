@@ -80,7 +80,6 @@ const Base = ({
                                             </IconButton>
                                         }
                                     >
-
                                         <MenuItems>
                                             <Link to="/addbike" style={{ color: 'black' }}><FlatButton style={{ color: 'black' }} label={strings.addbike} primary={false} /></Link>
                                         </MenuItems>

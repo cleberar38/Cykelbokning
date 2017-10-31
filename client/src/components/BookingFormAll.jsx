@@ -20,7 +20,7 @@ import Auth from '../modules/Auth';
 import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
 import ListExampleMessages from './Profile.jsx'
 import { Button } from 'react-bootstrap';
-import { FormControl, ControlLabel, FormGroup, Grid, Row, Col, Thumbnail, Panel, Jumbotron } from 'react-bootstrap';
+import { FormControl, ControlLabel, FormGroup, Grid, Row, Col, Thumbnail, Panel, Jumbotron, Alert, Pager } from 'react-bootstrap';
 import Checkbox from '../containers/CheckboxPage.jsx';
 import PickupTimePage from '../containers/PickupTimePage.jsx';
 import BookingMsgPage from '../containers/BookingMsgPage.jsx';
@@ -70,7 +70,11 @@ const BookingFormAll = ({
     showErrorMsg,
     hasError,
     isBooking,
-    isBookingComplete
+    isBookingComplete,
+    alertVisible,
+    handleAlertDismiss,
+    handleAlertShow,
+    removeBike
 
 }) => (
         <div>
@@ -96,6 +100,26 @@ const BookingFormAll = ({
                                                     <GridTile className="grid-title" style={{ "backgroundColor": "white", 'marginTop': '-20px' }} title={tile.bikename}>
                                                         <img style={{ 'width': '100%', 'height': '50px' }} />
                                                     </GridTile>
+                                                    <div>
+                                                      {Auth.isAdminUserAuthenticated() && localStorage.getItem("usertype") === "admin"  ?
+                                                        <div>
+                                                          {alertVisible ? (
+                                                              <Alert bsStyle="danger" onDismiss={handleAlertDismiss}>
+                                                                <h4>Är du säker?</h4><br />
+                                                                <span>
+                                                                  <Link to="/removebikemsg"><Button key={tile._id} bsStyle="danger" onClick={(evt) => removeBike(evt, tile._id)}>Ta bort</Button></Link>
+                                                                  <span> eller </span>
+                                                                  <Button onClick={handleAlertDismiss}>Avbryt</Button>
+                                                                </span>
+                                                              </Alert>
+
+                                                          ) : (
+                                                              <Pager><Pager.Item next href="#" onClick={handleAlertShow}>Ta bort</Pager.Item></Pager>
+                                                          )}
+                                                        </div>
+                                                        : null
+                                                      }
+                                                    </div>
                                                 </Col>
                                             )) : null}
                                         </Panel>

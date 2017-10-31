@@ -14,7 +14,6 @@ let state = {
     name: '',
     messageChanged: false,
     messages: '',
-    isNotPreDeleted: true,
     alertVisible: false
 };
 
@@ -30,7 +29,6 @@ class ProfilePage extends React.Component {
         this.state = state;
 
         this.getProfileInfo = this.getProfileInfo.bind(this);
-        this.preRemoveBooking = this.preRemoveBooking.bind(this);
         this.removeBooking = this.removeBooking.bind(this);
         this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
         this.handleAlertShow = this.handleAlertShow.bind(this);
@@ -150,12 +148,6 @@ class ProfilePage extends React.Component {
         this.setState({alertVisible: true});
     }
 
-    preRemoveBooking(evt, bikebookingid) {
-        this.setState({
-            isNotPreDeleted: !this.state.isNotPreDeleted
-        });
-    }
-
     removeBooking(evt, bikebookingid) {
         // prevent default action. in this case, action is the form submission event
         event.preventDefault();
@@ -200,10 +192,6 @@ class ProfilePage extends React.Component {
                 if (isIE) { response = JSON.parse(xhr.response); } else {
                     response = xhr.response;
                 }
-
-                this.setState({
-                    isNotPreDeleted: true
-                });
 
             } else {
                 // failure
@@ -393,13 +381,11 @@ class ProfilePage extends React.Component {
                 nextAvailablePeriodDate={this.state.nextAvailablePeriodDate}
                 period={this.state.period}
                 profileresult={this.state.profileresult}
-                preRemoveBooking={this.preRemoveBooking}
                 removeBooking={this.removeBooking}
                 name={this.state.name}
                 messageChanged={this.state.messageChanged}
                 messages={this.state.messages}
                 handleBackBtn={this.handleBackBtn}
-                isNotPreDeleted={this.state.isNotPreDeleted}
                 alertVisible={this.state.alertVisible}
                 handleAlertDismiss={this.handleAlertDismiss}
                 handleAlertShow={this.handleAlertShow}
