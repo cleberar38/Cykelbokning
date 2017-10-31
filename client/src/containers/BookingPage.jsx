@@ -257,7 +257,7 @@ class BookingPage extends React.Component {
                     response = xhr.response;
                 }
 
-                console.log("Message To the User : ", response.message);
+                console.log("Response To the User : ", response);
 
                 // change the component-container state
                 this.setState({
@@ -317,8 +317,6 @@ class BookingPage extends React.Component {
                 const errors = response.errors ? response.errors : {};
                 errors.summary = response.message;
 
-
-
                 this.setState({
                     messages: errors.summary,
                     messageChanged: true,
@@ -327,7 +325,6 @@ class BookingPage extends React.Component {
                     hasError: true,
                     isBookingComplete: response.isBookingComplete
                 });
-
 
             }
         });

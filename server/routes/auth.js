@@ -527,22 +527,36 @@ router.post('/bikebooking', (req, res, next) => {
         });
     }
 
-    const bookingBikeData = {
-        bikebookingid: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), //{type: String, unique: true},,
-        bikeid: req.body.bikeid,
-        userid: req.body.userid,
-        periodid: req.body.periodid,
-        bookeddate: new Date(),
-        nextbookingdate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
-        admincomment: req.body.admincomment,
-        pickuptime: req.body.pickuptime,
-        pickupdate: req.body.pickupdate,
-        terms: req.body.terms
-    };
+    var retrivePeriod = (cb) => {
+        Period.findOne({periodname: req.body.periodid}, function(err, done) {
+            if (err) {
+                cb(err, null);
 
-    const newBooking = new BikeBooking(bookingBikeData);
+            }
+            cb(null, done);
 
-    checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData);
+        });
+    }
+
+    retrivePeriod(function(err, done) {
+
+        const bookingBikeData = {
+            bikebookingid: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), //{type: String, unique: true},,
+            bikeid: req.body.bikeid,
+            userid: req.body.userid,
+            periodid: req.body.periodid,
+            bookeddate: new Date(),
+            nextbookingdate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+            admincomment: req.body.admincomment,
+            pickuptime: req.body.pickuptime,
+            pickupdate: done.datefrom.toString(),
+            terms: req.body.terms
+        };
+
+        let newBooking = new BikeBooking(bookingBikeData);
+
+        checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData);
+    })
 
 });
 
@@ -596,7 +610,7 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
 
                     const msg = 'Denna period och cykel är redan bokad';
                     const isBookingComplete = false;
-                    showMessages200(res, msg, isBookingComplete);
+                    showMessages200(res, msg, isBookingComplete, null);
 
                 } else {
 
@@ -701,14 +715,21 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
  */
 function createNewBooking(newBooking) {
 
-    //This save the new bikebooking to the DB
-    newBooking.save((err, done) => {
-        if (err) {
-            console.log("ERROR : ", err);
-            return err;
-        }
+    var retrivePeriod = (cb) => {
+        newBooking.save((err, done) => {
+            if (err) {
+                cb(err, null);
 
-        return done;
+            }
+            cb(null, done);
+
+        });
+    }
+
+    retrivePeriod(function(err, done) {
+        if(err) return err;
+
+        return done
     });
 };
 
@@ -1003,10 +1024,7 @@ function checkBookingForm(payload) {
         isFormValid = false;
         errors.pickuptime = 'Välja Cykelupphämtningstid';
     }
-    if (!payload || typeof payload.pickupdate !== 'string' || payload.pickupdate.trim().length === 0) {
-        isFormValid = false;
-        errors.pickupdate = 'Välja Cykelupphämtningsdatum';
-    }
+
     if (!payload || typeof payload.terms !== 'string' || payload.terms.trim().length === 0 || payload.terms === 'false') {
         isFormValid = false;
         errors.terms = 'Välja jag har läst låneavtalet';
