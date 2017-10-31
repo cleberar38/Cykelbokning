@@ -507,7 +507,8 @@ router.post('/bikebooking', (req, res, next) => {
         return res.status(400).json({
             success: false,
             message: bookingFormResult.message,
-            errors: bookingFormResult.errors
+            errors: bookingFormResult.errors,
+            isBookingComplete: false
         });
     }
 
@@ -579,7 +580,8 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
                 if (amountBikeInBooking.length === bikeAmount[0].amount * availablePeriod.length) {
 
                     const msg = 'Denna period och cykel är redan bokad';
-                    showMessages200(res, msg);
+                    const isBookingComplete = false;
+                    showMessages200(res, msg, isBookingComplete);
 
                 } else {
 
@@ -587,7 +589,8 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
 
                         createNewBooking(newBooking);
                         const msg = 'Tack för din bokning';
-                        showMessages200(res, msg);
+                        const isBookingComplete = true;
+                        showMessages200(res, msg, isBookingComplete);
 
                     } else {
 
@@ -602,15 +605,19 @@ function checkIfUserHasBookedSpecificBike(req, res, newBooking, bookingBikeData)
 
                             if (resUserRebook.length !== 0) {
 
+                                const isBookingComplete = false;
+
                                 return res.status(200).json({
                                     success: true,
-                                    message: 'Tyvärr kan du inte boka den här modellen'
+                                    message: 'Du har redan bokat en cykel denna period',
+                                    isBookingComplete: isBookingComplete
                                 });
                             } else {
 
                                 createNewBooking(newBooking);
                                 const msg = 'Tack för din bokning';
-                                showMessages200(res, msg);
+                                const isBookingComplete = true;
+                                showMessages200(res, msg, isBookingComplete);
                             }
                         });
                     }
@@ -650,19 +657,22 @@ function checkIfBikeIsAvailable(req, res, newBooking, bookingBikeData) {
                 //Check if still have bike available in BIKE DB
                 if (resBike.amountavailable < 1) {
                     const msg = 'Tyvärr, denna cykel är inte tillgänglig';
-                    showMessages200(res, msg);
+                    const isBookingComplete = false;
+                    showMessages200(res, msg, isBookingComplete);
                 } else {
                     createNewBooking(newBooking);
                     const msg = 'Tack för din bokning';
-                    showMessages200(res, msg);
+                    const isBookingComplete = true;
+                    showMessages200(res, msg, isBookingComplete);
                 }
             });
             const msg = 'Denna period och cykel är redan bokad.';
 
         } else {
             createNewBooking(newBooking);
+            const isBookingComplete = true;
             const msg = 'Tack för din bokning';
-            showMessages200(res, msg);
+            showMessages200(res, msg, isBookingComplete);
         }
     });
 };
@@ -727,11 +737,12 @@ function createNewPeriod(req) {
  * @returns {object} -
  *
  */
-function showMessages200(res, msg) {
+function showMessages200(res, msg, isBookingComplete) {
 
     return res.status(200).json({
         success: true,
-        message: msg
+        message: msg,
+        isBookingComplete: isBookingComplete
     });
 };
 

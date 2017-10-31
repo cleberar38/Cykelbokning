@@ -8,30 +8,43 @@ import strings from './lang_config.jsx';
 import default_lang from './default_lang.jsx';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Button } from 'react-bootstrap';
-import MessagesToUserPage from '../containers/MessagesToUserPage.jsx';
 
 strings.setLanguage(default_lang.lang);
 
 const BookingMsg = ({
-    messages,
-    messageChanged,
     errors,
-    handleBackBtn,
+    pickuptime,
     pickupdate,
-    pickuptime
+    hasError,
+    messages
 }) => (
         <div style={{ height: '100%' }}>
             <div>
                 <Card className="container">
 
                     <CardTitle title="" subtitle="">
-                        <div className="display-2">
-                            <h2>Tack för din bokning.</h2>
-                            <h5>Du hämtar lånecykeln <strong>{pickupdate}</strong> kl. <strong>{pickuptime}</strong> på stadsbyggnadsförvaltningen Järnvägsgatan 22, Helsingborg.</h5>
-                            <h4>Du kan se din bokning under ”Mina bokningar”.</h4>
-                        </div>
 
-                        
+                        <div>
+                        {hasError ?
+
+                            <div>
+                              <h4 className="display-2">{errors.summary}</h4>
+                              <h5 className="display-2 color-red">{errors.periodid}</h5>
+                              <h5 className="display-2 color-red">{errors.bikeid}</h5>
+                              <h5 className="display-2 color-red">{errors.pickuptime}</h5>
+                              <h5 className="display-2 color-red">{errors.pickupdate}</h5>
+                              <h5 className="display-2 color-red">{errors.terms}</h5>
+                            </div>
+
+                            :
+
+                            <div className="display-2">
+                                <h2>Tack för din bokning.</h2>
+                                <h5>Du hämtar lånecykeln <strong>{pickupdate}</strong> kl. <strong>{pickuptime}</strong> på stadsbyggnadsförvaltningen Järnvägsgatan 22, Helsingborg.</h5>
+                                <h4>Du kan se din bokning under ”Mina bokningar”.</h4>
+                            </div>
+                        }
+                        </div>
                     </CardTitle>
                     <RaisedButton href="/" label={strings.goback} primary={false} backgroundColor="#ae0b05" className="msgbtn" />
                 </Card>
@@ -40,7 +53,6 @@ const BookingMsg = ({
     );
 
 BookingMsg.propTypes = {
-
 };
 
 export default BookingMsg;

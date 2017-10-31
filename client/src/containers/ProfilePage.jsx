@@ -32,7 +32,6 @@ class ProfilePage extends React.Component {
         this.getProfileInfo = this.getProfileInfo.bind(this);
         this.preRemoveBooking = this.preRemoveBooking.bind(this);
         this.removeBooking = this.removeBooking.bind(this);
-        this.handleBackBtn = this.handleBackBtn.bind(this);
         this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
         this.handleAlertShow = this.handleAlertShow.bind(this);
         this.saveComment = this.saveComment.bind(this);
@@ -141,13 +140,6 @@ class ProfilePage extends React.Component {
       xhr.send(formData);
 
 
-    }
-
-    handleBackBtn() {
-        this.setState({
-            messages: '',
-            messageChanged: false
-        });
     }
 
     handleAlertDismiss() {

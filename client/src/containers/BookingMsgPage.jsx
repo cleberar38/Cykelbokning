@@ -5,8 +5,7 @@ import BookingMsg from '../components/BookingMsg.jsx';
 
 // Set initial state
 let state = {
-    messageChanged: false,
-    messages: '',
+
 };
 
 class BookingMsgPage extends React.Component {
@@ -19,16 +18,6 @@ class BookingMsgPage extends React.Component {
 
         // Retrieve the last state
         this.state = state;
-
-        this.handleBackBtn.bind(this);
-
-    }
-
-    handleBackBtn() {
-        this.setState({
-            messageChanged: false,
-            messages: ''
-        });
     }
 
     /**
@@ -37,15 +26,12 @@ class BookingMsgPage extends React.Component {
     render() {
         return (
             <BookingMsg
-                messageChanged={this.props.messageChanged}
-                messages={this.props.messages}
+                hasError={this.props.hasError}
                 errors={this.props.errors}
-                handleBackBtn={this.state.handleBackBtn}
                 pickupdate={this.props.pickupdate}
                 pickuptime={this.props.pickuptime}
+                messages={this.props.messages}
             />
-
-
         );
     }
 }

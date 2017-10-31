@@ -36,7 +36,9 @@ let state = {
     terms: false,
     showErrorMsg: false,
     hasError: false,
-    termsCheckboxIsSelected: false
+    isBooking: false,
+    termsCheckboxIsSelected: false,
+    isBookingComplete: false
 };
 
 
@@ -248,10 +250,10 @@ class BookingPage extends React.Component {
                 this.setState({
                     messages: response.message,
                     messageChanged: response.success,
-                    showErrorMsg: false,
                     pickuptime: localStorage.getItem('pickuptime'),
                     pickupdate: localStorage.getItem('pickupdate'),
-                    hasError: false
+                    hasError: false,
+                    isBookingComplete: response.isBookingComplete
                 });
 
                 console.log("This STATE : ", this.state);
@@ -309,7 +311,8 @@ class BookingPage extends React.Component {
                     messageChanged: true,
                     showErrorMsg: true,
                     errors,
-                    hasError: true
+                    hasError: true,
+                    isBookingComplete: response.isBookingComplete
                 });
 
 
@@ -799,6 +802,7 @@ class BookingPage extends React.Component {
                 handleDateChange={this.handleDateChange}
                 errors={this.state.errors}
                 hasError={this.state.hasError}
+                isBooking={this.state.isBooking}
                 successMessage={this.state.successMessage}
                 booking={this.state.booking}
                 handleUserConfirmation={this.handleUserConfirmation}
@@ -814,6 +818,7 @@ class BookingPage extends React.Component {
                 toggleCheckbox={this.toggleCheckbox}
                 pickuptime={this.state.pickuptime}
                 pickupdate={this.state.pickupdate}
+                isBookingComplete={this.state.isBookingComplete}
             />
         );
     }

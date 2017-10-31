@@ -5,12 +5,10 @@ import Confirmation from '../components/Confirmation.jsx';
 
 // Set initial state
 let state = {
-  messages: '',
-  messageChanged: false
+
 };
 
 class ConfirmationPage extends React.Component {
-
   /**
    * Class constructor.
    */
@@ -21,12 +19,6 @@ class ConfirmationPage extends React.Component {
     this.state = state;
 
     this.handleConfirmation = this.handleConfirmation.bind(this);
-  }
-
-  componentDidMount() {
-
-      window.scrollTo(0, 0);
-
   }
 
   handleConfirmation() {
@@ -78,11 +70,6 @@ class ConfirmationPage extends React.Component {
               response = xhr.response;
           }
 
-        self.setState({
-          messages: response.message,
-          messageChanged: response.success,
-        });
-
       } else {
         // failure
 
@@ -123,11 +110,6 @@ class ConfirmationPage extends React.Component {
       }
     });
 
-    this.setState({
-      messages: '',
-      messageChanged: false,
-    });
-
     xhr.send(formData);
 
   }
@@ -139,8 +121,6 @@ class ConfirmationPage extends React.Component {
   render() {
     return (
       <Confirmation
-        messageChanged={ this.props.messageChanged }
-        messages={ this.props.messages }
         handleConfirmation={ this.handleConfirmation }
       />
     );

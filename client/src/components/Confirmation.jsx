@@ -12,8 +12,6 @@ import {Button} from 'react-bootstrap';
 strings.setLanguage(default_lang.lang);
 
 const Confirmation = ({
-  messages,
-  messageChanged,
   handleConfirmation
 }) => (
   <div  style={{height: '100%'}}>

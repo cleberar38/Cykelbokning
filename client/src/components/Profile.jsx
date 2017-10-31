@@ -30,7 +30,6 @@ const Profile = ({
     name,
     messages,
     messageChanged,
-    handleBackBtn,
     isNotPreDeleted,
     handleAlertDismiss,
     alertVisible,
@@ -40,7 +39,7 @@ const Profile = ({
   }) => (
     <div>
         {messageChanged ? (
-            <ProfileMessagesPage messageChanged={messageChanged} messages={messages} handleBackBtn={handleBackBtn} />
+            <ProfileMessagesPage messageChanged={messageChanged} messages={messages} />
         ) : (
 
             <div>
@@ -76,6 +75,7 @@ const Profile = ({
                                 <span>
                                     <span style={{ color: darkBlack }}><strong>Cykel: </strong>{profile.bikeid} </span><br />
                                     <span style={{ color: darkBlack }}><strong>Bokat datum: </strong>{profile.bookeddate}</span><br />
+                                    <span style={{ color: darkBlack }}><strong>Period: </strong>{profile.periodid} </span><br />
                                     <span style={{ color: darkBlack }}><strong>Upphämtningstid: </strong>{profile.pickuptime} </span><br />
                                     <span style={{ color: darkBlack }}><strong>Upphämtningsdatum: </strong>{profile.pickupdate} </span><br />
                                     <span style={{ color: darkBlack }}><a href="https://cykelbiblioteket.helsingborg.se/vara-cyklar/" target="_blank">{strings.meromcykel}</a></span>
@@ -114,7 +114,6 @@ Profile.propTypes = {
     name: PropTypes.string.isRequired,
     messages: PropTypes.string.isRequired,
     messageChanged: PropTypes.bool.isRequired,
-    handleBackBtn: PropTypes.func,
     isNotPreDeleted: PropTypes.bool.isRequired
 };
 

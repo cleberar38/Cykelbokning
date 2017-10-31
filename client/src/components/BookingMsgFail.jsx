@@ -11,33 +11,16 @@ import { Button } from 'react-bootstrap';
 
 strings.setLanguage(default_lang.lang);
 
-const MessageToUSer = ({
-    messagesToUser,
-    errors,
-    hasError
+const BookingMsgFail = ({
+    messages
 }) => (
         <div style={{ height: '100%' }}>
             <div>
                 <Card className="container">
-
                     <CardTitle title="" subtitle="">
-
-                        <div>
-                        {hasError ?
-
-                            <div>
-                              <h4 className="display-2">{errors.summary}</h4>
-                              <h5 className="display-2 color-red">{errors.periodid}</h5>
-                              <h5 className="display-2 color-red">{errors.bikeid}</h5>
-                              <h5 className="display-2 color-red">{errors.pickuptime}</h5>
-                              <h5 className="display-2 color-red">{errors.pickupdate}</h5>
-                            </div>
-
-                            :
-
-                              <h4 className="display-2">{messagesToUser}</h4>
-                        }
-                        </div>
+                      <div className="display-2">
+                        {messages}
+                      </div>
                     </CardTitle>
                     <RaisedButton href="/" label={strings.goback} primary={false} backgroundColor="#ae0b05" className="msgbtn" />
                 </Card>
@@ -45,7 +28,7 @@ const MessageToUSer = ({
         </div>
     );
 
-MessageToUSer.propTypes = {
+BookingMsgFail.propTypes = {
 };
 
-export default MessageToUSer;
+export default BookingMsgFail;

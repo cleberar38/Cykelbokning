@@ -13,10 +13,8 @@ import FlatButton from 'material-ui/FlatButton';
 strings.setLanguage(default_lang.lang);
 
 const ProfileMessages = ({
-  messages,
-    messageChanged,
+    messages,
     errors,
-    handleBackBtn
 }) => (
         <div style={{ height: '100%' }}>
             <div>
@@ -34,9 +32,7 @@ const ProfileMessages = ({
 
                     </CardTitle>
                     <div className="center-container">
-                        <Link to="/" style={{ color: 'white' }}>
-                            <FlatButton style={{ color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)' }} label={strings.goback} />
-                        </Link>
+                        <FlatButton href="/" style={{ color: 'white', backgroundColor: 'rgba(174, 11, 5, 0.8)' }} label={strings.goback} />
                     </div>
                 </Card>
             </div>

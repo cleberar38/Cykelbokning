@@ -22,10 +22,11 @@ const SignUpForm = ({
   user,
   messageChanged,
   messages,
+  hasError
 }) => (
   <div>
   {messageChanged ? (
-  <MessagesToUserPage  messageChanged={ messageChanged } messages={ messages } />
+  <MessagesToUserPage  hasError={hasError} messages={messages} errors={errors} />
   ) : (
   <Card zDepth={5} className="container cardbottomReg">
     <form action="/" onSubmit={onSubmit}>
@@ -52,7 +53,7 @@ const SignUpForm = ({
           value={user.email}
         />
       </div>
-      
+
       <div className="field-line">
         <TextField
           floatingLabelText={strings.password}
@@ -110,7 +111,7 @@ SignUpForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
-  
+
 };
 
 export default SignUpForm;

@@ -24,6 +24,7 @@ import { FormControl, ControlLabel, FormGroup, Grid, Row, Col, Thumbnail, Panel,
 import Checkbox from '../containers/CheckboxPage.jsx';
 import PickupTimePage from '../containers/PickupTimePage.jsx';
 import BookingMsgPage from '../containers/BookingMsgPage.jsx';
+import BookingMsgFailPage from '../containers/BookingMsgFailPage.jsx';
 
 strings.setLanguage(default_lang.lang);
 
@@ -67,13 +68,21 @@ const BookingFormAll = ({
     pickuptime,
     pickupdate,
     showErrorMsg,
-    hasError
+    hasError,
+    isBooking,
+    isBookingComplete
 
 }) => (
         <div>
             <Jumbotron>
                 {messageChanged ? (
-                    <MessagesToUserPage pickuptime={pickuptime} pickupdate={pickupdate} messageChanged={messageChanged} messagesToUser={messages} handleBackBtn={handleBackBtn} hasError={hasError} errors={errors} showErrorMsg={showErrorMsg} />
+
+                  <div>
+                    { isBookingComplete ? <BookingMsgPage  messages={messages} pickuptime={pickuptime} pickupdate={pickupdate} hasError={hasError} errors={errors} />
+                      :
+                      <BookingMsgFailPage messages={messages} />
+                    }
+                  </div>
                 ) : (
                         <form action="/" onSubmit={onSubmit}>
 

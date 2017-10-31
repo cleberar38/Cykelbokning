@@ -12,6 +12,7 @@ class SignUpPage extends React.Component {
     // set the initial component state
     this.state = {
       messageChanged: false,
+      hasError: false,
       response: null,
       token: null,
       messages: '',
@@ -147,7 +148,8 @@ class SignUpPage extends React.Component {
         errors.summary = response.message;
 
         this.setState({
-          errors
+          errors,
+          hasError: true
         });
       }
     });

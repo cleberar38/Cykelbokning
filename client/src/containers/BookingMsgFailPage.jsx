@@ -1,16 +1,14 @@
 import "babel-polyfill";
 import React from 'react';
 import Auth from '../modules/Auth';
-import MessageToUSer from '../components/MessageToUSer.jsx';
+import BookingMsgFail from '../components/BookingMsgFail.jsx';
 
 // Set initial state
 let state = {
 
 };
 
-let self = this;
-
-class MessageToUSerPage extends React.Component {
+class BookingMsgFailPage extends React.Component {
 
     /**
      * Class constructor.
@@ -22,22 +20,16 @@ class MessageToUSerPage extends React.Component {
         this.state = state;
     }
 
-    componentDidMount() {
-
-    }
-
     /**
      * Render the component.
      */
     render() {
         return (
-            <MessageToUSer
-                messagesToUser={this.props.messages}
-                errors={this.props.errors}
-                hasError={this.props.hasError}
+            <BookingMsgFail
+                messages={this.props.messages}
             />
         );
     }
 }
 
-export default MessageToUSerPage;
+export default BookingMsgFailPage;
