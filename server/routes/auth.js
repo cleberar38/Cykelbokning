@@ -11,6 +11,7 @@ const User = require('mongoose').model('User');
 const Token = require('mongoose').model('Token');
 const BikePeriodView = require('mongoose').model('BikePeriodView');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 
 router.post('/signup', (req, res, next) => {
 
@@ -53,18 +54,39 @@ router.post('/signup', (req, res, next) => {
 
             user.token = token;
 
+            // Generate test SMTP service account from ethereal.email
+            // Only needed if you don't have a real mail account for testing
+            nodemailer.createTestAccount((err, account) => {
 
-            const sgMail = require('@sendgrid/mail');
+                // create reusable transporter object using the default SMTP transport
+                let transporter = nodemailer.createTransport({
+                    host: config.hsmtp,
+                    port: config.hport,
+                    secure: config.hsecure
+                });
 
-            sgMail.setApiKey(config.SENDGRID_APIKEY);
+                // setup email data with unicode symbols
+                let mailOptions = {
+                    from: '"No-Reply" <no-reply@helsingborg.se>', // sender address
+                    to: req.body.email,
+                    subject: 'Cykelbiblioteket i Helsingborg', // Subject line
+                    text: 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg', // plain text body
+                    html: '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>' // html body
+                };
 
-            msg.to = req.body.email;
-            msg.from = 'none@reply.com';
-            msg.subject = 'Cykelbiblioteket i Helsingborg';
-            //The line above was used just to demostrate that we can send the token and userId within the URL link
-            // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
-            msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
-            msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
+                // send mail with defined transport object
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        return console.log(error);
+                    }
+                    console.log('Message sent: %s', info.messageId);
+                    // Preview only available when sending through an Ethereal account
+                    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+                    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@blurdybloop.com>
+                    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+                });
+            });
 
             tempToken = token;
 
@@ -72,8 +94,31 @@ router.post('/signup', (req, res, next) => {
                 if (err) { return res.status(500).json({ message: err.message }); }
             });
 
-            //Uncomment this line to send EMAIL to the user
-            //sgMail.send(msg);
+            /*======================== BELOW IS THE SENDGRID CONFIGURATION ===================================*/
+
+            // const sgMail = require('@sendgrid/mail');
+
+            // sgMail.setApiKey(config.SENDGRID_APIKEY);
+            //
+            // msg.to = req.body.email;
+            // msg.from = 'none@reply.com';
+            // msg.subject = 'Cykelbiblioteket i Helsingborg';
+            // //The line above was used just to demostrate that we can send the token and userId within the URL link
+            // // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
+            // msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
+            // msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/confirmation\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
+            //
+            // tempToken = token;
+            //
+            // user.save(function (err) {
+            //     if (err) { return res.status(500).json({ message: err.message }); }
+            // });
+            //
+            // //Uncomment this line to send EMAIL to the user
+            // //sgMail.send(msg);
+
+            /*======================== END OF SENDGRID CONFIGURATION ===================================*/
+
 
             return res.status(200).json({
                 success: true,

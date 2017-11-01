@@ -24,10 +24,7 @@ class ConfirmationPage extends React.Component {
   handleConfirmation() {
 
     let token = document.location.hash.split("token=")[1];
-
-    // //prevent default action. in this case, action is the form submission event
-    event.preventDefault();
-
+    
     const formData = `token=${token}`;
 
     const self = this;
@@ -113,7 +110,6 @@ class ConfirmationPage extends React.Component {
     xhr.send(formData);
 
   }
-
 
   /**
    * Render the component.
