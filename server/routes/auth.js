@@ -937,22 +937,59 @@ function validateForgotPassword(req, res, next) {
 
                 let msg = {};
 
-                const sgMail = require('@sendgrid/mail');
 
-                sgMail.setApiKey(config.SENDGRID_APIKEY);
+                // Generate test SMTP service account from ethereal.email
+                // Only needed if you don't have a real mail account for testing
+                nodemailer.createTestAccount((err, account) => {
 
-                msg.to = req.body.email;
-                msg.from = 'none@reply.com';
-                msg.subject = 'Återställ lösenord - Cykelbiblioteket i Helsingborg';
-                //The line above was used just to demostrate that we can send the token and userId within the URL link
-                // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
-                msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
-                msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
+                    // create reusable transporter object using the default SMTP transport
+                    let transporter = nodemailer.createTransport({
+                        host: config.hsmtp,
+                        port: config.hport,
+                        secure: config.hsecure
+                    });
 
-                //Uncomment this line to send EMAIL to the user
-                //sgMail.send(msg);
+                    // setup email data with unicode symbols
+                    let mailOptions = {
+                        from: '"No-Reply" <no-reply@helsingborg.se>', // sender address
+                        to: req.body.email,
+                        subject: 'Återställ lösenord - Cykelbiblioteket i Helsingborg', // Subject line
+                        text: 'Hej,\n\n' + 'Klicka på länken för att återställa ditt lösenord: \n\nhttp:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '\n\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg', // plain text body
+                        html: '<strong>Hej,<br /><br />Klicka på länken för att återställa ditt lösenord:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '</a><br /><br />Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>' // html body
+                    };
 
+                    // send mail with defined transport object
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            return console.log(error);
+                        }
+                        console.log('Message sent: %s', info.messageId);
+                        // Preview only available when sending through an Ethereal account
+                        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
+                        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@blurdybloop.com>
+                        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+                    });
+                });
+
+                /*======================== BELOW IS THE SENDGRID CONFIGURATION ===================================*/
+
+                // const sgMail = require('@sendgrid/mail');
+                //
+                // sgMail.setApiKey(config.SENDGRID_APIKEY);
+                //
+                // msg.to = req.body.email;
+                // msg.from = 'none@reply.com';
+                // msg.subject = 'Återställ lösenord - Cykelbiblioteket i Helsingborg';
+                // //The line above was used just to demostrate that we can send the token and userId within the URL link
+                // // msg.text = 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/?token=' + token.token + '/userid=' + user.userid + '.\n';
+                // msg.text = 'Hej,\n\n' + 'Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats.  \n\n Klicka på länken för att bekräfta registreringen: \n\nhttp:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '\n\nNär du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.\nHar du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.\nMed vänlig hälsning,\nCykelbiblioteket i Helsingborg';
+                // msg.html = '<strong>Hej,<br /><br />Vad roligt att du vill använda stadens cykelbibliotek – här kommer en bekräftelse på att ditt konto har registrerats. <br /><br /> Klicka på länken för att bekräfta registreringen:  <br /><br /> <a href="http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '">http:\/\/' + config.emailHost + '\/#\/reset\/?token=' + token + '</a><br /><br />När du har bokat en cykel kan du se din bookning och avboka under ”Mina bokningar”.<br /> Har du frågor? Kontakta[Mattias Alfredsson] på stadsbyggnadsförvaltningen i Helsingborg.<br /> Med vänlig hälsning,<br /> Cykelbiblioteket i Helsingborg</strong>';
+                //
+                // //Uncomment this line to send EMAIL to the user
+                // //sgMail.send(msg);
+
+                /*======================== END OF SENDGRID CONFIGURATION ===================================*/
 
                 return res.status(200).json({
                     success: isFormValid,
