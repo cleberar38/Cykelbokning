@@ -74,7 +74,8 @@ const BookingFormAll = ({
     alertVisible,
     handleAlertDismiss,
     handleAlertShow,
-    removeBike
+    removeBike,
+    removePeriod
 
 }) => (
         <div>
@@ -135,6 +136,30 @@ const BookingFormAll = ({
                                                 {periodData !== null ? periodData.period.map((post) => (
                                                     <li key={post._id} style={{ padding: 5 }}>
                                                         <button className="periodbtns periodBtn" key={post._id} name={post.periodname} onClick={(evt, props) => handleSetPeriod(evt, post.periodname)}>{post.periodname}</button>
+
+
+                                                        <div>
+                                                          {Auth.isAdminUserAuthenticated() && localStorage.getItem("usertype") === "admin"  ?
+                                                            <div>
+                                                              {alertVisible ? (
+                                                                  <Alert bsStyle="danger" onDismiss={handleAlertDismiss}>
+                                                                    <h4>Är du säker?</h4><br />
+                                                                    <span>
+                                                                      <Link to="/removeperiodmsg"><Button key={post._id} bsStyle="danger" onClick={(evt) => removePeriod(evt, post._id)}>Ta bort</Button></Link>
+                                                                      <span> eller </span>
+                                                                      <Button onClick={handleAlertDismiss}>Avbryt</Button>
+                                                                    </span>
+                                                                  </Alert>
+
+                                                              ) : (
+                                                                  <Pager><Pager.Item next href="#" onClick={handleAlertShow}>Ta bort</Pager.Item></Pager>
+                                                              )}
+                                                            </div>
+                                                            : null
+                                                          }
+                                                        </div>
+
+
                                                     </li>
                                                 )) : null}
                                             </ul>
@@ -193,7 +218,8 @@ BookingFormAll.propTypes = {
     handleSetPeriod: PropTypes.func.isRequired,
     optionSelected: PropTypes.string.isRequired,
     errors: PropTypes.object.isRequired,
-    handleBackBtn: PropTypes.func
+    handleBackBtn: PropTypes.func,
+    removePeriod: PropTypes.func
 
 };
 

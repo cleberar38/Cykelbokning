@@ -29,18 +29,17 @@ const PickupTime = ({
           children={value}
         >
           <MenuItem className="menuitems" value={0} primaryText="Cykelupphämtningstid" />
-          <MenuItem className="menuitems" value={1} primaryText="12.00-12.30" />
-          <MenuItem className="menuitems" value={2} primaryText="12.30-13.00 " />
-          <MenuItem className="menuitems" value={3} primaryText="13.00-13.30" />
-          <MenuItem className="menuitems" value={4} primaryText="13.30-14.00" />
-          <MenuItem className="menuitems" value={5} primaryText="14.00-14.30" />
-          <MenuItem className="menuitems" value={6} primaryText="14.30-15.00" />
-          <MenuItem className="menuitems" value={7} primaryText="15.00-15.30" />
-          <MenuItem className="menuitems" value={8} primaryText="15.30-16.00" />
-          <MenuItem className="menuitems" value={9} primaryText="16.00-16.30" />
-          <MenuItem className="menuitems" value={10} primaryText="16.30-17.00" />
-          <MenuItem className="menuitems" value={11} primaryText="17.00-17.30" />
-          <MenuItem className="menuitems" value={12} primaryText="17.30-18.00" />
+          <MenuItem className="menuitems" value={1} primaryText="11.00-11.30" />
+          <MenuItem className="menuitems" value={2} primaryText="11.30-12.00" />
+          <MenuItem className="menuitems" value={3} primaryText="12.00-12.30" />
+          <MenuItem className="menuitems" value={4} primaryText="12.30-13.00 " />
+          <MenuItem className="menuitems" value={5} primaryText="13.00-13.30" />
+          <MenuItem className="menuitems" value={6} primaryText="13.30-14.00" />
+          <MenuItem className="menuitems" value={7} primaryText="14.00-14.30" />
+          <MenuItem className="menuitems" value={8} primaryText="14.30-15.00" />
+          <MenuItem className="menuitems" value={9} primaryText="15.00-15.30" />
+          <MenuItem className="menuitems" value={10} primaryText="15.30-16.00" />
+          <MenuItem className="menuitems" value={11} primaryText="16.00-16.30" />
         </SelectField>
     </div>
 );

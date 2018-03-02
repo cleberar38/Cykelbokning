@@ -392,6 +392,21 @@ router.post('/addperiod', (req, res, next) => {
 
 });
 
+router.post('/removeperiod', (req, res, next) => {
+
+    const removePeriodData = {
+        _id: req.body._id, //{type: String, unique: true},,
+    };
+
+    Period.find(removePeriodData).remove().exec();
+
+    return res.status(200).json({
+        success: true,
+        messages: "Period tas bort."
+    });
+
+});
+
 router.post('/addbike', (req, res, next) => {
 
     const validationResult = validateAddBikeForm(req.body);
@@ -1028,22 +1043,6 @@ function validatePeriodForm(payload) {
     if (!payload || typeof payload.dateto !== 'string' || payload.dateto.trim().length < 10) {
         isFormValid = false;
         errors.dateto = 'Datumet måste ha 10 tecken! åååå-mm-dd eller åååå / mm / dd';
-    }
-    if (!payload || typeof payload.bikedescurl !== 'string' || payload.bikedescurl.trim().length === 0) {
-        isFormValid = false;
-        errors.bikedescurl = 'URL existerar inte!';
-    }
-    if (!payload || typeof payload.bikeimgurl !== 'string' || payload.bikeimgurl.trim().length === 0) {
-        isFormValid = false;
-        errors.bikeimgurl = 'URL existerar inte!';
-    }
-    if (!payload || typeof payload.bikeimgurl !== 'string' || payload.bikeimgurl.trim().length === 0) {
-        isFormValid = false;
-        errors.bikeimgurl = 'URL existerar inte!';
-    }
-    if (!payload || typeof payload.bikename !== 'string' || payload.bikename.trim().length === 0) {
-        isFormValid = false;
-        errors.bikename = 'Cykels namn saknas';
     }
     if (!isFormValid) {
         message = 'Kontrollera formuläret för fel.';

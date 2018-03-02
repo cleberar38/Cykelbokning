@@ -74,6 +74,8 @@ class BookingPage extends React.Component {
         this.removeBike = this.removeBike.bind(this);
         this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
         this.handleAlertShow = this.handleAlertShow.bind(this);
+        this.removePeriod = this.removePeriod.bind(this);
+
     }
 
     componentWillMount() {
@@ -102,6 +104,7 @@ class BookingPage extends React.Component {
             this.selectedCheckboxes.add(label);
         }
     }
+
 
     createCheckbox(label) {
 
@@ -404,6 +407,111 @@ class BookingPage extends React.Component {
                 }
             }
         }
+    }
+
+    removePeriod(event, periodid){
+      // prevent default action. in this case, action is the form submission event
+      event.preventDefault();
+
+      const formData = `_id=${periodid}`;
+
+      const self = this;
+
+      // create an AJAX request
+      const xhr = new XMLHttpRequest();
+      xhr.open('post', '/auth/removeperiod');
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', () => {
+        if (xhr.status === 200) {
+          // success
+
+            let response = null;
+
+            // Opera 8.0+
+            var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+            // Firefox 1.0+
+            var isFirefox = typeof InstallTrigger !== 'undefined';
+
+            // Safari 3.0+ "[object HTMLElementConstructor]"
+            var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+            // Internet Explorer 6-11
+            var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+            // Edge 20+
+            var isEdge = !isIE && !!window.StyleMedia;
+
+            // Chrome 1+
+            var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+            // Blink engine detection
+            var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+            //IE problem! We have to parse the response since in IE everything became string!
+            if (isIE) { response = JSON.parse(xhr.response); } else {
+                response = xhr.response;
+            }
+
+          //console.log("this.state.period", this.state.period);
+          //TODO: Set the state of the periods available
+
+          self.setState({
+            //period: self.state.period,
+            messageChanged: true,
+            messages: response.message
+          });
+
+          //console.log("addPeriod xhr.response: ", xhr.response);
+
+          // change the component-container state
+          this.setState({
+            errors: {},
+          });
+          //this.props.router.replace('/');
+
+        } else {
+          // failure
+
+            let response = null;
+
+            // Opera 8.0+
+            var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
+            // Firefox 1.0+
+            var isFirefox = typeof InstallTrigger !== 'undefined';
+
+            // Safari 3.0+ "[object HTMLElementConstructor]"
+            var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+
+            // Internet Explorer 6-11
+            var isIE = /*@cc_on!@*/false || !!document.documentMode;
+
+            // Edge 20+
+            var isEdge = !isIE && !!window.StyleMedia;
+
+            // Chrome 1+
+            var isChrome = !!window.chrome && !!window.chrome.webstore;
+
+            // Blink engine detection
+            var isBlink = (isChrome || isOpera) && !!window.CSS;
+
+            //IE problem! We have to parse the response since in IE everything became string!
+            if (isIE) { response = JSON.parse(xhr.response); } else {
+                response = xhr.response;
+            }
+
+          // change the component state
+          const errors = response.errors ? response.errors : {};
+          errors.summary = response.message;
+
+          this.setState({
+            errors
+          });
+        }
+      });
+      xhr.send(formData);
     }
 
     checkPeriodsInBooking() {
@@ -928,6 +1036,7 @@ class BookingPage extends React.Component {
                 handleAlertDismiss={this.handleAlertDismiss}
                 handleAlertShow={this.handleAlertShow}
                 alertVisible={this.state.alertVisible}
+                removePeriod={this.removePeriod}
             />
         );
     }

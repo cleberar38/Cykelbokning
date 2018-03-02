@@ -16,7 +16,8 @@ import UsersPage from './containers/UsersPage.jsx';
 import SortFilterPage from './containers/SortFilterPage.jsx';
 import ForgotPasswordPage from './containers/ForgotPasswordPage.jsx';
 import ResetPasswordPage from './containers/ResetPasswordPage.jsx';
-RemoveBikeMsgPage
+import RemovePeriodMsgPage from './containers/RemovePeriodMsgPage.jsx';
+
 
 const routes = {
   // Base component (wrapper for the whole application).
@@ -89,7 +90,10 @@ const routes = {
         component: RemoveBikeMsgPage
     },
 
-
+    {
+        path: '/removeperiodmsg',
+        component: RemovePeriodMsgPage
+    },
 
     {
       path: '/confirmation',

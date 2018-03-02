@@ -89,7 +89,6 @@ const PeriodForm = ({
             </div>
           )}
 
-          <CardText>{strings.removeperiod} <Link to={'/removeperiod'}>{strings.removeperiod}</Link></CardText>
         </form>
       </Card>
       ) : (
