@@ -56,6 +56,6 @@ app.use(express.static(__dirname + './server/static/'));
 
 
 // start the server
-app.listen(DEFAULT_PORT, 'kartor.helsingborg.se', () => {
-  console.log('Server is running on http://kartor.helsingborg.se:', DEFAULT_PORT);
+app.listen(DEFAULT_PORT, 'A001155', () => {
+  console.log('Server is running on A001155:', DEFAULT_PORT);
 });

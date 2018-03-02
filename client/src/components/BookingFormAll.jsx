@@ -91,42 +91,20 @@ const BookingFormAll = ({
                 ) : (
                         <form action="/" onSubmit={onSubmit}>
 
-                            <div>
-                                <Grid className="container-grid">
-                                    <Row style={{ "margin": "auto", "maxWidth": "960px" }}>
-                                        <Panel header={paneltitle} bsStyle="danger">
-                                            {tilesData !== null ? tilesData.done.map((tile) => (
-                                                <Col key={tile._id} md={4} style={{ 'marginTop': '20px' }}>
-                                                    <Thumbnail className={"bikeImg"} href="#" alt={tile.bikename} src={tile.imgurl} onClick={handleBikeSelection} name={tile.bikename} />
-                                                    <GridTile className="grid-title" style={{ "backgroundColor": "white", 'marginTop': '-20px' }} title={tile.bikename}>
-                                                        <img style={{ 'width': '100%', 'height': '50px' }} />
-                                                    </GridTile>
-                                                    <div>
-                                                      {Auth.isAdminUserAuthenticated() && localStorage.getItem("usertype") === "admin"  ?
-                                                        <div>
-                                                          {alertVisible ? (
-                                                              <Alert bsStyle="danger" onDismiss={handleAlertDismiss}>
-                                                                <h4>Är du säker?</h4><br />
-                                                                <span>
-                                                                  <Link to="/removebikemsg"><Button key={tile._id} bsStyle="danger" onClick={(evt) => removeBike(evt, tile._id)}>Ta bort</Button></Link>
-                                                                  <span> eller </span>
-                                                                  <Button onClick={handleAlertDismiss}>Avbryt</Button>
-                                                                </span>
-                                                              </Alert>
-
-                                                          ) : (
-                                                              <Pager><Pager.Item next href="#" onClick={handleAlertShow}>Ta bort</Pager.Item></Pager>
-                                                          )}
-                                                        </div>
-                                                        : null
-                                                      }
-                                                    </div>
-                                                </Col>
-                                            )) : null}
-                                        </Panel>
-                                    </Row>
-                                </Grid>
+                          <div className="w3-row-padding" style={{"background":"#fff", "margin": "auto", "border": "1px solid rgb(255, 0, 0)", "maxWidth": "960px", "height": "100%"}}>
+                            <div className="topnav">
+                              <a href="#">{paneltitle}</a>
                             </div>
+                            {tilesData !== null ? tilesData.done.map((tile) => (
+                              <div key={tile._id} className="w3-col l3 m6 w3-margin-bottom">
+                                <div className="w3-display-container">
+                                  <img className={"bikeImg"} alt={tile.bikename} src={tile.imgurl} style={{"width":"100%"}} onClick={handleBikeSelection} name={tile.bikename} />
+                                  <div className="w3-display-topleft w3-black w3-padding">{tile.bikename}</div>
+                                </div>
+                              </div>
+                            )) : null }
+                          </div>
+
 
                             <div>
                                 <div className="center-container">

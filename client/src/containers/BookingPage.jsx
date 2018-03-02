@@ -377,7 +377,7 @@ class BookingPage extends React.Component {
 
         for (var i = 0, leni = allBikes.length; i < leni; i++) {
             var tempBike = allBikes[i];
-            tempBike.children[0].style.opacity = 1;
+            tempBike.style.opacity = 1;
         }
 
         if (bikeSelected !== null) {
