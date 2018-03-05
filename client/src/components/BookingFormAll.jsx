@@ -100,6 +100,28 @@ const BookingFormAll = ({
                                 <div className="w3-display-container">
                                   <img className={"bikeImg"} alt={tile.bikename} src={tile.imgurl} style={{"width":"100%"}} onClick={handleBikeSelection} name={tile.bikename} />
                                   <div className="w3-display-topleft w3-black w3-padding">{tile.bikename}</div>
+
+                                    <div>
+                                      {Auth.isAdminUserAuthenticated() && localStorage.getItem("usertype") === "admin"  ?
+                                        <div>
+                                          {alertVisible ? (
+                                              <Alert bsStyle="danger" onDismiss={handleAlertDismiss}>
+                                                <h4>Är du säker?</h4><br />
+                                                <span>
+                                                  <Link to="/removebikemsg"><Button key={tile._id} bsStyle="danger" onClick={(evt) => removeBike(evt, tile._id)}>Ta bort</Button></Link>
+                                                  <span> eller </span>
+                                                  <Button onClick={handleAlertDismiss}>Avbryt</Button>
+                                                </span>
+                                              </Alert>
+
+                                          ) : (
+                                              <Pager><Pager.Item next href="#" onClick={handleAlertShow}>Ta bort</Pager.Item></Pager>
+                                          )}
+                                        </div>
+                                        : null
+                                      }
+                                    </div>
+
                                 </div>
                               </div>
                             )) : null }

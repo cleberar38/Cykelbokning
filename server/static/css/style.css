@@ -146,6 +146,10 @@ ul {
     list-style-type: none;
 }
 
+ul > li.next {
+  margin-top: 33px;
+}
+
 .page {
     width: 90%;
 }
